@@ -1,0 +1,103 @@
+{
+  "name": "nest-typescript-starter",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Appsome Nest TypeScript starter repository",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "nest build",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start:prod": "node dist/main",
+    "start:dev": "nodemon",
+    "start:debug": "nodemon --config nodemon-debug.json",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "doc": "compodoc -p tsconfig.json -s"
+  },
+  "dependencies": {
+    "@nestjs/common": "^6.8.0",
+    "@nestjs/core": "^6.8.0",
+    "@nestjs/platform-express": "^6.8.0",
+    "@nestjs/mongoose": "^6.1.2",
+    "@nestjs/graphql": "^6.5.3",
+    "apollo-server-express": "^2.9.7",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.0",
+    "rxjs": "^6.5.3",
+    "uuid": "^3.3.3",
+    "joi": "^14.3.1",
+    "dotenv": "^8.2.0",
+    "helmet": "^3.21.2",
+    "mongoose": "^5.7.8",
+    "graphql": "^14.5.8",
+    "graphql-tools": "^4.0.6",
+    "graphql-upload": "^8.1.0",
+    "type-graphql": "^0.17.5"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^6.9.1",
+    "@nestjs/schematics": "^6.7.0",
+    "@nestjs/testing": "^6.8.0",
+    "@types/express": "^4.17.1",
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.8",
+    "@types/supertest": "^2.0.8",
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
+    "@types/uuid": "^3.4.6",
+    "@types/joi": "^14.3.4",
+    "@types/dotenv": "^8.2.0",
+    "@types/helmet": "^0.0.45",
+    "@types/mongoose": "^5.5.30",
+    "@types/graphql-upload": "^8.0.3",
+    "@compodoc/compodoc": "^1.1.11",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^3.0.9",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^2.0.0",
+    "supertest": "^4.0.2",
+    "ts-jest": "^24.1.0",
+    "ts-loader": "^6.2.0",
+    "ts-node": "^8.4.1",
+    "tsconfig-paths": "^3.9.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.6.3",
+    "nodemon": "^1.19.4"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  }
+}
