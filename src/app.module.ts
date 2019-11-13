@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from './config';
 import { ExampleModule } from './example';
+import { QrCodeModule } from './qrcode';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ExampleModule } from './example';
     }),
     ConfigModule,
     ExampleModule,
+    QrCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, ExampleModule],

@@ -4,11 +4,9 @@
 # -----------------------------------------------
 
 type Example {
-  id: Float!
-  firstName: String
-  lastName: String
+  qrCodeDataUri: String
 }
 
 type Query {
-  getExample: Example!
+  getExample(id: String!): Example!
 }
