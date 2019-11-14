@@ -8,7 +8,8 @@ type EnvConfigSchemaKeys =
   | 'MONGO_DB_URI'
   | 'BASE_URL'
   | 'TIMEOUT'
-  | 'MAX_REDIRECTS';
+  | 'MAX_REDIRECTS'
+  | 'APPLICATION_PORT';
 
 const allowedKeys: EnvConfigSchemaKeys[] = [
   'NODE_ENV',
@@ -17,6 +18,7 @@ const allowedKeys: EnvConfigSchemaKeys[] = [
   'BASE_URL',
   'TIMEOUT',
   'MAX_REDIRECTS',
+  'APPLICATION_PORT',
 ];
 
 export class ConfigService {
@@ -59,6 +61,7 @@ export class ConfigService {
       BASE_URL: Joi.string()
         .uri()
         .required(),
+      APPLICATION_PORT: Joi.number().default(3001),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(
@@ -95,5 +98,9 @@ export class ConfigService {
 
   get MongoDBURI(): string {
     return this.envConfig.MONGO_DB_URI;
+  }
+
+  get applicationPort(): number {
+    return Number(this.envConfig.APPLICATION_PORT);
   }
 }

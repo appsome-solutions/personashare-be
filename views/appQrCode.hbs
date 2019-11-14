@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <title>App</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 2rem;
+        }
+
+        .image {
+            position: absolute;
+            margin: auto;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <div class="header">Scan this code to get access to the PersonaShare</div>
+    <img alt="application link" src="{{ qrCode }}" class="image"/>
+</div>
+</body>
+
+</html>
