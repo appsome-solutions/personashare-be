@@ -14,8 +14,8 @@ const defaultQrCodeStyle: QrCodeStyle = {
 export class QrCodeService {
   async createQrCode(content: string, style?: QrCodeStyle): Promise<string> {
     const qrCodeStyles = {
-      defaultQrCodeStyle,
-      style,
+      ...defaultQrCodeStyle,
+      ...style,
     };
 
     const opts: QRCodeToDataURLOptions = {
