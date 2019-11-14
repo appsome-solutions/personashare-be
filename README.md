@@ -50,7 +50,7 @@ In order to run the application You should create a `.env` file with following v
 MONGO_DB_URI= //please provide your mongodb connection here
 BASE_URL=http://localhost:3000
 PORT=3000 //default
-APPLICATION_URL=http://localhost:3001 //default - url to the frontend application
+APPLICATION_PORT=3001 //default - port on which frontend application is served
 ```
 
 These field should be declared because of env fields validation that comes with server bootstrapping.

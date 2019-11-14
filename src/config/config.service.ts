@@ -9,7 +9,7 @@ type EnvConfigSchemaKeys =
   | 'BASE_URL'
   | 'TIMEOUT'
   | 'MAX_REDIRECTS'
-  | 'APPLICATION_URL';
+  | 'APPLICATION_PORT';
 
 const allowedKeys: EnvConfigSchemaKeys[] = [
   'NODE_ENV',
@@ -18,7 +18,7 @@ const allowedKeys: EnvConfigSchemaKeys[] = [
   'BASE_URL',
   'TIMEOUT',
   'MAX_REDIRECTS',
-  'APPLICATION_URL',
+  'APPLICATION_PORT',
 ];
 
 export class ConfigService {
@@ -61,7 +61,7 @@ export class ConfigService {
       BASE_URL: Joi.string()
         .uri()
         .required(),
-      APPLICATION_URL: Joi.string().default('http://localhost:3001'),
+      APPLICATION_PORT: Joi.number().default(3001),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(
@@ -100,7 +100,7 @@ export class ConfigService {
     return this.envConfig.MONGO_DB_URI;
   }
 
-  get ApplicationUrl(): string {
-    return this.envConfig.APPLICATION_URL;
+  get applicationPort(): number {
+    return Number(this.envConfig.APPLICATION_PORT);
   }
 }
