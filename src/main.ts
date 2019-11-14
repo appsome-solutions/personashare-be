@@ -19,6 +19,8 @@ async function bootstrap(): Promise<any> {
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('hbs');
 
+  app.enableShutdownHooks();
+
   await app.listen(configService.port);
 }
 bootstrap();

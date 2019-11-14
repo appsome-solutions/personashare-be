@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { INgrokOptions } from 'ngrok';
 import { QrCodeService } from './qrcode';
 import { ConfigService } from './config';
 import { NgrokService } from './ngrok';
 
 @Injectable()
-export class AppService {
+export class AppService implements OnApplicationShutdown {
   private ngRokUrl: string;
 
   constructor(
@@ -27,5 +27,10 @@ export class AppService {
     }
 
     return await this.qrCodeService.createQrCode(this.ngRokUrl);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unused-vars
+  onApplicationShutdown(_signal?: string): any {
+    this.ngrokService.disconnect();
   }
 }
