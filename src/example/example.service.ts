@@ -6,7 +6,7 @@ import { QrCodeService } from '../qrcode';
 export class ExampleService {
   public constructor(private readonly qrCodeService: QrCodeService) {}
 
-  public async getExample(id: string): Promise<Example> {
+  async getExample(id: string): Promise<Example> {
     const qrCodeDataUri = await this.qrCodeService.createQrCode(id);
 
     return {
