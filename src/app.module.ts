@@ -7,7 +7,7 @@ import { ConfigModule, ConfigService } from './config';
 import { ExampleModule } from './example';
 import { QrCodeModule } from './qrcode';
 import { NgrokModule } from './ngrok';
-import { PersonaEventModule } from './persona-event';
+import { SpotModule } from './spot';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { PersonaEventModule } from './persona-event';
     ExampleModule,
     QrCodeModule,
     NgrokModule,
-    PersonaEventModule,
+    SpotModule,
   ],
   controllers: [AppController],
   providers: [AppService, ExampleModule],

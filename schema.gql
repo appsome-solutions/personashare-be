@@ -3,10 +3,39 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input CreateSpotInput {
+  name: String!
+  description: String!
+  logo: String
+  image: String
+  url: String
+  details: JSONObject!
+}
+
 type Example {
   qrCodeDataUri: String
 }
 
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+type Mutation {
+  createSpot(spot: CreateSpotInput!): SpotType!
+}
+
 type Query {
   getExample(id: String!): Example!
+}
+
+type SpotType {
+  uuid: String!
+  name: String!
+  description: String!
+  logo: String!
+  image: String!
+  url: String!
+  details: JSONObject!
+  personaUUIDs: [String!]!
 }
