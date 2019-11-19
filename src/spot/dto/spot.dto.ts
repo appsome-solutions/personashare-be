@@ -12,18 +12,18 @@ export class SpotType {
   @Field()
   description: string;
 
-  @Field()
+  @Field({ nullable: true })
   logo?: string;
 
-  @Field()
+  @Field({ nullable: true })
   image?: string;
 
-  @Field()
+  @Field({ nullable: true })
   url?: string;
 
-  @Field(() => GraphQLJSONObject)
+  @Field(() => GraphQLJSONObject, { nullable: true })
   details?: object;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   personaUUIDs?: string[];
 }

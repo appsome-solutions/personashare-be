@@ -3,7 +3,13 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 } from 'uuid';
 import { SpotDocument, SpotInterface } from './interfaces/spot.interfaces';
-import { CreateSpotInput } from './inputs/create-spot.input';
+import {
+  ConnectPersonaToSpotInput,
+  CreateSpotInput,
+  SpotInput,
+  UpdateSpotInput,
+} from './inputs';
+import { SpotType } from './dto/spot.dto';
 
 @Injectable()
 export class SpotService {
@@ -22,12 +28,25 @@ export class SpotService {
     return await newSpot.save();
   }
 
-  async findByMatch(
-    condition: Partial<SpotInterface>,
-  ): Promise<SpotInterface[]> {
+  async update(spot: UpdateSpotInput): Promise<SpotDocument> {
+    const updatedSpot = await this.spotModel.findOneAndUpdate(
+      { uuid: spot.uuid },
+      spot,
+    );
+
+    if (!updatedSpot) {
+      throw new NotFoundException(
+        `Cant find spot with given uuid: ${spot.uuid}`,
+      );
+    }
+
+    return updatedSpot;
+  }
+
+  async findByMatch(condition: SpotInput): Promise<SpotType[]> {
     const spots = await this.spotModel.find(condition).exec();
     const entries: string[] = Object.keys(condition).map(
-      entry => `${entry}: ${condition[entry as keyof Partial<SpotInterface>]}`,
+      entry => `${entry}: ${condition[entry as keyof SpotInput]}`,
     );
 
     if (!spots || spots.length < 1) {
@@ -37,5 +56,37 @@ export class SpotService {
     }
 
     return spots;
+  }
+
+  async findAll(): Promise<SpotType[]> {
+    return await this.spotModel.find().exec();
+  }
+
+  async removeSpot(condition: SpotInput): Promise<number> {
+    const { deletedCount } = await this.spotModel.deleteMany(condition);
+    return deletedCount ? deletedCount : 0;
+  }
+
+  async connectPersona(
+    payload: ConnectPersonaToSpotInput,
+  ): Promise<SpotDocument> {
+    const { uuid, personaUuid } = payload;
+    const spot = await this.spotModel.findOne({ uuid });
+
+    if (!spot) {
+      throw new NotFoundException(`Can't find spot by uuid: ${uuid}`);
+    }
+
+    if (!spot.personaUUIDs) {
+      spot.personaUUIDs = [personaUuid];
+    } else {
+      if (!spot.personaUUIDs.includes(personaUuid)) {
+        spot.personaUUIDs = spot.personaUUIDs.concat(personaUuid);
+      } else {
+        return await spot;
+      }
+    }
+
+    return await spot.save();
   }
 }

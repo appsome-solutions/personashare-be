@@ -21,6 +21,7 @@ import { SpotModule } from './spot';
         uri: configService.MongoDBURI,
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useFindAndModify: false,
       }),
       inject: [ConfigService],
     }),

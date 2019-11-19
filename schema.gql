@@ -3,13 +3,18 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input ConnectPersonaToSpotInput {
+  uuid: String!
+  personaUuid: String!
+}
+
 input CreateSpotInput {
   name: String!
   description: String!
   logo: String
   image: String
-  url: String
-  details: JSONObject!
+  url: String = ""
+  details: JSONObject
 }
 
 type Example {
@@ -23,19 +28,40 @@ scalar JSONObject
 
 type Mutation {
   createSpot(spot: CreateSpotInput!): SpotType!
+  updateSpot(spot: UpdateSpotInput!): SpotType!
+  removeSpot(condition: SpotInput!): Float!
+  connectPersona(input: ConnectPersonaToSpotInput!): SpotType!
 }
 
 type Query {
   getExample(id: String!): Example!
+  getSpot(condition: SpotInput!): [SpotType!]!
+  getSpots: [SpotType!]!
+}
+
+input SpotInput {
+  uuid: String
+  name: String
+  url: String
 }
 
 type SpotType {
   uuid: String!
   name: String!
   description: String!
-  logo: String!
-  image: String!
-  url: String!
-  details: JSONObject!
-  personaUUIDs: [String!]!
+  logo: String
+  image: String
+  url: String
+  details: JSONObject
+  personaUUIDs: [String!]
+}
+
+input UpdateSpotInput {
+  uuid: String!
+  name: String
+  description: String
+  logo: String
+  image: String
+  url: String = ""
+  details: JSONObject
 }

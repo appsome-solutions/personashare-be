@@ -3,14 +3,24 @@ import { Field, InputType } from 'type-graphql';
 import { GraphQLJSONObject } from 'graphql-type-json';
 
 @InputType()
-export class CreateSpotInput {
+export class UpdateSpotInput {
   @Field()
   @IsString()
-  name: string;
+  uuid: string;
 
-  @Field()
+  @Field({
+    nullable: true,
+  })
   @IsString()
-  description: string;
+  @IsOptional()
+  name?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @IsString()
+  @IsOptional()
+  description?: string;
 
   @Field({
     nullable: true,
