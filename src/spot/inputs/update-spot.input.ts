@@ -38,7 +38,6 @@ export class UpdateSpotInput {
 
   @Field({
     nullable: true,
-    defaultValue: '',
   })
   @IsUrl()
   @IsOptional()
