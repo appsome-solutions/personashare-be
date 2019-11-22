@@ -9,7 +9,8 @@ type EnvConfigSchemaKeys =
   | 'BASE_URL'
   | 'TIMEOUT'
   | 'MAX_REDIRECTS'
-  | 'APPLICATION_PORT';
+  | 'APPLICATION_PORT'
+  | 'FIREBASE_API_KEY';
 
 const allowedKeys: EnvConfigSchemaKeys[] = [
   'NODE_ENV',
@@ -19,6 +20,7 @@ const allowedKeys: EnvConfigSchemaKeys[] = [
   'TIMEOUT',
   'MAX_REDIRECTS',
   'APPLICATION_PORT',
+  'FIREBASE_API_KEY',
 ];
 
 export class ConfigService {
@@ -62,6 +64,7 @@ export class ConfigService {
         .uri()
         .required(),
       APPLICATION_PORT: Joi.number().default(3001),
+      FIREBASE_API_KEY: Joi.string().required(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(
@@ -102,5 +105,9 @@ export class ConfigService {
 
   get applicationPort(): number {
     return Number(this.envConfig.APPLICATION_PORT);
+  }
+
+  get FirebaseAPIKey(): string {
+    return this.envConfig.FIREBASE_API_KEY;
   }
 }

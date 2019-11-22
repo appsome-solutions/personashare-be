@@ -51,6 +51,7 @@ MONGO_DB_URI= //please provide your mongodb connection here
 BASE_URL=http://localhost:3000
 PORT=3000 //default
 APPLICATION_PORT=3001 //default - port on which frontend application is served
+FIREBASE_API_KEY= // your Firebase Api key
 ```
 
 These field should be declared because of env fields validation that comes with server bootstrapping.

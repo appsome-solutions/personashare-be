@@ -34,10 +34,14 @@ export class AppController {
   @Get('/login')
   @Render('login')
   async getLoginPage(@Req() req: Request): Promise<{}> {
-    if (this.configService.isDevEnv) {
+    const { isDevEnv, FirebaseAPIKey } = this.configService;
+    if (isDevEnv) {
       const host = req.header('host');
 
-      return { loginSuccessUrl: `http://${host}/login-success` };
+      return {
+        loginSuccessUrl: `http://${host}/login-success`,
+        firebaseApiKey: FirebaseAPIKey,
+      };
     } else {
       throw new MethodNotAllowedException();
     }
