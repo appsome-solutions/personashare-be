@@ -24,26 +24,7 @@ export class SpotResolver {
 
   @Mutation(() => SpotType)
   async createSpot(@Args('spot') input: CreateSpotInput): Promise<SpotType> {
-    const {
-      uuid,
-      name,
-      description,
-      logo,
-      image,
-      url,
-      details,
-      personaUUIDs,
-    } = await this.spotService.create(input);
-    return {
-      uuid,
-      name,
-      description,
-      logo,
-      image,
-      url,
-      details,
-      personaUUIDs,
-    };
+    return await this.spotService.create(input);
   }
 
   @Mutation(() => SpotType)
