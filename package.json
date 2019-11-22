@@ -28,7 +28,6 @@
     "@nestjs/platform-express": "^6.8.0",
     "apollo-server-express": "^2.9.7",
     "dotenv": "^8.2.0",
-    "firebase-admin": "^8.8.0",
     "graphql": "^14.5.8",
     "graphql-tools": "^4.0.6",
     "graphql-upload": "^8.1.0",
