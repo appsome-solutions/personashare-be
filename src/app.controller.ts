@@ -33,9 +33,11 @@ export class AppController {
 
   @Get('/login')
   @Render('login')
-  async getLoginPage(): Promise<{}> {
+  async getLoginPage(@Req() req: Request): Promise<{}> {
     if (this.configService.isDevEnv) {
-      return {};
+      const host = req.header('host');
+
+      return { loginSuccessUrl: `http://${host}/login-success` };
     } else {
       throw new MethodNotAllowedException();
     }
