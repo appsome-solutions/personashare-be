@@ -1,9 +1,14 @@
 import {
   Controller,
   Get,
+  Post,
   Render,
   MethodNotAllowedException,
+  Res,
+  Req,
+  HttpStatus,
 } from '@nestjs/common';
+import { Response, Request } from 'express';
 import { AppService } from './app.service';
 import { QRCodeResponse } from './app.interfaces';
 import { ConfigService } from './config';
@@ -24,5 +29,21 @@ export class AppController {
     } else {
       throw new MethodNotAllowedException();
     }
+  }
+
+  @Get('/login')
+  @Render('login')
+  async getLoginPage(): Promise<{}> {
+    if (this.configService.isDevEnv) {
+      return {};
+    } else {
+      throw new MethodNotAllowedException();
+    }
+  }
+
+  @Post('/login-success')
+  async handleNotify(@Res() res: Response, @Req() req: Request) {
+    console.error(req.body);
+    res.status(HttpStatus.OK).send();
   }
 }
