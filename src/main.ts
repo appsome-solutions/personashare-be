@@ -4,6 +4,7 @@ import * as helmet from 'helmet';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { ConfigService } from './config';
+import { ValidationPipe } from '@nestjs/common';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function bootstrap(): Promise<any> {
@@ -15,6 +16,12 @@ async function bootstrap(): Promise<any> {
 
   app.use(helmet());
   app.enableCors();
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
 
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('hbs');

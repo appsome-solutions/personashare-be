@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from './config';
 import { ExampleModule } from './example';
 import { QrCodeModule } from './qrcode';
 import { NgrokModule } from './ngrok';
+import { SpotModule } from './spot';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { NgrokModule } from './ngrok';
         uri: configService.MongoDBURI,
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useFindAndModify: false,
       }),
       inject: [ConfigService],
     }),
@@ -27,6 +29,7 @@ import { NgrokModule } from './ngrok';
     ExampleModule,
     QrCodeModule,
     NgrokModule,
+    SpotModule,
   ],
   controllers: [AppController],
   providers: [AppService, ExampleModule],
