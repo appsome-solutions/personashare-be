@@ -9,7 +9,14 @@ type EnvConfigSchemaKeys =
   | 'BASE_URL'
   | 'TIMEOUT'
   | 'MAX_REDIRECTS'
-  | 'APPLICATION_PORT';
+  | 'APPLICATION_PORT'
+  | 'FIREBASE_API_KEY'
+  | 'FIREBASE_AUTH_DOMAIN'
+  | 'FIREBASE_DB_URL'
+  | 'FIREBASE_PROJECT_ID'
+  | 'FIREBASE_STORAGE_BUCKET'
+  | 'FIREBASE_MESSAGING_SENDER_ID'
+  | 'FIREBASE_APP_ID';
 
 const allowedKeys: EnvConfigSchemaKeys[] = [
   'NODE_ENV',
@@ -19,6 +26,13 @@ const allowedKeys: EnvConfigSchemaKeys[] = [
   'TIMEOUT',
   'MAX_REDIRECTS',
   'APPLICATION_PORT',
+  'FIREBASE_API_KEY',
+  'FIREBASE_AUTH_DOMAIN',
+  'FIREBASE_DB_URL',
+  'FIREBASE_PROJECT_ID',
+  'FIREBASE_STORAGE_BUCKET',
+  'FIREBASE_MESSAGING_SENDER_ID',
+  'FIREBASE_APP_ID',
 ];
 
 export class ConfigService {
@@ -62,6 +76,13 @@ export class ConfigService {
         .uri()
         .required(),
       APPLICATION_PORT: Joi.number().default(3001),
+      FIREBASE_API_KEY: Joi.string().required(),
+      FIREBASE_AUTH_DOMAIN: Joi.string().required(),
+      FIREBASE_DB_URL: Joi.string().required(),
+      FIREBASE_PROJECT_ID: Joi.string().required(),
+      FIREBASE_STORAGE_BUCKET: Joi.string(),
+      FIREBASE_MESSAGING_SENDER_ID: Joi.string(),
+      FIREBASE_APP_ID: Joi.string().required(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(
@@ -102,5 +123,33 @@ export class ConfigService {
 
   get applicationPort(): number {
     return Number(this.envConfig.APPLICATION_PORT);
+  }
+
+  get FirebaseAPIKey(): string {
+    return this.envConfig.FIREBASE_API_KEY;
+  }
+
+  get FirebaseAuthDomain(): string {
+    return this.envConfig.FIREBASE_AUTH_DOMAIN;
+  }
+
+  get FirebaseDbUrl(): string {
+    return this.envConfig.FIREBASE_DB_URL;
+  }
+
+  get FirebaseProjectId(): string {
+    return this.envConfig.FIREBASE_PROJECT_ID;
+  }
+
+  get FirebaseStorageBucket(): string {
+    return this.envConfig.FIREBASE_STORAGE_BUCKET;
+  }
+
+  get FirebaseMessagingSenderId(): string {
+    return this.envConfig.FIREBASE_MESSAGING_SENDER_ID;
+  }
+
+  get FirebaseAppId(): string {
+    return this.envConfig.FIREBASE_APP_ID;
   }
 }
