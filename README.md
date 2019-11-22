@@ -52,6 +52,12 @@ BASE_URL=http://localhost:3000
 PORT=3000 //default
 APPLICATION_PORT=3001 //default - port on which frontend application is served
 FIREBASE_API_KEY= // your Firebase Api key
+FIREBASE_AUTH_DOMAIN= //
+FIREBASE_DB_URL= //
+FIREBASE_PROJECT_ID= //
+FIREBASE_STORAGE_BUCKET= //
+FIREBASE_MESSAGING_SENDER_ID= //
+FIREBASE_APP_ID= //
 ```
 
 These field should be declared because of env fields validation that comes with server bootstrapping.

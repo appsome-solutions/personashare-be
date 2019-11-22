@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AppService } from './app.service';
-import { QRCodeResponse } from './app.interfaces';
+import { GetLoginPageResponse, QRCodeResponse } from './app.interfaces';
 import { ConfigService } from './config';
 
 @Controller()
@@ -33,14 +33,29 @@ export class AppController {
 
   @Get('/login')
   @Render('login')
-  async getLoginPage(@Req() req: Request): Promise<{}> {
-    const { isDevEnv, FirebaseAPIKey } = this.configService;
+  async getLoginPage(@Req() req: Request): Promise<GetLoginPageResponse> {
+    const {
+      isDevEnv,
+      FirebaseAPIKey,
+      FirebaseAppId,
+      FirebaseAuthDomain,
+      FirebaseDbUrl,
+      FirebaseMessagingSenderId,
+      FirebaseProjectId,
+      FirebaseStorageBucket,
+    } = this.configService;
     if (isDevEnv) {
       const host = req.header('host');
 
       return {
         loginSuccessUrl: `http://${host}/login-success`,
-        firebaseApiKey: FirebaseAPIKey,
+        apiKey: FirebaseAPIKey,
+        appId: FirebaseAppId,
+        authDomain: FirebaseAuthDomain,
+        databaseURL: FirebaseDbUrl,
+        messagingSenderId: FirebaseMessagingSenderId,
+        projectId: FirebaseProjectId,
+        storageBucket: FirebaseStorageBucket,
       };
     } else {
       throw new MethodNotAllowedException();
