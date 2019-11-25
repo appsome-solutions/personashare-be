@@ -12,12 +12,14 @@ import { Response, Request } from 'express';
 import { AppService } from './app.service';
 import { GetLoginPageResponse, QRCodeResponse } from './app.interfaces';
 import { ConfigService } from './config';
+import { FirebaseService } from './firebase/firebase.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly configService: ConfigService,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   @Get('/app')
@@ -63,8 +65,9 @@ export class AppController {
   }
 
   @Post('/login-success')
-  async handleNotify(@Res() res: Response, @Req() req: Request) {
-    console.error(req.body);
+  async handleNotify(@Res() res: Response, @Req() req: Request): Promise<void> {
+    const user = await this.firebaseService.signInWithGoogle(req.body.idToken);
+    console.error(user);
     res.status(HttpStatus.OK).send();
   }
 }
