@@ -12,7 +12,7 @@ import { Response, Request } from 'express';
 import { AppService } from './app.service';
 import { GetLoginPageResponse, QRCodeResponse } from './app.interfaces';
 import { ConfigService } from './config';
-import { FirebaseService } from './firebase/firebase.service';
+import { FirebaseService } from './firebase';
 
 @Controller()
 export class AppController {

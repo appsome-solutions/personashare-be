@@ -8,7 +8,7 @@ import { ExampleModule } from './example';
 import { QrCodeModule } from './qrcode';
 import { NgrokModule } from './ngrok';
 import { SpotModule } from './spot';
-import { FirebaseModule } from './firebase/firebase.module';
+import { FirebaseModule } from './firebase';
 
 @Module({
   imports: [
