@@ -9,6 +9,7 @@ import { QrCodeModule } from './qrcode';
 import { NgrokModule } from './ngrok';
 import { SpotModule } from './spot';
 import { FirebaseModule } from './firebase';
+import { AuthModule } from './auth';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { FirebaseModule } from './firebase';
     NgrokModule,
     SpotModule,
     FirebaseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, ExampleModule],

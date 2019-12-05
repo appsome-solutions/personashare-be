@@ -1,35 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { initializeApp, app, auth } from 'firebase';
+import { initializeApp, app, credential, auth } from 'firebase-admin';
 import { ConfigService } from '../config';
 
 @Injectable()
 export class FirebaseService {
-  private firebase: app.App;
+  firebase: app.App;
 
   constructor(private readonly configService: ConfigService) {
-    const {
-      FirebaseAppId,
-      FirebaseAuthDomain,
-      FirebaseDbUrl,
-      FirebaseProjectId,
-      FirebaseStorageBucket,
-      FirebaseMessagingSenderId,
-      FirebaseAPIKey,
-    } = this.configService;
+    const { FirebaseCredentialPath } = this.configService;
+
     this.firebase = initializeApp({
-      apiKey: FirebaseAPIKey,
-      appId: FirebaseAppId,
-      authDomain: FirebaseAuthDomain,
-      databaseURL: FirebaseDbUrl,
-      projectId: FirebaseProjectId,
-      storageBucket: FirebaseStorageBucket,
-      messagingSenderId: FirebaseMessagingSenderId,
+      credential: credential.cert(FirebaseCredentialPath),
     });
   }
 
-  async signInWithGoogle(idToken: string): Promise<auth.UserCredential> {
-    const credential = auth.GoogleAuthProvider.credential(idToken);
+  async getUser(uid: string): Promise<auth.UserRecord> {
+    return await this.firebase.auth().getUser(uid);
+  }
 
-    return await this.firebase.auth().signInWithCredential(credential);
+  async checkSession(sid: string): Promise<auth.DecodedIdToken> {
+    return await this.firebase.auth().verifySessionCookie(sid);
   }
 }

@@ -4,6 +4,7 @@ export interface QRCodeResponse {
 
 export interface GetLoginPageResponse {
   loginSuccessUrl: string;
+  postLoginSuccessUrl: string;
   apiKey: string;
   authDomain: string;
   databaseURL: string;
@@ -11,4 +12,11 @@ export interface GetLoginPageResponse {
   storageBucket: string;
   messagingSenderId: string;
   appId: string;
+}
+
+export interface GetProfilePageResponse {
+  name?: string;
+  picture?: string;
+  email?: string;
+  emailVerified?: boolean;
 }

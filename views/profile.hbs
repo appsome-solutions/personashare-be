@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <title>Profile</title>
+    <style>
+        .container {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .container > div {
+            padding: 1rem;
+            border-bottom: 1px solid darkblue;
+            display: flex;
+        }
+
+        .container div > img {
+            width: 64px;
+            height: auto;
+        }
+
+        .container div > div {
+            padding-left: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <div class="container">
+        <div>
+            <div><img src="{{ picture }}" /></div>
+        </div>
+        <div>
+            <div>Name:</div><div>{{ name }}</div>
+        </div>
+        <div>
+            <div>Email:</div><div>{{ email }}</div>
+        </div>
+        <div>
+            <div>Email verified:</div><div>{{ emailVerified }}</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
