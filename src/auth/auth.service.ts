@@ -1,22 +1,27 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RequestHandler } from '@nestjs/common/interfaces';
 import { CookieOptions, Request } from 'express';
+import { auth } from 'firebase-admin';
 import { FirebaseService } from '../firebase';
 import { CreateSessionResponse } from './auth.interfaces';
-import { auth } from 'firebase-admin';
+import { ConfigService } from '../config';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly firebaseService: FirebaseService) {}
+  constructor(
+    private readonly firebaseService: FirebaseService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async createSessionCookie(idToken: string): Promise<CreateSessionResponse> {
     const { firebase } = this.firebaseService;
+    const { FirebaseEpireInSession } = this.configService;
     const decodedIdToken = await firebase.auth().verifyIdToken(idToken);
 
     // Only process if the user just signed in in the last 5 minutes.
     if (new Date().getTime() / 1000 - decodedIdToken.auth_time < 5 * 60) {
       // TODO: 5 days = 60 * 60 * 24 * 5 * 1000;
-      const expiresIn = 300000; // 5 minutes
+      const expiresIn = FirebaseEpireInSession;
       const sessionCookie = await firebase
         .auth()
         .createSessionCookie(idToken, { expiresIn });

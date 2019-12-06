@@ -59,6 +59,7 @@ FIREBASE_STORAGE_BUCKET= //
 FIREBASE_MESSAGING_SENDER_ID= //
 FIREBASE_APP_ID= //
 FIREBASE_CREDENTIAL_PATH= // path to the secretKey.json
+FIREBASE_EXPIRE_IN_SESSION= // default is 300000 = 5 minutes
 ```
 
 These field should be declared because of env fields validation that comes with server bootstrapping.

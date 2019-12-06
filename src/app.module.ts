@@ -15,6 +15,11 @@ import { AuthModule } from './auth';
   imports: [
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
+      playground: {
+        settings: {
+          'request.credentials': 'include',
+        },
+      },
       context: ({ req }: any) => ({ req }),
     }),
     MongooseModule.forRootAsync({

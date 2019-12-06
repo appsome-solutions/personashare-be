@@ -18,7 +18,8 @@ type EnvConfigSchemaKeys =
   | 'FIREBASE_STORAGE_BUCKET'
   | 'FIREBASE_MESSAGING_SENDER_ID'
   | 'FIREBASE_APP_ID'
-  | 'FIREBASE_CREDENTIAL_PATH';
+  | 'FIREBASE_CREDENTIAL_PATH'
+  | 'FIREBASE_EXPIRE_IN_SESSION';
 
 const allowedKeys: EnvConfigSchemaKeys[] = [
   'NODE_ENV',
@@ -36,6 +37,7 @@ const allowedKeys: EnvConfigSchemaKeys[] = [
   'FIREBASE_MESSAGING_SENDER_ID',
   'FIREBASE_APP_ID',
   'FIREBASE_CREDENTIAL_PATH',
+  'FIREBASE_EXPIRE_IN_SESSION',
 ];
 
 @Injectable()
@@ -88,6 +90,9 @@ export class ConfigService {
       FIREBASE_MESSAGING_SENDER_ID: Joi.string(),
       FIREBASE_APP_ID: Joi.string().required(),
       FIREBASE_CREDENTIAL_PATH: Joi.string().required(),
+      FIREBASE_EXPIRE_IN_SESSION: Joi.number()
+        .min(300000)
+        .default(300000), // default is 5 minutes
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(
@@ -160,5 +165,9 @@ export class ConfigService {
 
   get FirebaseCredentialPath(): string {
     return this.envConfig.FIREBASE_CREDENTIAL_PATH;
+  }
+
+  get FirebaseEpireInSession(): number {
+    return Number(this.envConfig.FIREBASE_EXPIRE_IN_SESSION);
   }
 }

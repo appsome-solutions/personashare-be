@@ -7,6 +7,7 @@ import {
   Req,
   UnauthorizedException,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AppService } from './app.service';
@@ -16,7 +17,7 @@ import {
   QRCodeResponse,
 } from './app.interfaces';
 import { ConfigService } from './config';
-import { AuthService } from './auth';
+import { AuthService, AuthGuard } from './auth';
 
 @Controller()
 export class AppController {
@@ -78,6 +79,7 @@ export class AppController {
   }
 
   @Get('/profile')
+  @UseGuards(AuthGuard)
   @Render('profile')
   async getProfilePage(
     @Req() req: Request,
