@@ -21,26 +21,26 @@ export class SpotService {
     this.mongoService = new MongoService(this.spotModel);
   }
 
-  async create(spot: SpotInterface): Promise<SpotDocument> {
+  async createSpot(spot: SpotInterface): Promise<SpotDocument> {
     return await this.mongoService.create<SpotInterface, SpotDocument>(spot);
   }
 
-  async update(spot: UpdateSpotInput, uuid: string): Promise<SpotDocument> {
+  async updateSpot(spot: UpdateSpotInput, uuid: string): Promise<SpotDocument> {
     return await this.mongoService.update<UpdateSpotInput, SpotDocument>(
       spot,
       uuid,
     );
   }
 
-  async findByMatch(condition: SpotInput): Promise<SpotType[]> {
+  async getSpot(condition: SpotInput): Promise<SpotType[]> {
     return await this.mongoService.findByMatch<SpotInput, SpotType>(condition);
   }
 
-  async findAll(): Promise<SpotType[]> {
+  async getSpots(): Promise<SpotType[]> {
     return await this.mongoService.findAll<SpotType>();
   }
 
-  async remove(condition: SpotInput): Promise<number> {
+  async removeSpot(condition: SpotInput): Promise<number> {
     return await this.mongoService.remove<SpotInput>(condition);
   }
 

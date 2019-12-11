@@ -18,12 +18,12 @@ export class SpotResolver {
 
   @Query(() => [SpotType])
   async getSpot(@Args('condition') input: SpotInput): Promise<SpotType[]> {
-    return await this.spotService.findByMatch(input);
+    return await this.spotService.getSpot(input);
   }
 
   @Query(() => [SpotType])
   async getSpots(): Promise<SpotType[]> {
-    return await this.spotService.findAll();
+    return await this.spotService.getSpots();
   }
 
   @Mutation(() => SpotType)
@@ -34,7 +34,7 @@ export class SpotResolver {
       uuid: v4(),
     };
 
-    return await this.spotService.create(spotDoc);
+    return await this.spotService.createSpot(spotDoc);
   }
 
   @Mutation(() => SpotType)
@@ -43,13 +43,13 @@ export class SpotResolver {
     @Args('spot') spot: UpdateSpotInput,
     @Args('uuid') uuid: string,
   ): Promise<SpotType> {
-    return await this.spotService.update(spot, uuid);
+    return await this.spotService.updateSpot(spot, uuid);
   }
 
   @Mutation(() => Number)
   @UseGuards(GqlAuthGuard)
   async removeSpot(@Args('condition') input: SpotInput): Promise<number> {
-    return await this.spotService.remove(input);
+    return await this.spotService.removeSpot(input);
   }
 
   @Mutation(() => SpotType)

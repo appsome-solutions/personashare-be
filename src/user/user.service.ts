@@ -22,7 +22,7 @@ export class UserService {
     return await this.mongoService.create<UserInterface, UserDocument>(user);
   }
 
-  async remove(condition: UserInput): Promise<number> {
+  async removeUser(condition: UserInput): Promise<number> {
     const user = await this.getUser(condition);
 
     if (user.length) {
@@ -42,7 +42,7 @@ export class UserService {
     return await this.mongoService.findByMatch<UserInput, UserType>(condition);
   }
 
-  async update(user: UpdateUserInput, uuid: string): Promise<UserDocument> {
+  async updateUser(user: UpdateUserInput, uuid: string): Promise<UserDocument> {
     return await this.mongoService.update<UpdateUserInput, UserDocument>(
       user,
       uuid,

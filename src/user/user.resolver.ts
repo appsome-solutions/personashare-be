@@ -26,12 +26,12 @@ export class UserResolver {
     @Args('user') user: UpdateUserInput,
     @Args('uuid') uuid: string,
   ): Promise<UserType> {
-    return await this.userService.update(user, uuid);
+    return await this.userService.updateUser(user, uuid);
   }
 
   @Mutation(() => Number)
   @UseGuards(GqlAuthGuard)
   async removeUser(@Args('condition') condition: UserInput): Promise<number> {
-    return await this.userService.remove(condition);
+    return await this.userService.removeUser(condition);
   }
 }
