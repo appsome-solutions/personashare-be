@@ -16,7 +16,7 @@ export interface GetLoginPageResponse {
 
 export interface GetProfilePageResponse {
   name?: string;
-  picture?: string;
+  photo?: string;
   email?: string;
-  emailVerified?: boolean;
+  personaUUIDs?: string[];
 }

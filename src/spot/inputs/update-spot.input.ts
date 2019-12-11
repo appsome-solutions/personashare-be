@@ -4,10 +4,6 @@ import { GraphQLJSONObject } from 'graphql-type-json';
 
 @InputType()
 export class UpdateSpotInput {
-  @Field()
-  @IsString()
-  uuid: string;
-
   @Field({
     nullable: true,
   })

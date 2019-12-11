@@ -1,31 +1,51 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { v4 } from 'uuid';
 import { UserDocument, UserInterface } from './interfaces/user.interfaces';
-import { CreateUserInput, UserInput } from './inputs';
+import { UpdateUserInput, UserInput } from './inputs';
 import { UserType } from './dto/user.dto';
+import { MongoService } from '../mongo-service/mongo.service';
+import { FirebaseService } from '../firebase';
 
 @Injectable()
 export class UserService {
+  mongoService: MongoService<Model<UserDocument>>;
+
   constructor(
-    @InjectModel('User')
-    private readonly userModel: Model<UserDocument>,
-  ) {}
-
-  async createUser(user: CreateUserInput): Promise<UserDocument> {
-    const userDoc: UserInterface = {
-      ...user,
-      uuid: user.uuid || v4(),
-    };
-    const newUser = new this.userModel(userDoc);
-
-    return await newUser.save();
+    @InjectModel('User') private readonly userModel: Model<UserDocument>,
+    private readonly firebaseService: FirebaseService,
+  ) {
+    this.mongoService = new MongoService(this.userModel);
   }
 
-  async findByMatch(condition: UserInput): Promise<UserType[]> {
-    const users = await this.userModel.find(condition).exec();
+  async createUser(user: UserInterface): Promise<UserDocument> {
+    return await this.mongoService.create<UserInterface, UserDocument>(user);
+  }
 
-    return !users || users.length < 1 ? [] : users;
+  async remove(condition: UserInput): Promise<number> {
+    const user = await this.getUser(condition);
+
+    if (user.length) {
+      const result = await this.mongoService.remove<UserInput>(condition);
+
+      if (result) {
+        await this.firebaseService.removeUser(user[0].uuid);
+      }
+
+      return result;
+    }
+
+    return 0;
+  }
+
+  async getUser(condition: UserInput): Promise<UserType[]> {
+    return await this.mongoService.findByMatch<UserInput, UserType>(condition);
+  }
+
+  async update(user: UpdateUserInput, uuid: string): Promise<UserDocument> {
+    return await this.mongoService.update<UpdateUserInput, UserDocument>(
+      user,
+      uuid,
+    );
   }
 }

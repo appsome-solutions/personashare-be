@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
   Res,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AppService } from './app.service';
@@ -89,16 +90,17 @@ export class AppController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<GetProfilePageResponse | void> {
-    const decodedIdToken = await this.authService.checkSession(req);
+    const userData = await this.authService.checkSession(req);
     const host = req.header('host');
 
-    if (decodedIdToken) {
-      return {
-        email: decodedIdToken.email,
-        emailVerified: decodedIdToken.email_verified,
-        name: decodedIdToken.name,
-        picture: decodedIdToken.picture,
-      };
+    if (userData && userData.uid) {
+      const user = await this.userService.getUser({ uuid: userData.uid });
+
+      if (user.length > 0) {
+        return user[0];
+      } else {
+        throw new NotFoundException('User cant be found');
+      }
     } else {
       return res.redirect(301, `http://${host}/login`);
     }
@@ -120,7 +122,7 @@ export class AppController {
       } = await this.authService.createSessionCookie(idToken);
       const userData = await this.firebaseService.checkSession(sessionCookie);
       const { uid, email, name, picture } = userData;
-      const user = await this.userService.findByMatch({ uuid: uid });
+      const user = await this.userService.getUser({ uuid: uid });
 
       if (user.length < 1) {
         await this.userService.createUser({

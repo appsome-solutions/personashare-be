@@ -1,5 +1,6 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
+import { v4 } from 'uuid';
 import { SpotService } from './spot.service';
 import { SpotType } from './dto/spot.dto';
 import {
@@ -9,6 +10,7 @@ import {
   UpdateSpotInput,
 } from './inputs';
 import { GqlAuthGuard } from '../auth';
+import { SpotInterface } from './interfaces/spot.interfaces';
 
 @Resolver('Spot')
 export class SpotResolver {
@@ -27,19 +29,27 @@ export class SpotResolver {
   @Mutation(() => SpotType)
   @UseGuards(GqlAuthGuard)
   async createSpot(@Args('spot') input: CreateSpotInput): Promise<SpotType> {
-    return await this.spotService.create(input);
+    const spotDoc: SpotInterface = {
+      ...input,
+      uuid: v4(),
+    };
+
+    return await this.spotService.create(spotDoc);
   }
 
   @Mutation(() => SpotType)
   @UseGuards(GqlAuthGuard)
-  async updateSpot(@Args('spot') spot: UpdateSpotInput): Promise<SpotType> {
-    return await this.spotService.update(spot);
+  async updateSpot(
+    @Args('spot') spot: UpdateSpotInput,
+    @Args('uuid') uuid: string,
+  ): Promise<SpotType> {
+    return await this.spotService.update(spot, uuid);
   }
 
   @Mutation(() => Number)
   @UseGuards(GqlAuthGuard)
   async removeSpot(@Args('condition') input: SpotInput): Promise<number> {
-    return await this.spotService.removeSpot(input);
+    return await this.spotService.remove(input);
   }
 
   @Mutation(() => SpotType)

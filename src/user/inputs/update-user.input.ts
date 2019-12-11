@@ -1,20 +1,19 @@
-import { IsString, IsEmail, IsOptional } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
-export class CreateUserInput {
-  @Field()
+export class UpdateUserInput {
+  @Field({
+    nullable: true,
+  })
   @IsString()
-  uuid: string;
-
-  @Field()
-  @IsString()
-  name: string;
+  @IsOptional()
+  name?: string;
 
   @Field({
     nullable: true,
   })
-  @IsEmail()
+  @IsString()
   @IsOptional()
   email?: string;
 
