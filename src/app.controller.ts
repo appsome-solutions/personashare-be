@@ -18,6 +18,8 @@ import {
 } from './app.interfaces';
 import { ConfigService } from './config';
 import { AuthService, AuthGuard } from './auth';
+import { UserService } from './user';
+import { FirebaseService } from './firebase';
 
 @Controller()
 export class AppController {
@@ -25,6 +27,8 @@ export class AppController {
     private readonly appService: AppService,
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
+    private readonly userService: UserService,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   @Get('/app')
@@ -100,9 +104,10 @@ export class AppController {
     }
   }
 
+  // TODO: This will be replaced by using GraphQL mutation with credentials
   @Post('/login-success')
   async handleNotify(@Res() res: Response, @Req() req: Request): Promise<void> {
-    const { idToken, csrfToken, uid } = req.body;
+    const { idToken, csrfToken } = req.body;
 
     if (csrfToken !== req.cookies['ps-csrfToken']) {
       throw new UnauthorizedException('UNAUTHORIZED REQUEST!');
@@ -113,12 +118,23 @@ export class AppController {
         sessionCookie,
         sessionOptions,
       } = await this.authService.createSessionCookie(idToken);
+      const userData = await this.firebaseService.checkSession(sessionCookie);
+      const { uid, email, name, picture } = userData;
+      const user = await this.userService.findByMatch({ uuid: uid });
+
+      if (user.length < 1) {
+        await this.userService.createUser({
+          uuid: uid,
+          email,
+          name,
+          photo: picture,
+        });
+      }
 
       res.cookie('ps-session', sessionCookie, sessionOptions);
-      res.cookie('ps-uid', uid);
       res.end(JSON.stringify({ status: 'success' }));
-    } catch (_e) {
-      throw new UnauthorizedException(_e.message);
+    } catch (e) {
+      throw new UnauthorizedException(e.message);
     }
   }
 }

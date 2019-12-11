@@ -63,7 +63,6 @@
 
                 user.getIdToken(true).then(function(idToken) {
                     const data = {
-                        uid: user.uid,
                         idToken,
                         csrfToken: getCookieValue('ps-csrfToken'),
                     };
