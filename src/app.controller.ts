@@ -117,8 +117,8 @@ export class AppController {
       res.cookie('ps-session', sessionCookie, sessionOptions);
       res.cookie('ps-uid', uid);
       res.end(JSON.stringify({ status: 'success' }));
-    } catch (_e) {
-      throw new UnauthorizedException(_e.message);
+    } catch (e) {
+      throw new UnauthorizedException(e.message);
     }
   }
 }
