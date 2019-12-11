@@ -19,13 +19,7 @@ async function bootstrap(): Promise<any> {
 
   app.use(helmet());
   app.use(cookieParser());
-  app.use(
-    authService.attachCsrfToken(
-      '/login',
-      'ps-csrfToken',
-      (Math.random() * 100000000000000000).toString(),
-    ),
-  );
+  app.use(authService.attachCsrfToken('/login', 'ps-csrfToken'));
   app.enableCors();
 
   app.useGlobalPipes(
