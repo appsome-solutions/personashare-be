@@ -8,11 +8,18 @@ import { ExampleModule } from './example';
 import { QrCodeModule } from './qrcode';
 import { NgrokModule } from './ngrok';
 import { SpotModule } from './spot';
+import { FirebaseModule } from './firebase';
+import { AuthModule } from './auth';
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
+      playground: {
+        settings: {
+          'request.credentials': 'include',
+        },
+      },
       context: ({ req }: any) => ({ req }),
     }),
     MongooseModule.forRootAsync({
@@ -30,6 +37,8 @@ import { SpotModule } from './spot';
     QrCodeModule,
     NgrokModule,
     SpotModule,
+    FirebaseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, ExampleModule],

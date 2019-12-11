@@ -58,9 +58,28 @@ FIREBASE_PROJECT_ID= //
 FIREBASE_STORAGE_BUCKET= //
 FIREBASE_MESSAGING_SENDER_ID= //
 FIREBASE_APP_ID= //
+FIREBASE_CREDENTIAL_PATH= // path to the secretKey.json
+FIREBASE_EXPIRE_IN_SESSION= // default is 300000 = 5 minutes
 ```
 
 These field should be declared because of env fields validation that comes with server bootstrapping.
+
+To be able to run the server and initialize Firebase Admin SKD, You should have a `secretKey.json` file with the following structure:
+
+```$xslt
+{
+  "type": "service_account",
+  "project_id": "personashare-c1889",
+  "private_key_id": "private_key_id....",
+  "private_key": "-----BEGIN PRIVATE KEY-----"
+  "client_email": "firebase-adminsdk-.....,
+  "client_id": "...",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-admin....
+}
+```
 
 ## GraphQL Playground
 
@@ -76,6 +95,16 @@ First at all, connect Your account with the use of `./ngrok authtoken` described
 After that, You can start tunneling calling `./ngrok http 3000` which exposes Your `http://localhost:3000`.
 
 In that case You can define `NOTIFY_URL` in Your `.env` file just putting something like that: `NOTIFY_URL=https://485c70ba.ngrok.io/notify`.
+
+## Available endpoints
+
+When server is running, there are some endpoints that can be used to test:
+
+[/app](http://localhost:3000/app) - You can get the QRCode to get to the FE application in mobile device,
+
+[/login](http://localhost:3000/login) - endpoint for testing the sign in feature with Firebase
+
+[/profile](http://localhost:3000/profile) - endpoint for testing the profile page after login
 
 ## License
 

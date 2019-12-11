@@ -391,4 +391,6 @@ docker-compose.yml
 *.env
 dist
 
+secretKey.json
+
 documentation

@@ -30,6 +30,11 @@
      https://firebase.google.com/docs/web/setup#available-libraries -->
 
 <script>
+    function getCookieValue(a) {
+        const b = document.cookie.match('(^|[^;]+)\\s*' + a + '\\s*=\\s*([^;]+)');
+        return b ? b.pop() : '';
+    }
+
     // Your web app's Firebase configuration
     const firebaseConfig = {
         apiKey: "{{ apiKey }}",
@@ -44,6 +49,8 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
+
     const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
     const uiConfig = {
@@ -52,23 +59,32 @@
                 // User successfully signed in.
                 // Return type determines whether we continue the redirect automatically
                 // or whether we leave that to developer to handle.
-                const data = {
-                    idToken: authResult.credential.idToken
-                };
+                const user = firebase.auth().currentUser;
 
-                window.fetch('{{ loginSuccessUrl }}',  {
-                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                    mode: 'cors', // no-cors, *cors, same-origin
-                    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                    credentials: 'same-origin', // include, *same-origin, omit
-                    headers: {
-                        'Content-Type': 'application/json'
-                        // 'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    redirect: 'follow', // manual, *follow, error
-                    referrer: 'no-referrer', // no-referrer, *client
-                    body: JSON.stringify(data) // body data type must match "Content-Type" header
+                user.getIdToken(true).then(function(idToken) {
+                    const data = {
+                        uid: user.uid,
+                        idToken,
+                        csrfToken: getCookieValue('ps-csrfToken'),
+                    };
+
+                    window.fetch('{{ loginSuccessUrl }}',  {
+                        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                        mode: 'cors', // no-cors, *cors, same-origin
+                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                        credentials: 'same-origin', // include, *same-origin, omit
+                        headers: {
+                            'Content-Type': 'application/json'
+                            // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        redirect: 'follow', // manual, *follow, error
+                        referrer: 'no-referrer', // no-referrer, *client
+                        body: JSON.stringify(data) // body data type must match "Content-Type" header
+                    }).then(function (_e) {
+                        window.location.href = '{{ postLoginSuccessUrl }}';
+                    })
                 });
+
                 return false;
             }
         },
