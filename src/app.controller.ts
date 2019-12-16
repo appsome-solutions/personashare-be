@@ -18,9 +18,10 @@ import {
   QRCodeResponse,
 } from './app.interfaces';
 import { ConfigService } from './config';
-import { AuthService, AuthGuard } from './auth';
+import { AuthService, CSRF_TOKEN_NAME } from './auth';
 import { UserService } from './user';
 import { FirebaseService } from './firebase';
+import { SessionGuard } from './guards';
 
 @Controller()
 export class AppController {
@@ -84,7 +85,7 @@ export class AppController {
   }
 
   @Get('/profile')
-  @UseGuards(AuthGuard)
+  @UseGuards(SessionGuard)
   @Render('profile')
   async getProfilePage(
     @Req() req: Request,
@@ -111,7 +112,7 @@ export class AppController {
   async handleNotify(@Res() res: Response, @Req() req: Request): Promise<void> {
     const { idToken, csrfToken } = req.body;
 
-    if (csrfToken !== req.cookies['ps-csrfToken']) {
+    if (csrfToken !== req.cookies[CSRF_TOKEN_NAME]) {
       throw new UnauthorizedException('UNAUTHORIZED REQUEST!');
     }
 

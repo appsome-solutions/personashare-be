@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { UserDocument, UserInterface } from './interfaces/user.interfaces';
-import { UpdateUserInput, UserInput } from './inputs';
+import { UpdateUserInput, UserInput, LoginUserInput } from './inputs';
 import { UserType } from './dto/user.dto';
 import { MongoService } from '../mongo-service/mongo.service';
 import { FirebaseService } from '../firebase';
@@ -20,6 +20,11 @@ export class UserService {
 
   async createUser(user: UserInterface): Promise<UserDocument> {
     return await this.mongoService.create<UserInterface, UserDocument>(user);
+  }
+
+  async loginUser(user: LoginUserInput): Promise<boolean> {
+    const { idToken, csrfToken } = user;
+    return !!idToken && !!csrfToken;
   }
 
   async removeUser(condition: UserInput): Promise<number> {

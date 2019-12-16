@@ -1,15 +1,18 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { FirebaseService } from '../firebase';
+import { Guard } from './guard';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
-  constructor(private readonly firebaseService: FirebaseService) {}
+export class SessionGuard extends Guard implements CanActivate {
+  constructor(private readonly firebaseService: FirebaseService) {
+    super('REST');
+  }
 
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const request = this.getRequest(context);
     const sid = request.cookies['ps-session'];
 
     return this.validateSession(sid);

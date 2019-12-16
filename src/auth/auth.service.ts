@@ -53,13 +53,13 @@ export class AuthService {
 
   /**
    * Attaches a CSRF token to the request.
-   * @param {string} url The URL to check.
+   * @param {string[]} url The URL to check.
    * @param {string} cookie The CSRF token name.
    * @return {function} The middleware function to run.
    */
-  attachCsrfToken(url: string, cookie: string): RequestHandler {
+  attachCsrfToken(url: string[], cookie: string): RequestHandler {
     return (req, res, next) => {
-      if (req.url == url) {
+      if (url.includes(req.url)) {
         res.cookie(cookie, this.makeCsrfToken());
       }
       next && next();
