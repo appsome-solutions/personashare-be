@@ -17,6 +17,13 @@ input CreateSpotInput {
   details: JSONObject
 }
 
+input CreateUserInput {
+  uuid: String!
+  name: String!
+  email: String
+  photo: String
+}
+
 type Example {
   qrCodeDataUri: String
 }
@@ -27,13 +34,17 @@ The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](
 scalar JSONObject
 
 type Mutation {
+  createUser(user: CreateUserInput!): UserType!
+  updateUser(uuid: String!, user: UpdateUserInput!): UserType!
+  removeUser(condition: UserInput!): Float!
   createSpot(spot: CreateSpotInput!): SpotType!
-  updateSpot(spot: UpdateSpotInput!): SpotType!
+  updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
   removeSpot(condition: SpotInput!): Float!
   connectPersona(input: ConnectPersonaToSpotInput!): SpotType!
 }
 
 type Query {
+  getUser(condition: UserInput!): [UserType!]!
   getExample(id: String!): Example!
   getSpot(condition: SpotInput!): [SpotType!]!
   getSpots: [SpotType!]!
@@ -57,11 +68,30 @@ type SpotType {
 }
 
 input UpdateSpotInput {
-  uuid: String!
   name: String
   description: String
   logo: String
   image: String
   url: String
   details: JSONObject
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  photo: String
+}
+
+input UserInput {
+  uuid: String
+  name: String
+  url: String
+}
+
+type UserType {
+  uuid: String!
+  name: String!
+  email: String
+  photo: String
+  personaUUIDs: [String!]
 }

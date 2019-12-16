@@ -21,4 +21,8 @@ export class FirebaseService {
   async checkSession(sid: string): Promise<auth.DecodedIdToken> {
     return await this.firebase.auth().verifySessionCookie(sid);
   }
+
+  async removeUser(uid: string): Promise<void> {
+    return await this.firebase.auth().deleteUser(uid);
+  }
 }

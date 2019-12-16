@@ -10,6 +10,7 @@ import { NgrokModule } from './ngrok';
 import { SpotModule } from './spot';
 import { FirebaseModule } from './firebase';
 import { AuthModule } from './auth';
+import { UserModule } from './user';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { AuthModule } from './auth';
     SpotModule,
     FirebaseModule,
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, ExampleModule],

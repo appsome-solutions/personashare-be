@@ -1,70 +1,47 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { v4 } from 'uuid';
 import { SpotDocument, SpotInterface } from './interfaces/spot.interfaces';
 import {
   ConnectPersonaToSpotInput,
-  CreateSpotInput,
   SpotInput,
   UpdateSpotInput,
 } from './inputs';
 import { SpotType } from './dto/spot.dto';
+import { MongoService } from '../mongo-service/mongo.service';
 
 @Injectable()
 export class SpotService {
+  mongoService: MongoService<Model<SpotDocument>>;
+
   constructor(
     @InjectModel('Spot')
     private readonly spotModel: Model<SpotDocument>,
-  ) {}
-
-  async create(spot: CreateSpotInput): Promise<SpotDocument> {
-    const spotDoc: SpotInterface = {
-      ...spot,
-      uuid: v4(),
-    };
-    const newSpot = new this.spotModel(spotDoc);
-
-    return await newSpot.save();
+  ) {
+    this.mongoService = new MongoService(this.spotModel);
   }
 
-  async update(spot: UpdateSpotInput): Promise<SpotDocument> {
-    const updatedSpot = await this.spotModel.findOneAndUpdate(
-      { uuid: spot.uuid },
+  async createSpot(spot: SpotInterface): Promise<SpotDocument> {
+    return await this.mongoService.create<SpotInterface, SpotDocument>(spot);
+  }
+
+  async updateSpot(spot: UpdateSpotInput, uuid: string): Promise<SpotDocument> {
+    return await this.mongoService.update<UpdateSpotInput, SpotDocument>(
       spot,
+      uuid,
     );
-
-    if (!updatedSpot) {
-      throw new NotFoundException(
-        `Cant find spot with given uuid: ${spot.uuid}`,
-      );
-    }
-
-    return updatedSpot;
   }
 
-  async findByMatch(condition: SpotInput): Promise<SpotType[]> {
-    const spots = await this.spotModel.find(condition).exec();
-    const entries: string[] = Object.keys(condition).map(
-      entry => `${entry}: ${condition[entry as keyof SpotInput]}`,
-    );
-
-    if (!spots || spots.length < 1) {
-      throw new NotFoundException(
-        `Can't find any spot for condition: { ${entries} }`,
-      );
-    }
-
-    return spots;
+  async getSpot(condition: SpotInput): Promise<SpotType[]> {
+    return await this.mongoService.findByMatch<SpotInput, SpotType>(condition);
   }
 
-  async findAll(): Promise<SpotType[]> {
-    return await this.spotModel.find().exec();
+  async getSpots(): Promise<SpotType[]> {
+    return await this.mongoService.findAll<SpotType>();
   }
 
   async removeSpot(condition: SpotInput): Promise<number> {
-    const { deletedCount } = await this.spotModel.deleteMany(condition);
-    return deletedCount ? deletedCount : 0;
+    return await this.mongoService.remove<SpotInput>(condition);
   }
 
   async connectPersona(

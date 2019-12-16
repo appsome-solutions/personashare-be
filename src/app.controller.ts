@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
   Res,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AppService } from './app.service';
@@ -18,6 +19,8 @@ import {
 } from './app.interfaces';
 import { ConfigService } from './config';
 import { AuthService, AuthGuard } from './auth';
+import { UserService } from './user';
+import { FirebaseService } from './firebase';
 
 @Controller()
 export class AppController {
@@ -25,6 +28,8 @@ export class AppController {
     private readonly appService: AppService,
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
+    private readonly userService: UserService,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   @Get('/app')
@@ -85,24 +90,26 @@ export class AppController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<GetProfilePageResponse | void> {
-    const decodedIdToken = await this.authService.checkSession(req);
+    const userData = await this.authService.checkSession(req);
     const host = req.header('host');
 
-    if (decodedIdToken) {
-      return {
-        email: decodedIdToken.email,
-        emailVerified: decodedIdToken.email_verified,
-        name: decodedIdToken.name,
-        picture: decodedIdToken.picture,
-      };
+    if (userData && userData.uid) {
+      const user = await this.userService.getUser({ uuid: userData.uid });
+
+      if (user.length > 0) {
+        return user[0];
+      } else {
+        throw new NotFoundException('User cant be found');
+      }
     } else {
       return res.redirect(301, `http://${host}/login`);
     }
   }
 
+  // TODO: This will be replaced by using GraphQL mutation with credentials
   @Post('/login-success')
   async handleNotify(@Res() res: Response, @Req() req: Request): Promise<void> {
-    const { idToken, csrfToken, uid } = req.body;
+    const { idToken, csrfToken } = req.body;
 
     if (csrfToken !== req.cookies['ps-csrfToken']) {
       throw new UnauthorizedException('UNAUTHORIZED REQUEST!');
@@ -113,9 +120,20 @@ export class AppController {
         sessionCookie,
         sessionOptions,
       } = await this.authService.createSessionCookie(idToken);
+      const userData = await this.firebaseService.checkSession(sessionCookie);
+      const { uid, email, name, picture } = userData;
+      const user = await this.userService.getUser({ uuid: uid });
+
+      if (user.length < 1) {
+        await this.userService.createUser({
+          uuid: uid,
+          email,
+          name,
+          photo: picture,
+        });
+      }
 
       res.cookie('ps-session', sessionCookie, sessionOptions);
-      res.cookie('ps-uid', uid);
       res.end(JSON.stringify({ status: 'success' }));
     } catch (e) {
       throw new UnauthorizedException(e.message);
