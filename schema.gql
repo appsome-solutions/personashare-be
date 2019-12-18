@@ -33,13 +33,9 @@ The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](
 """
 scalar JSONObject
 
-input LoginUserInput {
-  idToken: String!
-  csrfToken: String!
-}
-
 type Mutation {
-  loginUser(user: LoginUserInput!): Boolean!
+  loginUser(idToken: String!): UserLoginType!
+  logoutUser(uid: String!): String!
   createUser(user: CreateUserInput!): UserType!
   updateUser(uuid: String!, user: UpdateUserInput!): UserType!
   removeUser(condition: UserInput!): Float!
@@ -92,6 +88,10 @@ input UserInput {
   uuid: String
   name: String
   url: String
+}
+
+type UserLoginType {
+  accessToken: String!
 }
 
 type UserType {

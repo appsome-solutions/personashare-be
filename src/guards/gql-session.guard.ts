@@ -2,10 +2,14 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { FirebaseService } from '../firebase';
 import { Guard } from './guard';
+import { SessionService } from '../session';
 
 @Injectable()
 export class GqlSessionGuard extends Guard implements CanActivate {
-  constructor(private readonly firebaseService: FirebaseService) {
+  constructor(
+    private readonly firebaseService: FirebaseService,
+    private readonly sessionService: SessionService,
+  ) {
     super('GQL');
   }
 
@@ -13,9 +17,10 @@ export class GqlSessionGuard extends Guard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = this.getRequest(context);
-    const sid = request.cookies['ps-session'];
+    const authHeader = request.header('Authorization');
+    const token = authHeader ? authHeader.replace('Bearer ', '') : '';
 
-    return this.validateSession(sid);
+    return this.validateSession(token);
   }
 
   async validateSession(sid?: string): Promise<boolean> {
@@ -23,9 +28,18 @@ export class GqlSessionGuard extends Guard implements CanActivate {
       return false;
     }
 
+    const session = await this.sessionService.getSession({ sid });
+
+    if (session.length < 1) {
+      return false;
+    }
+
     return this.firebaseService
       .checkSession(sid)
       .then(token => !!token)
-      .catch(() => false);
+      .catch(async () => {
+        await this.sessionService.deleteSession({ sid });
+        return false;
+      });
   }
 }

@@ -11,6 +11,7 @@ import { SpotModule } from './spot';
 import { FirebaseModule } from './firebase';
 import { AuthModule } from './auth';
 import { UserModule } from './user';
+import { SessionModule } from './session';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { UserModule } from './user';
           'request.credentials': 'include',
         },
       },
-      context: ({ req }: any) => ({ req }),
+      context: ({ req, res }: any) => ({ req, res }),
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -41,6 +42,7 @@ import { UserModule } from './user';
     FirebaseModule,
     AuthModule,
     UserModule,
+    SessionModule,
   ],
   controllers: [AppController],
   providers: [AppService, ExampleModule],

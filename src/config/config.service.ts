@@ -167,7 +167,7 @@ export class ConfigService {
     return this.envConfig.FIREBASE_CREDENTIAL_PATH;
   }
 
-  get FirebaseEpireInSession(): number {
+  get FirebaseExpireInSession(): number {
     return Number(this.envConfig.FIREBASE_EXPIRE_IN_SESSION);
   }
 }

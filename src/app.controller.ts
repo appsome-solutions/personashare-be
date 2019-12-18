@@ -117,11 +117,8 @@ export class AppController {
     }
 
     try {
-      const {
-        sessionCookie,
-        sessionOptions,
-      } = await this.authService.createSessionCookie(idToken);
-      const userData = await this.firebaseService.checkSession(sessionCookie);
+      const sid = await this.authService.createSessionCookie(idToken);
+      const userData = await this.firebaseService.checkSession(sid);
       const { uid, email, name, picture } = userData;
       const user = await this.userService.getUser({ uuid: uid });
 
@@ -134,8 +131,7 @@ export class AppController {
         });
       }
 
-      res.cookie('ps-session', sessionCookie, sessionOptions);
-      res.end(JSON.stringify({ status: 'success' }));
+      res.end(JSON.stringify({ accessToken: sid }));
     } catch (e) {
       throw new UnauthorizedException(e.message);
     }

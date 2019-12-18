@@ -19,7 +19,7 @@ async function bootstrap(): Promise<any> {
 
   app.use(helmet());
   app.use(cookieParser());
-  app.use(authService.attachCsrfToken(['/login', '/graphql'], CSRF_TOKEN_NAME));
+  app.use(authService.attachCsrfToken(['/login'], CSRF_TOKEN_NAME));
   app.enableCors();
 
   app.useGlobalPipes(

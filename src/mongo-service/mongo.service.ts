@@ -11,12 +11,21 @@ export class MongoService<M extends Model<any>> {
     return await newDoc.save();
   }
 
-  async update<I, D extends Document>(input: I, uuid: string): Promise<D> {
-    const updatedDocument = await this.model.findOneAndUpdate({ uuid }, input);
+  async update<I, D extends Document>(
+    input: I,
+    conditions: object,
+  ): Promise<D> {
+    const updatedDocument = await this.model.findOneAndUpdate(
+      conditions,
+      input,
+      {
+        new: true,
+      },
+    );
 
     if (!updatedDocument) {
       throw new NotFoundException(
-        `Cant find document with given uuid: ${uuid}`,
+        `Cant find document with given conditions: ${conditions.toString()}`,
       );
     }
 
