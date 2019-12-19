@@ -9,8 +9,8 @@ import {
   SpotInput,
   UpdateSpotInput,
 } from './inputs';
-import { GqlAuthGuard } from '../auth';
 import { SpotInterface } from './interfaces/spot.interfaces';
+import { GqlSessionGuard } from '../guards';
 
 @Resolver('Spot')
 export class SpotResolver {
@@ -27,7 +27,7 @@ export class SpotResolver {
   }
 
   @Mutation(() => SpotType)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlSessionGuard)
   async createSpot(@Args('spot') input: CreateSpotInput): Promise<SpotType> {
     const spotDoc: SpotInterface = {
       ...input,
@@ -38,7 +38,7 @@ export class SpotResolver {
   }
 
   @Mutation(() => SpotType)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlSessionGuard)
   async updateSpot(
     @Args('spot') spot: UpdateSpotInput,
     @Args('uuid') uuid: string,
@@ -47,13 +47,13 @@ export class SpotResolver {
   }
 
   @Mutation(() => Number)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlSessionGuard)
   async removeSpot(@Args('condition') input: SpotInput): Promise<number> {
     return await this.spotService.removeSpot(input);
   }
 
   @Mutation(() => SpotType)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlSessionGuard)
   async connectPersona(
     @Args('input') input: ConnectPersonaToSpotInput,
   ): Promise<SpotType> {

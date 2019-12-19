@@ -26,10 +26,9 @@ export class SpotService {
   }
 
   async updateSpot(spot: UpdateSpotInput, uuid: string): Promise<SpotDocument> {
-    return await this.mongoService.update<UpdateSpotInput, SpotDocument>(
-      spot,
+    return await this.mongoService.update<UpdateSpotInput, SpotDocument>(spot, {
       uuid,
-    );
+    });
   }
 
   async getSpot(condition: SpotInput): Promise<SpotType[]> {

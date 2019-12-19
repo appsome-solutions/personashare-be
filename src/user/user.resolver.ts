@@ -1,9 +1,9 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserType } from './dto/user.dto';
-import { GqlAuthGuard } from '../auth';
+import { UserType, UserLoginType } from './dto';
 import { CreateUserInput, UpdateUserInput, UserInput } from './inputs';
+import { GqlSessionGuard } from '../guards';
 
 @Resolver('User')
 export class UserResolver {
@@ -14,14 +14,24 @@ export class UserResolver {
     return await this.userService.getUser(condition);
   }
 
+  @Mutation(() => UserLoginType)
+  async loginUser(@Args('idToken') idToken: string): Promise<UserLoginType> {
+    return await this.userService.loginUser(idToken);
+  }
+
+  @Mutation(() => String)
+  async logoutUser(@Args('uid') uid: string): Promise<boolean> {
+    return await this.userService.logoutUser(uid);
+  }
+
   @Mutation(() => UserType)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlSessionGuard)
   async createUser(@Args('user') user: CreateUserInput): Promise<UserType> {
     return await this.userService.createUser(user);
   }
 
   @Mutation(() => UserType)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlSessionGuard)
   async updateUser(
     @Args('user') user: UpdateUserInput,
     @Args('uuid') uuid: string,
@@ -30,7 +40,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Number)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlSessionGuard)
   async removeUser(@Args('condition') condition: UserInput): Promise<number> {
     return await this.userService.removeUser(condition);
   }

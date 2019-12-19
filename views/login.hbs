@@ -62,6 +62,16 @@
                 const user = firebase.auth().currentUser;
 
                 user.getIdToken(true).then(function(idToken) {
+                    const container = document.getElementById("firebaseui-auth-container");
+                    const label = document.createElement("div");
+                    label.innerText = "ID Token:";
+                    const input = document.createElement("textarea");
+                    input.cols = "100";
+                    input.rows = "20";
+                    input.value = idToken;
+                    container.appendChild(label);
+                    container.appendChild(input);
+
                     const data = {
                         idToken,
                         csrfToken: getCookieValue('ps-csrfToken'),
@@ -79,9 +89,7 @@
                         redirect: 'follow', // manual, *follow, error
                         referrer: 'no-referrer', // no-referrer, *client
                         body: JSON.stringify(data) // body data type must match "Content-Type" header
-                    }).then(function (_e) {
-                        window.location.href = '{{ postLoginSuccessUrl }}';
-                    })
+                    });
                 });
 
                 return false;

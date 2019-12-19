@@ -1,9 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RequestHandler } from '@nestjs/common/interfaces';
-import { CookieOptions, Request } from 'express';
+import { Request } from 'express';
 import { auth } from 'firebase-admin';
 import { FirebaseService } from '../firebase';
-import { CreateSessionResponse } from './auth.interfaces';
 import { ConfigService } from '../config';
 
 @Injectable()
@@ -13,38 +12,26 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async createSessionCookie(idToken: string): Promise<CreateSessionResponse> {
+  async createSessionCookie(idToken: string): Promise<string> {
     const { firebase } = this.firebaseService;
-    const { FirebaseEpireInSession } = this.configService;
+    const { FirebaseExpireInSession } = this.configService;
     const decodedIdToken = await firebase.auth().verifyIdToken(idToken);
 
     // Only process if the user just signed in in the last 5 minutes.
     if (new Date().getTime() / 1000 - decodedIdToken.auth_time < 5 * 60) {
-      // TODO: 5 days = 60 * 60 * 24 * 5 * 1000;
-      const expiresIn = FirebaseEpireInSession;
-      const sessionCookie = await firebase
-        .auth()
-        .createSessionCookie(idToken, { expiresIn });
+      const expiresIn = FirebaseExpireInSession;
 
-      // TODO: should add secure: true
-      const sessionOptions: CookieOptions = {
-        maxAge: expiresIn,
-        httpOnly: true,
-      };
-
-      return {
-        sessionCookie,
-        sessionOptions,
-      };
+      return await firebase.auth().createSessionCookie(idToken, { expiresIn });
     } else {
       throw new UnauthorizedException('Recent sign in required!');
     }
   }
 
   async checkSession(req: Request): Promise<auth.DecodedIdToken | null> {
-    const sid = req.cookies['ps-session'];
+    const authHeader = req.header('Authorization');
+    const token = authHeader ? authHeader.replace('Bearer ', '') : '';
 
-    return sid ? await this.firebaseService.checkSession(sid) : null;
+    return token ? await this.firebaseService.checkSession(token) : null;
   }
 
   async checkUser(uid: string): Promise<auth.UserRecord> {
@@ -53,13 +40,13 @@ export class AuthService {
 
   /**
    * Attaches a CSRF token to the request.
-   * @param {string} url The URL to check.
+   * @param {string[]} url The URL to check.
    * @param {string} cookie The CSRF token name.
    * @return {function} The middleware function to run.
    */
-  attachCsrfToken(url: string, cookie: string): RequestHandler {
+  attachCsrfToken(url: string[], cookie: string): RequestHandler {
     return (req, res, next) => {
-      if (req.url == url) {
+      if (url.includes(req.url)) {
         res.cookie(cookie, this.makeCsrfToken());
       }
       next && next();

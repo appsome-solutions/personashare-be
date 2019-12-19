@@ -6,7 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { ConfigService } from './config';
-import { AuthService } from './auth';
+import { AuthService, CSRF_TOKEN_NAME } from './auth';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function bootstrap(): Promise<any> {
@@ -19,7 +19,7 @@ async function bootstrap(): Promise<any> {
 
   app.use(helmet());
   app.use(cookieParser());
-  app.use(authService.attachCsrfToken('/login', 'ps-csrfToken'));
+  app.use(authService.attachCsrfToken(['/login'], CSRF_TOKEN_NAME));
   app.enableCors();
 
   app.useGlobalPipes(

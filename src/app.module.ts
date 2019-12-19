@@ -21,7 +21,7 @@ import { UserModule } from './user';
           'request.credentials': 'include',
         },
       },
-      context: ({ req }: any) => ({ req }),
+      context: ({ req, res }: any) => ({ req, res }),
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

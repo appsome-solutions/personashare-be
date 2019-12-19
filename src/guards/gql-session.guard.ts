@@ -1,20 +1,22 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { GqlExecutionContext } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
 import { FirebaseService } from '../firebase';
+import { Guard } from './guard';
 
 @Injectable()
-export class GqlAuthGuard implements CanActivate {
-  constructor(private readonly firebaseService: FirebaseService) {}
+export class GqlSessionGuard extends Guard implements CanActivate {
+  constructor(private readonly firebaseService: FirebaseService) {
+    super('GQL');
+  }
 
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const ctx = GqlExecutionContext.create(context);
-    const request = ctx.getContext().req;
-    const sid = request.cookies['ps-session'];
+    const request = this.getRequest(context);
+    const authHeader = request.header('Authorization');
+    const token = authHeader ? authHeader.replace('Bearer ', '') : '';
 
-    return this.validateSession(sid);
+    return this.validateSession(token);
   }
 
   async validateSession(sid?: string): Promise<boolean> {
