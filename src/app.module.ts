@@ -11,7 +11,6 @@ import { SpotModule } from './spot';
 import { FirebaseModule } from './firebase';
 import { AuthModule } from './auth';
 import { UserModule } from './user';
-import { SessionModule } from './session';
 
 @Module({
   imports: [
@@ -42,7 +41,6 @@ import { SessionModule } from './session';
     FirebaseModule,
     AuthModule,
     UserModule,
-    SessionModule,
   ],
   controllers: [AppController],
   providers: [AppService, ExampleModule],

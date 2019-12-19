@@ -13,9 +13,10 @@ export class SessionGuard extends Guard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = this.getRequest(context);
-    const sid = request.cookies['ps-session'];
+    const authHeader = request.header('Authorization');
+    const token = authHeader ? authHeader.replace('Bearer ', '') : '';
 
-    return this.validateSession(sid);
+    return this.validateSession(token);
   }
 
   async validateSession(sid?: string): Promise<boolean> {

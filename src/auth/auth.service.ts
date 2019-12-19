@@ -4,14 +4,12 @@ import { Request } from 'express';
 import { auth } from 'firebase-admin';
 import { FirebaseService } from '../firebase';
 import { ConfigService } from '../config';
-import { SessionService } from '../session';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly firebaseService: FirebaseService,
     private readonly configService: ConfigService,
-    private readonly sessionService: SessionService,
   ) {}
 
   async createSessionCookie(idToken: string): Promise<string> {
@@ -21,38 +19,19 @@ export class AuthService {
 
     // Only process if the user just signed in in the last 5 minutes.
     if (new Date().getTime() / 1000 - decodedIdToken.auth_time < 5 * 60) {
-      // TODO: 5 days = 60 * 60 * 24 * 5 * 1000;
       const expiresIn = FirebaseExpireInSession;
-      const sid = await firebase
-        .auth()
-        .createSessionCookie(idToken, { expiresIn });
 
-      const userSession = await this.sessionService.getSession({
-        uid: decodedIdToken.uid,
-      });
-
-      if (userSession.length) {
-        await this.sessionService.updateSession({
-          sid,
-          uid: decodedIdToken.uid,
-        });
-      } else {
-        await this.sessionService.createSession({
-          sid,
-          uid: decodedIdToken.uid,
-        });
-      }
-
-      return sid;
+      return await firebase.auth().createSessionCookie(idToken, { expiresIn });
     } else {
       throw new UnauthorizedException('Recent sign in required!');
     }
   }
 
   async checkSession(req: Request): Promise<auth.DecodedIdToken | null> {
-    const sid = req.cookies['ps-session'];
+    const authHeader = req.header('Authorization');
+    const token = authHeader ? authHeader.replace('Bearer ', '') : '';
 
-    return sid ? await this.firebaseService.checkSession(sid) : null;
+    return token ? await this.firebaseService.checkSession(token) : null;
   }
 
   async checkUser(uid: string): Promise<auth.UserRecord> {
