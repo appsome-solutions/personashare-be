@@ -1,12 +1,24 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
+import { v4 } from 'uuid';
 import { UserDocument, UserInterface } from './interfaces/user.interfaces';
-import { UpdateUserInput, UserInput } from './inputs';
+import {
+  RemovePersonaInput,
+  UpdateUserInput,
+  UserInput,
+  AddPersonaInput,
+} from './inputs';
 import { UserType, UserLoginType } from './dto';
 import { MongoService } from '../mongo-service/mongo.service';
 import { FirebaseService } from '../firebase';
 import { AuthService } from '../auth';
+import { PersonaInterface, PersonaService, PersonaDocument } from '../persona';
+import {
+  connectPersona,
+  ConnectPersonaInput,
+  disconnectPersona,
+} from '../shared';
 
 @Injectable()
 export class UserService {
@@ -16,6 +28,7 @@ export class UserService {
     @InjectModel('User') private readonly userModel: Model<UserDocument>,
     private readonly firebaseService: FirebaseService,
     private readonly authService: AuthService,
+    private readonly personaService: PersonaService,
   ) {
     this.mongoService = new MongoService(this.userModel);
   }
@@ -75,5 +88,31 @@ export class UserService {
 
   async getUser(condition: UserInput): Promise<UserType[]> {
     return await this.mongoService.findByMatch<UserInput, UserType>(condition);
+  }
+
+  async createPersona(input: AddPersonaInput): Promise<PersonaDocument> {
+    const { persona, uuid } = input;
+    const personaDoc: PersonaInterface = {
+      ...persona,
+      uuid: v4(),
+    };
+
+    const newPersona = await this.personaService.createPersona(personaDoc);
+    const connectPersonaPayload: ConnectPersonaInput = {
+      personaUUID: newPersona.uuid,
+      uuid,
+    };
+
+    await connectPersona<UserDocument>(connectPersonaPayload, this.userModel);
+
+    return newPersona;
+  }
+
+  async removePersona(condition: RemovePersonaInput): Promise<number> {
+    await disconnectPersona<UserDocument>(condition, this.userModel);
+
+    return await this.personaService.removePersona({
+      uuid: condition.personaUUID,
+    });
   }
 }

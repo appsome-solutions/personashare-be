@@ -3,14 +3,10 @@ import { UseGuards } from '@nestjs/common';
 import { v4 } from 'uuid';
 import { SpotService } from './spot.service';
 import { SpotType } from './dto/spot.dto';
-import {
-  ConnectPersonaToSpotInput,
-  CreateSpotInput,
-  SpotInput,
-  UpdateSpotInput,
-} from './inputs';
+import { CreateSpotInput, SpotInput, UpdateSpotInput } from './inputs';
 import { SpotInterface } from './interfaces/spot.interfaces';
 import { GqlSessionGuard } from '../guards';
+import { ConnectPersonaInput } from '../shared';
 
 @Resolver('Spot')
 export class SpotResolver {
@@ -55,7 +51,7 @@ export class SpotResolver {
   @Mutation(() => SpotType)
   @UseGuards(GqlSessionGuard)
   async connectPersona(
-    @Args('input') input: ConnectPersonaToSpotInput,
+    @Args('input') input: ConnectPersonaInput,
   ): Promise<SpotType> {
     return await this.spotService.connectPersona(input);
   }

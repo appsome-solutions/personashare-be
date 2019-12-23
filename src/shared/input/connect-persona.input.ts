@@ -2,12 +2,12 @@ import { IsString } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
-export class ConnectPersonaToSpotInput {
+export class ConnectPersonaInput {
   @Field()
   @IsString()
   uuid: string;
 
   @Field()
   @IsString()
-  personaUuid: string;
+  personaUUID: string;
 }

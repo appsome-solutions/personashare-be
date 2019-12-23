@@ -1,14 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SpotDocument, SpotInterface } from './interfaces/spot.interfaces';
-import {
-  ConnectPersonaToSpotInput,
-  SpotInput,
-  UpdateSpotInput,
-} from './inputs';
+import { SpotInput, UpdateSpotInput } from './inputs';
 import { SpotType } from './dto/spot.dto';
 import { MongoService } from '../mongo-service/mongo.service';
+import { ConnectPersonaInput, connectPersona } from '../shared';
 
 @Injectable()
 export class SpotService {
@@ -43,26 +40,7 @@ export class SpotService {
     return await this.mongoService.remove<SpotInput>(condition);
   }
 
-  async connectPersona(
-    payload: ConnectPersonaToSpotInput,
-  ): Promise<SpotDocument> {
-    const { uuid, personaUuid } = payload;
-    const spot = await this.spotModel.findOne({ uuid });
-
-    if (!spot) {
-      throw new NotFoundException(`Can't find spot by uuid: ${uuid}`);
-    }
-
-    if (!spot.personaUUIDs) {
-      spot.personaUUIDs = [personaUuid];
-    } else {
-      if (!spot.personaUUIDs.includes(personaUuid)) {
-        spot.personaUUIDs = spot.personaUUIDs.concat(personaUuid);
-      } else {
-        return await spot;
-      }
-    }
-
-    return await spot.save();
+  async connectPersona(payload: ConnectPersonaInput): Promise<SpotDocument> {
+    return await connectPersona(payload, this.spotModel);
   }
 }
