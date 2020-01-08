@@ -23,7 +23,7 @@ export async function connectPersona<T extends PersonaConnectableDocument>(
     if (!entity.personaUUIDs.includes(personaUUID)) {
       entity.personaUUIDs = entity.personaUUIDs.concat(personaUUID);
     } else {
-      return await entity;
+      return entity;
     }
   }
 
