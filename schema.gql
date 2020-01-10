@@ -3,9 +3,22 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-input ConnectPersonaToSpotInput {
+input AddPersonaInput {
   uuid: String!
-  personaUuid: String!
+  persona: CreatePersonaInput!
+}
+
+input ConnectPersonaInput {
+  uuid: String!
+  personaUUID: String!
+}
+
+input CreatePersonaInput {
+  name: String!
+  description: String!
+  logo: String
+  image: String
+  details: JSONObject
 }
 
 input CreateSpotInput {
@@ -34,22 +47,47 @@ The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](
 scalar JSONObject
 
 type Mutation {
+  updatePersona(uuid: String!, persona: UpdatePersonaInput!): PersonaType!
+  connectPersona(input: ConnectPersonaInput!): SpotType!
   loginUser(idToken: String!): UserLoginType!
   logoutUser(uid: String!): String!
   createUser(user: CreateUserInput!): UserType!
   updateUser(uuid: String!, user: UpdateUserInput!): UserType!
   removeUser(condition: UserInput!): Float!
+  createPersona(input: AddPersonaInput!): PersonaType!
+  removePersona(payload: RemovePersonaInput!): Float!
   createSpot(spot: CreateSpotInput!): SpotType!
   updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
   removeSpot(condition: SpotInput!): Float!
-  connectPersona(input: ConnectPersonaToSpotInput!): SpotType!
+}
+
+input PersonaInput {
+  uuid: String
+  name: String
+}
+
+type PersonaType {
+  uuid: String!
+  name: String!
+  description: String!
+  logo: String
+  image: String
+  details: JSONObject
+  personaUUIDs: [String!]
 }
 
 type Query {
-  getUser(condition: UserInput!): [UserType!]!
-  getExample(id: String!): Example!
-  getSpot(condition: SpotInput!): [SpotType!]!
+  getPersona(condition: PersonaInput!): PersonaType!
+  getPersonas: [PersonaType!]!
+  getUser(condition: UserInput!): UserType!
+  getSpot(condition: SpotInput!): SpotType!
   getSpots: [SpotType!]!
+  getExample(id: String!): Example!
+}
+
+input RemovePersonaInput {
+  uuid: String!
+  personaUUID: String!
 }
 
 input SpotInput {
@@ -67,6 +105,14 @@ type SpotType {
   url: String
   details: JSONObject
   personaUUIDs: [String!]
+}
+
+input UpdatePersonaInput {
+  name: String
+  description: String
+  logo: String
+  image: String
+  details: JSONObject
 }
 
 input UpdateSpotInput {

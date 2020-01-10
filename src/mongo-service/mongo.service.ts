@@ -24,9 +24,7 @@ export class MongoService<M extends Model<any>> {
     );
 
     if (!updatedDocument) {
-      throw new NotFoundException(
-        `Cant find document with given conditions: ${conditions.toString()}`,
-      );
+      throw new NotFoundException(`Cant find ${this.model.modelName}`);
     }
 
     return updatedDocument;
@@ -38,10 +36,16 @@ export class MongoService<M extends Model<any>> {
     return deletedCount || 0;
   }
 
-  async findByMatch<C, R>(condition: C): Promise<R[]> {
-    const docs = await this.model.find(condition).exec();
+  async findByMatch<C extends Record<string, any>, R>(
+    condition: C,
+  ): Promise<R> {
+    const doc = await this.model.findOne(condition).exec();
 
-    return !docs || docs.length < 1 ? [] : docs;
+    if (!doc) {
+      throw new NotFoundException(`Cant find ${this.model.modelName}`);
+    }
+
+    return doc;
   }
 
   async findAll<R>(): Promise<R[]> {
