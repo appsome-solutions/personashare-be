@@ -16,8 +16,8 @@ import { PersonaType } from '../persona';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query(() => [UserType])
-  async getUser(@Args('condition') condition: UserInput): Promise<UserType[]> {
+  @Query(() => UserType)
+  async getUser(@Args('condition') condition: UserInput): Promise<UserType> {
     return await this.userService.getUser(condition);
   }
 

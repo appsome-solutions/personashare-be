@@ -97,8 +97,8 @@ export class AppController {
     if (userData && userData.uid) {
       const user = await this.userService.getUser({ uuid: userData.uid });
 
-      if (user.length > 0) {
-        return user[0];
+      if (user) {
+        return user;
       } else {
         throw new NotFoundException('User cant be found');
       }
@@ -122,7 +122,7 @@ export class AppController {
       const { uid, email, name, picture } = userData;
       const user = await this.userService.getUser({ uuid: uid });
 
-      if (user.length < 1) {
+      if (user) {
         await this.userService.createUser({
           uuid: uid,
           email,

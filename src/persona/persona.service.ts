@@ -40,7 +40,7 @@ export class PersonaService {
     );
   }
 
-  async getPersona(condition: PersonaInput): Promise<PersonaType[]> {
+  async getPersona(condition: PersonaInput): Promise<PersonaType> {
     return await this.mongoService.findByMatch<PersonaInput, PersonaType>(
       condition,
     );

@@ -77,10 +77,10 @@ type PersonaType {
 }
 
 type Query {
-  getPersona(condition: PersonaInput!): [PersonaType!]!
+  getPersona(condition: PersonaInput!): PersonaType!
   getPersonas: [PersonaType!]!
-  getUser(condition: UserInput!): [UserType!]!
-  getSpot(condition: SpotInput!): [SpotType!]!
+  getUser(condition: UserInput!): UserType!
+  getSpot(condition: SpotInput!): SpotType!
   getSpots: [SpotType!]!
   getExample(id: String!): Example!
 }

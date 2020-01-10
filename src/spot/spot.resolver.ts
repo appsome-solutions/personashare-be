@@ -12,8 +12,8 @@ import { ConnectPersonaInput } from '../shared';
 export class SpotResolver {
   constructor(private readonly spotService: SpotService) {}
 
-  @Query(() => [SpotType])
-  async getSpot(@Args('condition') input: SpotInput): Promise<SpotType[]> {
+  @Query(() => SpotType)
+  async getSpot(@Args('condition') input: SpotInput): Promise<SpotType> {
     return await this.spotService.getSpot(input);
   }
 

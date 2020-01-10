@@ -28,7 +28,7 @@ export class SpotService {
     });
   }
 
-  async getSpot(condition: SpotInput): Promise<SpotType[]> {
+  async getSpot(condition: SpotInput): Promise<SpotType> {
     return await this.mongoService.findByMatch<SpotInput, SpotType>(condition);
   }
 

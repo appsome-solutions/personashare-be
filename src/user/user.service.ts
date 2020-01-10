@@ -42,7 +42,7 @@ export class UserService {
     const { uid, email, name, picture } = userData;
     const user = await this.getUser({ uuid: uid });
 
-    if (user.length < 1) {
+    if (user) {
       await this.createUser({
         uuid: uid,
         email,
@@ -67,11 +67,11 @@ export class UserService {
   async removeUser(condition: UserInput): Promise<number> {
     const user = await this.getUser(condition);
 
-    if (user.length) {
+    if (user) {
       const result = await this.mongoService.remove<UserInput>(condition);
 
       if (result) {
-        await this.firebaseService.removeUser(user[0].uuid);
+        await this.firebaseService.removeUser(user.uuid);
       }
 
       return result;
@@ -86,7 +86,7 @@ export class UserService {
     });
   }
 
-  async getUser(condition: UserInput): Promise<UserType[]> {
+  async getUser(condition: UserInput): Promise<UserType> {
     return await this.mongoService.findByMatch<UserInput, UserType>(condition);
   }
 

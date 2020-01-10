@@ -11,10 +11,10 @@ import { UpdatePersonaInput } from '../shared/input/update-persona.input';
 export class PersonaResolver {
   constructor(private readonly personaService: PersonaService) {}
 
-  @Query(() => [PersonaType])
+  @Query(() => PersonaType)
   async getPersona(
     @Args('condition') input: PersonaInput,
-  ): Promise<PersonaType[]> {
+  ): Promise<PersonaType> {
     return await this.personaService.getPersona(input);
   }
 
