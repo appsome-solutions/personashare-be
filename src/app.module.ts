@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { GQLContext } from './app.interfaces';
 import { ConfigModule, ConfigService } from './config';
 import { ExampleModule } from './example';
 import { QrCodeModule } from './qrcode';
@@ -12,6 +13,7 @@ import { FirebaseModule } from './firebase';
 import { AuthModule } from './auth';
 import { UserModule } from './user';
 import { PersonaModule } from './persona';
+import { GqlSelectionParserModule } from './gql-selection-parser';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { PersonaModule } from './persona';
           'request.credentials': 'include',
         },
       },
-      context: ({ req, res }: any) => ({ req, res }),
+      context: ({ req, res }: GQLContext) => ({ req, res }),
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -31,6 +33,7 @@ import { PersonaModule } from './persona';
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
+        useCreateIndex: true,
       }),
       inject: [ConfigService],
     }),
@@ -43,6 +46,7 @@ import { PersonaModule } from './persona';
     AuthModule,
     UserModule,
     PersonaModule,
+    GqlSelectionParserModule,
   ],
   controllers: [AppController],
   providers: [AppService, ExampleModule],

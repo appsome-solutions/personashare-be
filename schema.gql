@@ -8,17 +8,28 @@ input AddPersonaInput {
   persona: CreatePersonaInput!
 }
 
+input CardInput {
+  name: String!
+  description: String!
+  avatar: String
+  background: String
+}
+
+type CardType {
+  name: String!
+  description: String!
+  avatar: String
+  background: String
+}
+
 input ConnectPersonaInput {
   uuid: String!
   personaUUID: String!
 }
 
 input CreatePersonaInput {
-  name: String!
-  description: String!
-  logo: String
-  image: String
-  details: JSONObject
+  card: CardInput!
+  page: PageInput!
 }
 
 input CreateSpotInput {
@@ -61,18 +72,26 @@ type Mutation {
   removeSpot(condition: SpotInput!): Float!
 }
 
+input PageInput {
+  content: String!
+  avatar: String
+  background: String
+}
+
+type PageType {
+  avatar: String
+  background: String
+  content: String!
+}
+
 input PersonaInput {
-  uuid: String
-  name: String
+  uuid: String!
 }
 
 type PersonaType {
   uuid: String!
-  name: String!
-  description: String!
-  logo: String
-  image: String
-  details: JSONObject
+  card: CardType!
+  page: PageType!
   personaUUIDs: [String!]
 }
 

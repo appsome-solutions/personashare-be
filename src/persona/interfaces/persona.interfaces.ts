@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
-import { SpotInterface } from '../../spot/interfaces/spot.interfaces';
+import { PersonaEntity } from '../../shared';
 
-type PersonaInterface = Omit<SpotInterface, 'url'>;
+type PersonaInterface = PersonaEntity;
 
 interface PersonaDocument extends PersonaInterface, Document {}
 

@@ -1,3 +1,4 @@
-export * from './input/connect-persona.input';
-export * from './helpers/connectPersona';
-export * from './helpers/disconnectPersona';
+export * from './input';
+export * from './helpers';
+export * from './dto';
+export * from './interfaces';

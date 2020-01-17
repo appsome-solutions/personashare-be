@@ -1,11 +1,11 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Context } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
+import { GQLContext } from '../app.interfaces';
 import { GqlSessionGuard } from '../guards';
-import { ConnectPersonaInput } from '../shared';
+import { ConnectPersonaInput, UpdatePersonaInput } from '../shared';
 import { PersonaService } from './persona.service';
 import { PersonaType } from './dto/persona.dto';
 import { PersonaInput } from './input';
-import { UpdatePersonaInput } from '../shared/input/update-persona.input';
 
 @Resolver('Persona')
 export class PersonaResolver {
@@ -14,8 +14,9 @@ export class PersonaResolver {
   @Query(() => PersonaType)
   async getPersona(
     @Args('condition') input: PersonaInput,
+    @Context() context: GQLContext,
   ): Promise<PersonaType> {
-    return await this.personaService.getPersona(input);
+    return await this.personaService.getPersona(input, context);
   }
 
   @Query(() => [PersonaType])
