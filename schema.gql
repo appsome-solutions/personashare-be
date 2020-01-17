@@ -127,11 +127,8 @@ type SpotType {
 }
 
 input UpdatePersonaInput {
-  name: String
-  description: String
-  logo: String
-  image: String
-  details: JSONObject
+  card: CardInput
+  page: PageInput
 }
 
 input UpdateSpotInput {
