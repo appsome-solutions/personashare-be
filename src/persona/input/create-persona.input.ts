@@ -1,32 +1,11 @@
-import { IsString, IsOptional } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
-import { GraphQLJSONObject } from 'graphql-type-json';
+import { CardInput, PageInput } from '../../shared';
 
 @InputType()
 export class CreatePersonaInput {
-  @Field()
-  @IsString()
-  name: string;
+  @Field(() => CardInput)
+  card: CardInput;
 
-  @Field()
-  @IsString()
-  description: string;
-
-  @Field({
-    nullable: true,
-  })
-  @IsString()
-  @IsOptional()
-  logo?: string;
-
-  @Field({
-    nullable: true,
-  })
-  @IsString()
-  @IsOptional()
-  image?: string;
-
-  @Field(() => GraphQLJSONObject, { nullable: true })
-  @IsOptional()
-  details?: object;
+  @Field(() => PageInput)
+  page: PageInput;
 }

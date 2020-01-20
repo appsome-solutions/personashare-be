@@ -1,25 +1,16 @@
 import { Field, ObjectType } from 'type-graphql';
-import { GraphQLJSONObject } from 'graphql-type-json';
+import { CardType, PageType } from '../../shared';
 
 @ObjectType()
 export class PersonaType {
   @Field()
   uuid: string;
 
-  @Field()
-  name: string;
+  @Field(() => CardType)
+  card: CardType;
 
-  @Field()
-  description: string;
-
-  @Field({ nullable: true })
-  logo?: string;
-
-  @Field({ nullable: true })
-  image?: string;
-
-  @Field(() => GraphQLJSONObject, { nullable: true })
-  details?: object;
+  @Field(() => PageType)
+  page: PageType;
 
   @Field(() => [String], { nullable: true })
   personaUUIDs?: string[];

@@ -38,8 +38,22 @@ export class MongoService<M extends Model<any>> {
 
   async findByMatch<C extends Record<string, any>, R>(
     condition: C,
+    selectedFields?: Array<keyof R>,
   ): Promise<R> {
-    const doc = await this.model.findOne(condition).exec();
+    let query = this.model.findOne(condition);
+
+    if (selectedFields) {
+      const selectCondition = selectedFields.reduce(
+        (acc, field) => ({
+          ...acc,
+          [field]: 1,
+        }),
+        {},
+      );
+      query = query.select(selectCondition);
+    }
+
+    const doc = await query.exec();
 
     if (!doc) {
       throw new NotFoundException(`Cant find ${this.model.modelName}`);

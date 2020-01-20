@@ -56,7 +56,7 @@ export class UserResolver {
   @UseGuards(GqlSessionGuard)
   async createPersona(
     @Args('input') input: AddPersonaInput,
-  ): Promise<UserType> {
+  ): Promise<PersonaType> {
     return await this.userService.createPersona(input);
   }
 
