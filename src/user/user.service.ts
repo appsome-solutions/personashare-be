@@ -42,7 +42,7 @@ export class UserService {
     const { uid, email, name, picture } = userData;
     const user = await this.getUser({ uuid: uid });
 
-    if (user) {
+    if (!user) {
       await this.createUser({
         uuid: uid,
         email,

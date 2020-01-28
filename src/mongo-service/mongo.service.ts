@@ -1,5 +1,4 @@
 import { Document, Model } from 'mongoose';
-import { NotFoundException } from '@nestjs/common';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class MongoService<M extends Model<any>> {
@@ -15,19 +14,9 @@ export class MongoService<M extends Model<any>> {
     input: I,
     conditions: object,
   ): Promise<D> {
-    const updatedDocument = await this.model.findOneAndUpdate(
-      conditions,
-      input,
-      {
-        new: true,
-      },
-    );
-
-    if (!updatedDocument) {
-      throw new NotFoundException(`Cant find ${this.model.modelName}`);
-    }
-
-    return updatedDocument;
+    return this.model.findOneAndUpdate(conditions, input, {
+      new: true,
+    });
   }
 
   async remove<C>(condition: C): Promise<number> {
@@ -53,13 +42,7 @@ export class MongoService<M extends Model<any>> {
       query = query.select(selectCondition);
     }
 
-    const doc = await query.exec();
-
-    if (!doc) {
-      throw new NotFoundException(`Cant find ${this.model.modelName}`);
-    }
-
-    return doc;
+    return await query.exec();
   }
 
   async findAll<R>(): Promise<R[]> {
