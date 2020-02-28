@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { GQLContext } from '../app.interfaces';
 import { MongoService } from '../mongo-service/mongo.service';
 import {
   ConnectPersonaInput,
@@ -14,7 +13,6 @@ import {
 } from './interfaces/persona.interfaces';
 import { PersonaInput } from './input';
 import { PersonaType } from './dto/persona.dto';
-import { GqlSelectionParserService } from '../gql-selection-parser';
 
 @Injectable()
 export class PersonaService {
@@ -23,7 +21,6 @@ export class PersonaService {
   constructor(
     @InjectModel('Persona')
     private readonly personaModel: Model<PersonaDocument>,
-    private readonly gqlSelectionParserService: GqlSelectionParserService,
   ) {
     this.mongoService = new MongoService(this.personaModel);
   }
@@ -46,16 +43,9 @@ export class PersonaService {
     );
   }
 
-  async getPersona(
-    condition: PersonaInput,
-    context: GQLContext,
-  ): Promise<PersonaType> {
-    const fields = this.gqlSelectionParserService.getSelectionKeysFromQuery<
-      PersonaType
-    >(context, 'getPersona');
+  async getPersona(condition: PersonaInput): Promise<PersonaType> {
     return await this.mongoService.findByMatch<PersonaInput, PersonaType>(
       condition,
-      fields,
     );
   }
 

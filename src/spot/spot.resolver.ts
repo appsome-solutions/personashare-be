@@ -12,13 +12,13 @@ import { ConnectPersonaInput } from '../shared';
 export class SpotResolver {
   constructor(private readonly spotService: SpotService) {}
 
-  @Query(() => SpotType)
-  async getSpot(@Args('condition') input: SpotInput): Promise<SpotType> {
+  @Query(() => SpotType, { nullable: true })
+  async spot(@Args('condition') input: SpotInput): Promise<SpotType | null> {
     return await this.spotService.getSpot(input);
   }
 
-  @Query(() => [SpotType])
-  async getSpots(): Promise<SpotType[]> {
+  @Query(() => [SpotType], { nullable: true })
+  async spots(): Promise<SpotType[] | null> {
     return await this.spotService.getSpots();
   }
 

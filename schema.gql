@@ -58,8 +58,11 @@ The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](
 scalar JSONObject
 
 type Mutation {
+  createSpot(spot: CreateSpotInput!): SpotType!
+  updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
+  removeSpot(condition: SpotInput!): Float!
+  connectPersona(input: ConnectPersonaInput!): PersonaType!
   updatePersona(uuid: String!, persona: UpdatePersonaInput!): PersonaType!
-  connectPersona(input: ConnectPersonaInput!): SpotType!
   loginUser(idToken: String!): UserLoginType!
   logoutUser(uid: String!): String!
   createUser(user: CreateUserInput!): UserType!
@@ -67,9 +70,6 @@ type Mutation {
   removeUser(condition: UserInput!): Float!
   createPersona(input: AddPersonaInput!): PersonaType!
   removePersona(payload: RemovePersonaInput!): Float!
-  createSpot(spot: CreateSpotInput!): SpotType!
-  updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
-  removeSpot(condition: SpotInput!): Float!
 }
 
 input PageInput {
@@ -96,12 +96,12 @@ type PersonaType {
 }
 
 type Query {
-  getPersona(condition: PersonaInput!): PersonaType!
-  getPersonas: [PersonaType!]!
-  getUser(condition: UserInput!): UserType!
-  getSpot(condition: SpotInput!): SpotType!
-  getSpots: [SpotType!]!
   getExample(id: String!): Example!
+  spot(condition: SpotInput!): SpotType
+  spots: [SpotType!]
+  persona(uuid: String!): PersonaType
+  personas: [PersonaType!]
+  user(condition: UserInput!): UserType
 }
 
 input RemovePersonaInput {
