@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { initializeApp, app, credential, auth } from 'firebase-admin';
 import { ConfigService } from '../config';
+import { GQLContext } from '../app.interfaces';
 
 @Injectable()
 export class FirebaseService {
@@ -14,12 +15,16 @@ export class FirebaseService {
     });
   }
 
-  async getUser(uid: string): Promise<auth.UserRecord> {
-    return await this.firebase.auth().getUser(uid);
-  }
-
   async checkSession(sid: string): Promise<auth.DecodedIdToken> {
     return await this.firebase.auth().verifySessionCookie(sid, true);
+  }
+
+  async getClaimFromToken(context: GQLContext): Promise<auth.DecodedIdToken> {
+    const token = context.req.headers.authorization
+      .replace('Bearer', '')
+      .trim();
+
+    return await this.checkSession(token);
   }
 
   async removeUser(uid: string): Promise<void> {

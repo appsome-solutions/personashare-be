@@ -68,7 +68,7 @@ type Mutation {
   createUser(user: CreateUserInput!): UserType!
   updateUser(uuid: String!, user: UpdateUserInput!): UserType!
   removeUser(condition: UserInput!): Float!
-  createPersona(input: AddPersonaInput!): PersonaType!
+  createPersona(persona: CreatePersonaInput!): PersonaType!
   removePersona(payload: RemovePersonaInput!): Float!
 }
 
