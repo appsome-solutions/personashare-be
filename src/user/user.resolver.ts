@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserType, UserLoginType } from './dto';
@@ -10,11 +10,16 @@ import {
   AddPersonaInput,
 } from './inputs';
 import { GqlSessionGuard } from '../guards';
-import { PersonaType } from '../persona';
+import { CreatePersonaInput, PersonaType } from '../persona';
+import { GQLContext } from '../app.interfaces';
+import { FirebaseService } from '../firebase';
 
 @Resolver('User')
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly firebaseService: FirebaseService,
+  ) {}
 
   @Query(() => UserType, { nullable: true })
   async user(@Args('condition') condition: UserInput): Promise<UserType> {
@@ -55,9 +60,16 @@ export class UserResolver {
   @Mutation(() => PersonaType)
   @UseGuards(GqlSessionGuard)
   async createPersona(
-    @Args('input') input: AddPersonaInput,
+    @Args('persona') persona: CreatePersonaInput,
+    @Context() context: GQLContext,
   ): Promise<PersonaType> {
-    return await this.userService.createPersona(input);
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+    const payload: AddPersonaInput = {
+      uuid: uid,
+      persona,
+    };
+
+    return await this.userService.createPersona(payload);
   }
 
   @Mutation(() => Number)

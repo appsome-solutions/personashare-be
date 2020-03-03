@@ -1,7 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RequestHandler } from '@nestjs/common/interfaces';
-import { Request } from 'express';
-import { auth } from 'firebase-admin';
 import { FirebaseService } from '../firebase';
 import { ConfigService } from '../config';
 
@@ -25,17 +23,6 @@ export class AuthService {
     } else {
       throw new UnauthorizedException('Recent sign in required!');
     }
-  }
-
-  async checkSession(req: Request): Promise<auth.DecodedIdToken | null> {
-    const authHeader = req.header('Authorization');
-    const token = authHeader ? authHeader.replace('Bearer ', '') : '';
-
-    return token ? await this.firebaseService.checkSession(token) : null;
-  }
-
-  async checkUser(uid: string): Promise<auth.UserRecord> {
-    return await this.firebaseService.getUser(uid);
   }
 
   /**
