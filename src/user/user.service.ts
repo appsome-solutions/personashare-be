@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { v4 } from 'uuid';
 import { UserDocument, UserInterface } from './interfaces/user.interfaces';
 import {
@@ -157,9 +157,13 @@ export class UserService {
     const persona = this.personaService.getPersona({ uuid: personaUuid });
     const user = await this.getUser({ uuid: userId });
 
-    user.defaultPersona = personaUuid;
+    if (user.personaUUIDs && user.personaUUIDs.includes(personaUuid)) {
+      user.defaultPersona = personaUuid;
 
-    await user.save();
+      await user.save();
+    } else {
+      throw new MethodNotAllowedException('Cannot set persona as default');
+    }
 
     return persona;
   }
