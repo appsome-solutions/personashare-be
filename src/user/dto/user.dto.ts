@@ -16,4 +16,7 @@ export class UserType {
 
   @Field(() => [String], { nullable: true })
   personaUUIDs?: string[];
+
+  @Field({ nullable: true })
+  defaultPersona: string;
 }

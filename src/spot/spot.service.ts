@@ -41,6 +41,7 @@ export class SpotService {
   }
 
   async connectPersona(payload: ConnectPersonaInput): Promise<SpotDocument> {
-    return await connectPersona(payload, this.spotModel);
+    const spot = await connectPersona(payload, this.spotModel);
+    return await spot.save();
   }
 }

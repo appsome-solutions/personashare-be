@@ -14,4 +14,7 @@ export class PersonaType {
 
   @Field(() => [String], { nullable: true })
   personaUUIDs?: string[];
+
+  @Field()
+  qrCodeLink: string;
 }

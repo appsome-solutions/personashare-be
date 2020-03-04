@@ -27,5 +27,5 @@ export async function connectPersona<T extends PersonaConnectableDocument>(
     }
   }
 
-  return await entity.save();
+  return await entity;
 }

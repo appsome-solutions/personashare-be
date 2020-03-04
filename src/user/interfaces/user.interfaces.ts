@@ -6,6 +6,7 @@ interface UserInterface {
   email?: string;
   photo?: string;
   personaUUIDs?: string[];
+  defaultPersona: string;
 }
 
 interface UserDocument extends UserInterface, Document {}

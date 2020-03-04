@@ -39,7 +39,10 @@ export class UserResolver {
   @Mutation(() => UserType)
   @UseGuards(GqlSessionGuard)
   async createUser(@Args('user') user: CreateUserInput): Promise<UserType> {
-    return await this.userService.createUser(user);
+    return await this.userService.createUser({
+      ...user,
+      defaultPersona: '',
+    });
   }
 
   @Mutation(() => UserType)
@@ -78,5 +81,15 @@ export class UserResolver {
     @Args('payload') payload: RemovePersonaInput,
   ): Promise<number> {
     return await this.userService.removePersona(payload);
+  }
+
+  @Mutation(() => PersonaType)
+  @UseGuards(GqlSessionGuard)
+  async setDefaultPersona(
+    @Args('uuid') uuid: string,
+    @Context() context: GQLContext,
+  ): Promise<PersonaType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+    return await this.userService.setDefaultPersona(uuid, uid);
   }
 }

@@ -58,6 +58,7 @@ export class PersonaService {
   }
 
   async connectPersona(payload: ConnectPersonaInput): Promise<PersonaDocument> {
-    return await connectPersona(payload, this.personaModel);
+    const persona = await connectPersona(payload, this.personaModel);
+    return await persona.save();
   }
 }
