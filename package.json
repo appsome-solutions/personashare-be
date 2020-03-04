@@ -27,6 +27,7 @@
     "@nestjs/mongoose": "^6.1.2",
     "@nestjs/platform-express": "^6.8.0",
     "apollo-server-express": "^2.9.7",
+    "canvas": "^2.6.1",
     "class-transformer": "^0.2.3",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.2.0",

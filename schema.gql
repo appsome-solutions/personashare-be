@@ -70,6 +70,7 @@ type Mutation {
   removeUser(condition: UserInput!): Float!
   createPersona(persona: CreatePersonaInput!): PersonaType!
   removePersona(payload: RemovePersonaInput!): Float!
+  setDefaultPersona(uuid: String!): PersonaType!
 }
 
 input PageInput {
@@ -93,6 +94,7 @@ type PersonaType {
   card: CardType!
   page: PageType!
   personaUUIDs: [String!]
+  qrCodeLink: String!
 }
 
 type Query {
@@ -162,4 +164,5 @@ type UserType {
   email: String
   photo: String
   personaUUIDs: [String!]
+  defaultPersona: String
 }

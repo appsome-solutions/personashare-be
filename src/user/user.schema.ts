@@ -6,4 +6,5 @@ export const UserSchema = new Schema({
   email: String,
   photo: String,
   personaUUIDs: [String],
+  defaultPersona: String,
 });

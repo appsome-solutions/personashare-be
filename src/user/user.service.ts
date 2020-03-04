@@ -9,16 +9,23 @@ import {
   UserInput,
   AddPersonaInput,
 } from './inputs';
-import { UserType, UserLoginType } from './dto';
+import { UserLoginType } from './dto';
 import { MongoService } from '../mongo-service/mongo.service';
 import { FirebaseService } from '../firebase';
 import { AuthService } from '../auth';
-import { PersonaInterface, PersonaService, PersonaDocument } from '../persona';
+import {
+  PersonaInterface,
+  PersonaService,
+  PersonaDocument,
+  PersonaType,
+} from '../persona';
 import {
   connectPersona,
   ConnectPersonaInput,
   disconnectPersona,
 } from '../shared';
+import { QrCodeService } from '../qrcode';
+import { ConfigService } from '../config';
 
 @Injectable()
 export class UserService {
@@ -29,6 +36,8 @@ export class UserService {
     private readonly firebaseService: FirebaseService,
     private readonly authService: AuthService,
     private readonly personaService: PersonaService,
+    private readonly qrCodeService: QrCodeService,
+    private readonly configService: ConfigService,
   ) {
     this.mongoService = new MongoService(this.userModel);
   }
@@ -40,6 +49,7 @@ export class UserService {
   async loginUser(idToken: string): Promise<UserLoginType> {
     const userData = await this.firebaseService.getDecodedClaim(idToken);
     const { uid, email, name, picture } = userData;
+
     const user = await this.getUser({ uuid: uid });
 
     if (!user) {
@@ -48,6 +58,7 @@ export class UserService {
         email,
         name,
         photo: picture,
+        defaultPersona: '',
       });
     }
 
@@ -86,15 +97,28 @@ export class UserService {
     });
   }
 
-  async getUser(condition: UserInput): Promise<UserType> {
-    return await this.mongoService.findByMatch<UserInput, UserType>(condition);
+  async getUser(condition: UserInput): Promise<UserDocument> {
+    return await this.mongoService.findByMatch<UserInput, UserDocument>(
+      condition,
+    );
   }
 
   async createPersona(input: AddPersonaInput): Promise<PersonaDocument> {
+    const { baseUrl, applicationPort } = this.configService;
     const { persona, uuid } = input;
+    const personaUuid = v4();
+
+    const url = `${baseUrl}:${applicationPort}/persona/${personaUuid}`;
+    const assetPath = `qrcodes/persona_${personaUuid}.svg`;
+    const qrCodeLink = await this.qrCodeService.uploadQrCodeWithLogo(
+      assetPath,
+      url,
+    );
+
     const personaDoc: PersonaInterface = {
       ...persona,
-      uuid: v4(),
+      uuid: personaUuid,
+      qrCodeLink,
     };
 
     const newPersona = await this.personaService.createPersona(personaDoc);
@@ -103,16 +127,40 @@ export class UserService {
       uuid,
     };
 
-    await connectPersona<UserDocument>(connectPersonaPayload, this.userModel);
+    const user = await connectPersona<UserDocument>(
+      connectPersonaPayload,
+      this.userModel,
+    );
+
+    if (user.personaUUIDs && user.personaUUIDs.length === 1) {
+      user.defaultPersona = newPersona.uuid;
+    }
+
+    await user.save();
 
     return newPersona;
   }
 
   async removePersona(condition: RemovePersonaInput): Promise<number> {
+    // TODO: add checking that persona is default for the user
     await disconnectPersona<UserDocument>(condition, this.userModel);
 
     return await this.personaService.removePersona({
       uuid: condition.personaUUID,
     });
+  }
+
+  async setDefaultPersona(
+    personaUuid: string,
+    userId: string,
+  ): Promise<PersonaType> {
+    const persona = this.personaService.getPersona({ uuid: personaUuid });
+    const user = await this.getUser({ uuid: userId });
+
+    user.defaultPersona = personaUuid;
+
+    await user.save();
+
+    return persona;
   }
 }
