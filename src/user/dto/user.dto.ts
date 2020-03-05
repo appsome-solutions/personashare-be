@@ -8,8 +8,8 @@ export class UserType {
   @Field()
   name: string;
 
-  @Field({ nullable: true })
-  email?: string;
+  @Field()
+  email: string;
 
   @Field({ nullable: true })
   photo?: string;

@@ -9,6 +9,7 @@ import { SpotModule } from '../spot';
 import { PersonaModule } from '../persona';
 import { QrCodeModule } from '../qrcode';
 import { ConfigModule } from '../config';
+import { MailchimpModule } from '../mailchimp';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ConfigModule } from '../config';
     PersonaModule,
     QrCodeModule,
     ConfigModule,
+    MailchimpModule,
   ],
   providers: [UserService, UserResolver],
   exports: [UserService],

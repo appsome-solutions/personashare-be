@@ -161,7 +161,7 @@ type UserLoginType {
 type UserType {
   uuid: String!
   name: String!
-  email: String
+  email: String!
   photo: String
   personaUUIDs: [String!]
   defaultPersona: String

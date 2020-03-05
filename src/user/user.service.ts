@@ -26,6 +26,7 @@ import {
 } from '../shared';
 import { QrCodeService } from '../qrcode';
 import { ConfigService } from '../config';
+import { MailchimpService } from '../mailchimp';
 
 @Injectable()
 export class UserService {
@@ -38,11 +39,14 @@ export class UserService {
     private readonly personaService: PersonaService,
     private readonly qrCodeService: QrCodeService,
     private readonly configService: ConfigService,
+    private readonly mailchimpService: MailchimpService,
   ) {
     this.mongoService = new MongoService(this.userModel);
   }
 
   async createUser(user: UserInterface): Promise<UserDocument> {
+    await this.mailchimpService.subscribe(user.email);
+
     return await this.mongoService.create<UserInterface, UserDocument>(user);
   }
 
