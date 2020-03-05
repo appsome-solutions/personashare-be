@@ -14,6 +14,7 @@ import { AuthModule } from './auth';
 import { UserModule } from './user';
 import { PersonaModule } from './persona';
 import { GqlSelectionParserModule } from './gql-selection-parser';
+import { MailchimpModule } from './mailchimp';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { GqlSelectionParserModule } from './gql-selection-parser';
     UserModule,
     PersonaModule,
     GqlSelectionParserModule,
+    MailchimpModule,
   ],
   controllers: [AppController],
   providers: [AppService, ExampleModule],
