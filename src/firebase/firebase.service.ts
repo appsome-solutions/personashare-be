@@ -9,9 +9,16 @@ export class FirebaseService {
 
   constructor(private readonly configService: ConfigService) {
     const { FirebaseCredentialPath } = this.configService;
+    let appCredential: credential.Credential;
+
+    try {
+      appCredential = credential.cert(FirebaseCredentialPath);
+    } catch (_e) {
+      appCredential = credential.cert(JSON.parse(FirebaseCredentialPath));
+    }
 
     this.firebase = initializeApp({
-      credential: credential.cert(FirebaseCredentialPath),
+      credential: appCredential,
     });
   }
 
