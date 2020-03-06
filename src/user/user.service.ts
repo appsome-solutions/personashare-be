@@ -54,10 +54,10 @@ export class UserService {
     const userData = await this.firebaseService.getDecodedClaim(idToken);
     const { uid, email, name, picture } = userData;
 
-    const user = await this.getUser({ uuid: uid });
+    let user = await this.getUser({ uuid: uid });
 
     if (!user) {
-      await this.createUser({
+      user = await this.createUser({
         uuid: uid,
         email,
         name,
@@ -70,6 +70,7 @@ export class UserService {
 
     return {
       accessToken,
+      user,
     };
   }
 
