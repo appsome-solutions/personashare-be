@@ -42,6 +42,7 @@ export class UserResolver {
     return await this.userService.createUser({
       ...user,
       defaultPersona: '',
+      personaUUIDs: [],
     });
   }
 
@@ -91,5 +92,21 @@ export class UserResolver {
   ): Promise<PersonaType> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
     return await this.userService.setDefaultPersona(uuid, uid);
+  }
+
+  @Mutation(() => PersonaType)
+  @UseGuards(GqlSessionGuard)
+  async recommendBy(
+    @Args('personaUuid') personaUuid: string,
+    @Args('recommendedPersonaUuid') recommendedPersonaUuid: string,
+    @Context() context: GQLContext,
+  ): Promise<PersonaType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.userService.recommendPersona(
+      personaUuid,
+      recommendedPersonaUuid,
+      uid,
+    );
   }
 }

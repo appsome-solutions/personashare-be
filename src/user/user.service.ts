@@ -2,6 +2,8 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { v4 } from 'uuid';
+import dayjs from 'dayjs';
+
 import { UserDocument, UserInterface } from './interfaces/user.interfaces';
 import {
   RemovePersonaInput,
@@ -27,6 +29,7 @@ import {
 import { QrCodeService } from '../qrcode';
 import { ConfigService } from '../config';
 import { MailchimpService } from '../mailchimp';
+import { RecommendationsService } from '../recommendations';
 
 @Injectable()
 export class UserService {
@@ -40,6 +43,7 @@ export class UserService {
     private readonly qrCodeService: QrCodeService,
     private readonly configService: ConfigService,
     private readonly mailchimpService: MailchimpService,
+    private readonly recommendationsService: RecommendationsService,
   ) {
     this.mongoService = new MongoService(this.userModel);
   }
@@ -63,6 +67,7 @@ export class UserService {
         name,
         photo: picture,
         defaultPersona: '',
+        personaUUIDs: [],
       });
     }
 
@@ -123,6 +128,8 @@ export class UserService {
     const personaDoc: PersonaInterface = {
       ...persona,
       uuid: personaUuid,
+      personaUUIDs: [],
+      networkList: [],
       qrCodeLink,
     };
 
@@ -171,5 +178,42 @@ export class UserService {
     }
 
     return persona;
+  }
+
+  async recommendPersona(
+    personaUuid: string,
+    recommendedPersonaUuid: string,
+    uuid: string,
+  ): Promise<PersonaType> {
+    const user = await this.getUser({ uuid });
+
+    if (
+      user.personaUUIDs.includes(personaUuid) &&
+      !user.personaUUIDs.includes(recommendedPersonaUuid)
+    ) {
+      const recommendedPersona = await this.personaService.getPersona({
+        uuid: recommendedPersonaUuid,
+      });
+
+      recommendedPersona.networkList = recommendedPersona.networkList.concat(
+        personaUuid,
+      );
+
+      await this.recommendationsService.createRecommendation({
+        source: personaUuid,
+        sourceKind: 'persona',
+        destination: recommendedPersonaUuid,
+        destinationKind: 'persona',
+        recommendedTill: dayjs()
+          .add(2, 'week')
+          .unix(),
+      });
+
+      return await recommendedPersona.save();
+    } else {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected persona',
+      );
+    }
   }
 }

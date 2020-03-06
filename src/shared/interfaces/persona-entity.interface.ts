@@ -6,8 +6,9 @@ export interface PersonaEntity {
   readonly uuid: string;
   card: Card;
   page: Page;
-  personaUUIDs?: string[];
+  personaUUIDs: string[];
   qrCodeLink: string;
+  networkList: string[];
 }
 
 export interface PersonaEntityDocument extends PersonaEntity, Document {}

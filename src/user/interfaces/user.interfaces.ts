@@ -5,7 +5,7 @@ interface UserInterface {
   name: string;
   email: string;
   photo?: string;
-  personaUUIDs?: string[];
+  personaUUIDs: string[];
   defaultPersona: string;
 }
 

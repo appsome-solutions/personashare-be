@@ -5,5 +5,6 @@ export const PersonaSchema = new Schema({
   card: Object,
   page: Object,
   personaUUIDs: [String],
+  networkList: [String],
   qrCodeLink: String,
 });

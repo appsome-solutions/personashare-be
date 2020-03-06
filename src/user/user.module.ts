@@ -10,6 +10,7 @@ import { PersonaModule } from '../persona';
 import { QrCodeModule } from '../qrcode';
 import { ConfigModule } from '../config';
 import { MailchimpModule } from '../mailchimp';
+import { RecommendationsModule } from '../recommendations';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MailchimpModule } from '../mailchimp';
     QrCodeModule,
     ConfigModule,
     MailchimpModule,
+    RecommendationsModule,
   ],
   providers: [UserService, UserResolver],
   exports: [UserService],

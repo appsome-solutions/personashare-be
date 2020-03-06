@@ -71,6 +71,10 @@ type Mutation {
   createPersona(persona: CreatePersonaInput!): PersonaType!
   removePersona(payload: RemovePersonaInput!): Float!
   setDefaultPersona(uuid: String!): PersonaType!
+  recommendBy(
+    recommendedPersonaUuid: String!
+    personaUuid: String!
+  ): PersonaType!
 }
 
 input PageInput {
@@ -95,6 +99,7 @@ type PersonaType {
   page: PageType!
   personaUUIDs: [String!]
   qrCodeLink: String!
+  networkList: [String!]
 }
 
 type Query {
