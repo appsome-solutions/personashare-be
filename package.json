@@ -31,6 +31,7 @@
     "canvas": "^2.6.1",
     "class-transformer": "^0.2.3",
     "cookie-parser": "^1.4.4",
+    "dayjs": "^1.8.21",
     "dotenv": "^8.2.0",
     "firebase": "^7.5.0",
     "firebase-admin": "^8.8.0",
