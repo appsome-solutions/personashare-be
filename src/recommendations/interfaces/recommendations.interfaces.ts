@@ -8,10 +8,14 @@ interface RecommendationInterface {
   readonly destination: string;
   readonly destinationKind: EntityKind;
   readonly createdAt: number;
-  readonly recommendedTill: number;
+  recommendedTill: number;
+  active: boolean;
 }
 
-type CreateRecommendation = Omit<RecommendationInterface, 'uuid' | 'createdAt'>;
+type CreateRecommendation = Omit<
+  RecommendationInterface,
+  'uuid' | 'createdAt' | 'active'
+>;
 
 type RemoveRecommendation = Partial<RecommendationInterface>;
 

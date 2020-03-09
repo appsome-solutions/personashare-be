@@ -191,6 +191,7 @@ export class UserService {
       user.personaUUIDs.includes(personaUuid) &&
       !user.personaUUIDs.includes(recommendedPersonaUuid)
     ) {
+      //TODO: add recommendList handling
       const recommendedPersona = await this.personaService.getPersona({
         uuid: recommendedPersonaUuid,
       });
