@@ -8,4 +8,5 @@ export const RecommendationSchema = new Schema({
   destinationKind: String,
   createdAt: Number,
   recommendedTill: Number,
+  active: Boolean,
 });

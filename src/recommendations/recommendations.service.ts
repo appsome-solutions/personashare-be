@@ -40,14 +40,22 @@ export class RecommendationsService {
     >({
       ...recommendation,
       createdAt: now,
+      active: true,
       uuid: v4(),
     });
   }
 
   async removeRecommendation(
     recommendation: RemoveRecommendation,
-  ): Promise<number> {
-    // TODO: do we have to also update networkList in persona?
-    return await this.mongoService.remove<RemoveRecommendation>(recommendation);
+  ): Promise<RecommendationDocument> {
+    return await this.mongoService.update<
+      RemoveRecommendation,
+      RecommendationDocument
+    >(
+      {
+        active: false,
+      },
+      recommendation,
+    );
   }
 }
