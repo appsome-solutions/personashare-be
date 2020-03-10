@@ -130,6 +130,7 @@ export class UserService {
       uuid: personaUuid,
       personaUUIDs: [],
       networkList: [],
+      recommendList: [],
       qrCodeLink,
     };
 
@@ -191,10 +192,25 @@ export class UserService {
       user.personaUUIDs.includes(personaUuid) &&
       !user.personaUUIDs.includes(recommendedPersonaUuid)
     ) {
-      //TODO: add recommendList handling
+      const userPersona = await this.personaService.getPersona({
+        uuid: personaUuid,
+      });
+
+      if (!userPersona) {
+        throw new Error('No persona found for given personaUuid');
+      }
+
+      userPersona.recommendList = userPersona.recommendList.concat(
+        recommendedPersonaUuid,
+      );
+
       const recommendedPersona = await this.personaService.getPersona({
         uuid: recommendedPersonaUuid,
       });
+
+      if (!recommendedPersona) {
+        throw new Error('No persona found for given recommendedPersonaUuid');
+      }
 
       recommendedPersona.networkList = recommendedPersona.networkList.concat(
         personaUuid,
@@ -209,6 +225,8 @@ export class UserService {
           .add(2, 'week')
           .unix(),
       });
+
+      await userPersona.save();
 
       return await recommendedPersona.save();
     } else {

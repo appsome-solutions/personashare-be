@@ -100,6 +100,7 @@ type PersonaType {
   personaUUIDs: [String!]
   qrCodeLink: String!
   networkList: [String!]
+  recommendList: [String!]
 }
 
 type Query {

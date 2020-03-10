@@ -6,5 +6,6 @@ export const PersonaSchema = new Schema({
   page: Object,
   personaUUIDs: [String],
   networkList: [String],
+  recommendList: [String],
   qrCodeLink: String,
 });
