@@ -64,7 +64,7 @@ type Mutation {
   connectPersona(input: ConnectPersonaInput!): PersonaType!
   updatePersona(uuid: String!, persona: UpdatePersonaInput!): PersonaType!
   loginUser(idToken: String!): UserLoginType!
-  logoutUser(uid: String!): String!
+  logout: Boolean!
   createUser(user: CreateUserInput!): UserType!
   updateUser(uuid: String!, user: UpdateUserInput!): UserType!
   removeUser(condition: UserInput!): Float!
