@@ -31,8 +31,9 @@ export class UserResolver {
     return await this.userService.loginUser(idToken);
   }
 
-  @Mutation(() => String)
-  async logoutUser(@Args('uid') uid: string): Promise<boolean> {
+  @Mutation(() => Boolean)
+  async logout(@Context() context: GQLContext): Promise<boolean> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
     return await this.userService.logoutUser(uid);
   }
 
