@@ -15,8 +15,12 @@ export class UserResolver {
   ) {}
 
   @Query(() => UserType, { nullable: true })
-  async user(@Args('condition') condition: UserInput): Promise<UserType> {
-    return await this.userService.getUser(condition);
+  async user(@Context() context: GQLContext): Promise<UserType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.userService.getUser({
+      uuid: uid,
+    });
   }
 
   @Mutation(() => UserLoginType)

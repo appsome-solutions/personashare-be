@@ -107,7 +107,7 @@ type Query {
   getExample(id: String!): Example!
   spot(condition: SpotInput!): SpotType
   spots: [SpotType!]
-  user(condition: UserInput!): UserType
+  user: UserType
   persona(uuid: String!): PersonaType
   personas: [PersonaType!]
 }
