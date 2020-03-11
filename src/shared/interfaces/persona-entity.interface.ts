@@ -9,6 +9,7 @@ export interface PersonaEntity {
   personaUUIDs: string[];
   qrCodeLink: string;
   networkList: string[];
+  recommendList: string[];
 }
 
 export interface PersonaEntityDocument extends PersonaEntity, Document {}
