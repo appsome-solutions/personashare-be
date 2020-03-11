@@ -28,6 +28,8 @@ export class SpotResolver {
     const spotDoc: SpotInterface = {
       ...input,
       uuid: v4(),
+      participants: [],
+      qrCodeLink: '',
     };
 
     return await this.spotService.createSpot(spotDoc);

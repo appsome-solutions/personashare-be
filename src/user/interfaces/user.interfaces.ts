@@ -7,6 +7,7 @@ interface UserInterface {
   photo?: string;
   personaUUIDs: string[];
   defaultPersona: string;
+  spots: string[];
 }
 
 interface UserDocument extends UserInterface, Document {}

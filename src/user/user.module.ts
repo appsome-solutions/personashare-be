@@ -5,24 +5,16 @@ import { UserResolver } from './user.resolver';
 import { UserSchema } from './user.schema';
 import { FirebaseModule } from '../firebase';
 import { AuthModule } from '../auth';
-import { SpotModule } from '../spot';
-import { PersonaModule } from '../persona';
-import { QrCodeModule } from '../qrcode';
 import { ConfigModule } from '../config';
 import { MailchimpModule } from '../mailchimp';
-import { RecommendationsModule } from '../recommendations';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     FirebaseModule,
     AuthModule,
-    SpotModule,
-    PersonaModule,
-    QrCodeModule,
     ConfigModule,
     MailchimpModule,
-    RecommendationsModule,
   ],
   providers: [UserService, UserResolver],
   exports: [UserService],

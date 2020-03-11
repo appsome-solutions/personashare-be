@@ -26,4 +26,7 @@ export class SpotType {
 
   @Field(() => [String], { nullable: true })
   personaUUIDs?: string[];
+
+  @Field(() => [String], { nullable: true })
+  participants?: string[];
 }

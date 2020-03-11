@@ -1,8 +1,8 @@
 import { Field, InputType } from 'type-graphql';
-import { CardInput, PageInput } from '../../shared';
+import { CardInput, PageInput } from '../index';
 
 @InputType()
-export class CreatePersonaInput {
+export class CreateShareableInput {
   @Field(() => CardInput)
   card: CardInput;
 
