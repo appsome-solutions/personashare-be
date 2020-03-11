@@ -7,4 +7,5 @@ export const UserSchema = new Schema({
   photo: String,
   personaUUIDs: [String],
   defaultPersona: String,
+  spots: [String],
 });

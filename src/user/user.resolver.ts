@@ -2,15 +2,8 @@ import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserType, UserLoginType } from './dto';
-import {
-  CreateUserInput,
-  RemovePersonaInput,
-  UpdateUserInput,
-  UserInput,
-  AddPersonaInput,
-} from './inputs';
+import { CreateUserInput, UpdateUserInput, UserInput } from './inputs';
 import { GqlSessionGuard } from '../guards';
-import { CreatePersonaInput, PersonaType } from '../persona';
 import { GQLContext } from '../app.interfaces';
 import { FirebaseService } from '../firebase';
 
@@ -44,6 +37,7 @@ export class UserResolver {
       ...user,
       defaultPersona: '',
       personaUUIDs: [],
+      spots: [],
     });
   }
 
@@ -60,54 +54,5 @@ export class UserResolver {
   @UseGuards(GqlSessionGuard)
   async removeUser(@Args('condition') condition: UserInput): Promise<number> {
     return await this.userService.removeUser(condition);
-  }
-
-  @Mutation(() => PersonaType)
-  @UseGuards(GqlSessionGuard)
-  async createPersona(
-    @Args('persona') persona: CreatePersonaInput,
-    @Context() context: GQLContext,
-  ): Promise<PersonaType> {
-    const { uid } = await this.firebaseService.getClaimFromToken(context);
-    const payload: AddPersonaInput = {
-      uuid: uid,
-      persona,
-    };
-
-    return await this.userService.createPersona(payload);
-  }
-
-  @Mutation(() => Number)
-  @UseGuards(GqlSessionGuard)
-  async removePersona(
-    @Args('payload') payload: RemovePersonaInput,
-  ): Promise<number> {
-    return await this.userService.removePersona(payload);
-  }
-
-  @Mutation(() => PersonaType)
-  @UseGuards(GqlSessionGuard)
-  async setDefaultPersona(
-    @Args('uuid') uuid: string,
-    @Context() context: GQLContext,
-  ): Promise<PersonaType> {
-    const { uid } = await this.firebaseService.getClaimFromToken(context);
-    return await this.userService.setDefaultPersona(uuid, uid);
-  }
-
-  @Mutation(() => PersonaType)
-  @UseGuards(GqlSessionGuard)
-  async recommendBy(
-    @Args('personaUuid') personaUuid: string,
-    @Args('recommendedPersonaUuid') recommendedPersonaUuid: string,
-    @Context() context: GQLContext,
-  ): Promise<PersonaType> {
-    const { uid } = await this.firebaseService.getClaimFromToken(context);
-
-    return await this.userService.recommendPersona(
-      personaUuid,
-      recommendedPersonaUuid,
-      uid,
-    );
   }
 }

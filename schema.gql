@@ -5,7 +5,7 @@
 
 input AddPersonaInput {
   uuid: String!
-  persona: CreatePersonaInput!
+  persona: CreateShareableInput!
 }
 
 input CardInput {
@@ -27,7 +27,7 @@ input ConnectPersonaInput {
   personaUUID: String!
 }
 
-input CreatePersonaInput {
+input CreateShareableInput {
   card: CardInput!
   page: PageInput!
 }
@@ -62,15 +62,15 @@ type Mutation {
   updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
   removeSpot(condition: SpotInput!): Float!
   connectPersona(input: ConnectPersonaInput!): PersonaType!
-  updatePersona(uuid: String!, persona: UpdatePersonaInput!): PersonaType!
   loginUser(idToken: String!): UserLoginType!
   logout: Boolean!
   createUser(user: CreateUserInput!): UserType!
   updateUser(uuid: String!, user: UpdateUserInput!): UserType!
   removeUser(condition: UserInput!): Float!
-  createPersona(persona: CreatePersonaInput!): PersonaType!
+  createPersona(persona: CreateShareableInput!): PersonaType!
   removePersona(payload: RemovePersonaInput!): Float!
   setDefaultPersona(uuid: String!): PersonaType!
+  updatePersona(uuid: String!, persona: UpdatePersonaInput!): PersonaType!
   recommendBy(
     recommendedPersonaUuid: String!
     personaUuid: String!
@@ -107,9 +107,9 @@ type Query {
   getExample(id: String!): Example!
   spot(condition: SpotInput!): SpotType
   spots: [SpotType!]
+  user(condition: UserInput!): UserType
   persona(uuid: String!): PersonaType
   personas: [PersonaType!]
-  user(condition: UserInput!): UserType
 }
 
 input RemovePersonaInput {
@@ -132,6 +132,7 @@ type SpotType {
   url: String
   details: JSONObject
   personaUUIDs: [String!]
+  participants: [String!]
 }
 
 input UpdatePersonaInput {
@@ -172,4 +173,5 @@ type UserType {
   photo: String
   personaUUIDs: [String!]
   defaultPersona: String
+  spots: [String!]
 }

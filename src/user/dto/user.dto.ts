@@ -19,4 +19,7 @@ export class UserType {
 
   @Field({ nullable: true })
   defaultPersona: string;
+
+  @Field(() => [String], { nullable: true })
+  spots?: string[];
 }

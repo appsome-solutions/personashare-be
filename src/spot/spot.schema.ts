@@ -9,4 +9,6 @@ export const SpotSchema = new Schema({
   url: String,
   details: Object,
   personaUUIDs: [String],
+  participants: [String],
+  qrCodeLink: String,
 });
