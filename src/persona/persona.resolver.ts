@@ -1,11 +1,8 @@
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { GqlSessionGuard } from '../guards';
-import {
-  ConnectPersonaInput,
-  CreateShareableInput,
-  UpdatePersonaInput,
-} from '../shared';
+import { ConnectPersonaInput, UpdatePersonaInput } from '../shared';
+import { CreateShareableInput } from '../shared/input/create-shareable.input';
 import { PersonaService } from './persona.service';
 import { PersonaType } from './dto/persona.dto';
 import { PersonaInput } from './input';

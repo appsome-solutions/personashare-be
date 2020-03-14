@@ -6,7 +6,7 @@ import { SpotType } from './dto/spot.dto';
 import { SpotInput, UpdateSpotInput } from './inputs';
 import { SpotInterface } from './interfaces/spot.interfaces';
 import { GqlSessionGuard } from '../guards';
-import { CreateShareableInput } from '../shared';
+import { CreateShareableInput } from '../shared/input/create-shareable.input';
 import { GQLContext } from '../app.interfaces';
 import { FirebaseService } from '../firebase';
 
