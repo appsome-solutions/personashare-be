@@ -1,16 +1,21 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Context } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { v4 } from 'uuid';
 import { SpotService } from './spot.service';
 import { SpotType } from './dto/spot.dto';
-import { CreateSpotInput, SpotInput, UpdateSpotInput } from './inputs';
+import { SpotInput, UpdateSpotInput } from './inputs';
 import { SpotInterface } from './interfaces/spot.interfaces';
 import { GqlSessionGuard } from '../guards';
-import { ConnectPersonaInput } from '../shared';
+import { CreateShareableInput } from '../shared';
+import { GQLContext } from '../app.interfaces';
+import { FirebaseService } from '../firebase';
 
 @Resolver('Spot')
 export class SpotResolver {
-  constructor(private readonly spotService: SpotService) {}
+  constructor(
+    private readonly spotService: SpotService,
+    private readonly firebaseService: FirebaseService,
+  ) {}
 
   @Query(() => SpotType, { nullable: true })
   async spot(@Args('condition') input: SpotInput): Promise<SpotType | null> {
@@ -24,11 +29,20 @@ export class SpotResolver {
 
   @Mutation(() => SpotType)
   @UseGuards(GqlSessionGuard)
-  async createSpot(@Args('spot') input: CreateSpotInput): Promise<SpotType> {
+  async createSpot(
+    @Args('spot') spot: CreateShareableInput,
+    @Context() context: GQLContext,
+  ): Promise<SpotType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
     const spotDoc: SpotInterface = {
-      ...input,
+      ...spot,
+      owner: uid,
       uuid: v4(),
       participants: [],
+      personaUUIDs: [],
+      networkList: [],
+      recommendList: [],
       qrCodeLink: '',
     };
 
@@ -48,13 +62,5 @@ export class SpotResolver {
   @UseGuards(GqlSessionGuard)
   async removeSpot(@Args('condition') input: SpotInput): Promise<number> {
     return await this.spotService.removeSpot(input);
-  }
-
-  @Mutation(() => SpotType)
-  @UseGuards(GqlSessionGuard)
-  async connectPersona(
-    @Args('input') input: ConnectPersonaInput,
-  ): Promise<SpotType> {
-    return await this.spotService.connectPersona(input);
   }
 }

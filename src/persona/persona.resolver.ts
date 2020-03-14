@@ -40,6 +40,7 @@ export class PersonaResolver {
     @Context() context: GQLContext,
   ): Promise<PersonaType> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
+
     const payload: AddPersonaInput = {
       uuid: uid,
       persona,
