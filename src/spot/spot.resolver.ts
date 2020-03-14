@@ -43,6 +43,7 @@ export class SpotResolver {
       personaUUIDs: [],
       networkList: [],
       recommendList: [],
+      managers: [],
       qrCodeLink: '',
     };
 
@@ -51,16 +52,42 @@ export class SpotResolver {
 
   @Mutation(() => SpotType)
   @UseGuards(GqlSessionGuard)
+  async participate(
+    @Args('spotId') spotId: string,
+    @Args('personaId') personaId: string,
+    @Context() context: GQLContext,
+  ): Promise<SpotType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.spotService.participate(uid, spotId, personaId);
+  }
+
+  @Mutation(() => SpotType)
+  @UseGuards(GqlSessionGuard)
+  async addManager(
+    @Args('spotId') spotId: string,
+    @Args('personaId') personaId: string,
+    @Context() context: GQLContext,
+  ): Promise<SpotType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.spotService.addManager(uid, spotId, personaId);
+  }
+
+  @Mutation(() => SpotType)
+  @UseGuards(GqlSessionGuard)
   async updateSpot(
     @Args('spot') spot: UpdateSpotInput,
     @Args('uuid') uuid: string,
   ): Promise<SpotType> {
+    // TODO: add changes according to the req.
     return await this.spotService.updateSpot(spot, uuid);
   }
 
   @Mutation(() => Number)
   @UseGuards(GqlSessionGuard)
   async removeSpot(@Args('condition') input: SpotInput): Promise<number> {
+    // TODO: add changes according to the req.
     return await this.spotService.removeSpot(input);
   }
 }

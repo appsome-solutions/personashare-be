@@ -10,4 +10,5 @@ export const SpotSchema = new Schema({
   qrCodeLink: String,
   participants: [String],
   owner: String,
+  managers: [String],
 });

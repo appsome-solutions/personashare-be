@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SpotDocument, SpotInterface } from './interfaces/spot.interfaces';
@@ -8,6 +8,7 @@ import { MongoService } from '../mongo-service/mongo.service';
 import { ConfigService } from '../config';
 import { QrCodeService } from '../qrcode';
 import { UserService } from '../user';
+import { PersonaService } from '../persona';
 
 @Injectable()
 export class SpotService {
@@ -19,6 +20,7 @@ export class SpotService {
     private readonly configService: ConfigService,
     private readonly qrCodeService: QrCodeService,
     private readonly userService: UserService,
+    private readonly personaService: PersonaService,
   ) {
     this.mongoService = new MongoService(this.spotModel);
   }
@@ -54,14 +56,80 @@ export class SpotService {
     return newSpot;
   }
 
+  async participate(
+    uuid: string,
+    spotId: string,
+    personaId: string,
+  ): Promise<SpotDocument> {
+    const user = await this.userService.getUser({
+      uuid,
+    });
+
+    if (!user.personaUUIDs.includes(personaId)) {
+      throw new MethodNotAllowedException(
+        'Cannot participate with given persona',
+      );
+    }
+
+    const persona = await this.personaService.getPersona({
+      uuid: personaId,
+    });
+
+    const spot = await this.getSpot({
+      uuid: spotId,
+    });
+
+    if (!spot.participants.includes(persona.uuid)) {
+      spot.participants = spot.participants.concat(spotId);
+
+      await spot.save();
+    }
+
+    return spot;
+  }
+
+  async addManager(
+    uuid: string,
+    spotId: string,
+    personaId: string,
+  ): Promise<SpotDocument> {
+    const user = await this.userService.getUser({
+      uuid,
+    });
+
+    if (!user.spots.includes(spotId)) {
+      throw new MethodNotAllowedException(
+        'Cannot add manager to the given spot',
+      );
+    }
+
+    const persona = await this.personaService.getPersona({
+      uuid: personaId,
+    });
+
+    const spot = await this.getSpot({
+      uuid: spotId,
+    });
+
+    if (!spot.managers.includes(persona.uuid)) {
+      spot.managers = spot.managers.concat(personaId);
+
+      await spot.save();
+    }
+
+    return spot;
+  }
+
   async updateSpot(spot: UpdateSpotInput, uuid: string): Promise<SpotDocument> {
     return await this.mongoService.update<UpdateSpotInput, SpotDocument>(spot, {
       uuid,
     });
   }
 
-  async getSpot(condition: SpotInput): Promise<SpotType> {
-    return await this.mongoService.findByMatch<SpotInput, SpotType>(condition);
+  async getSpot(condition: SpotInput): Promise<SpotDocument> {
+    return await this.mongoService.findByMatch<SpotInput, SpotDocument>(
+      condition,
+    );
   }
 
   async getSpots(): Promise<SpotType[]> {

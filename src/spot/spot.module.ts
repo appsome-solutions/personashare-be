@@ -7,6 +7,7 @@ import { FirebaseModule } from '../firebase';
 import { UserModule } from '../user';
 import { QrCodeModule } from '../qrcode';
 import { ConfigModule } from '../config';
+import { PersonaModule } from '../persona';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ConfigModule } from '../config';
     QrCodeModule,
     ConfigModule,
     UserModule,
+    PersonaModule,
   ],
   providers: [SpotService, SpotResolver],
   exports: [SpotService],
