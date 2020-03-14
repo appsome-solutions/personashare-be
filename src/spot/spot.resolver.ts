@@ -43,10 +43,35 @@ export class SpotResolver {
       personaUUIDs: [],
       networkList: [],
       recommendList: [],
+      managers: [],
       qrCodeLink: '',
     };
 
     return await this.spotService.createSpot(spotDoc);
+  }
+
+  @Mutation(() => SpotType)
+  @UseGuards(GqlSessionGuard)
+  async participate(
+    @Args('spotId') spotId: string,
+    @Args('personaId') personaId: string,
+    @Context() context: GQLContext,
+  ): Promise<SpotType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.spotService.participate(uid, spotId, personaId);
+  }
+
+  @Mutation(() => SpotType)
+  @UseGuards(GqlSessionGuard)
+  async addManager(
+    @Args('spotId') spotId: string,
+    @Args('personaId') personaId: string,
+    @Context() context: GQLContext,
+  ): Promise<SpotType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.spotService.addManager(uid, spotId, personaId);
   }
 
   @Mutation(() => SpotType)

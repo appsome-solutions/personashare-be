@@ -3,6 +3,7 @@ import { PersonaEntity } from '../../shared/interfaces';
 
 interface SpotInterface extends PersonaEntity {
   participants: string[];
+  managers: string[];
   owner: string;
 }
 

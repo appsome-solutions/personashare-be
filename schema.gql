@@ -50,9 +50,6 @@ type Mutation {
   createUser(user: CreateUserInput!): UserType!
   updateUser(uuid: String!, user: UpdateUserInput!): UserType!
   removeUser(condition: UserInput!): Float!
-  createSpot(spot: CreateShareableInput!): SpotType!
-  updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
-  removeSpot(condition: SpotInput!): Float!
   createPersona(persona: CreateShareableInput!): PersonaType!
   removePersona(payload: RemovePersonaInput!): Float!
   setDefaultPersona(uuid: String!): PersonaType!
@@ -62,6 +59,11 @@ type Mutation {
     recommendedPersonaUuid: String!
     personaUuid: String!
   ): PersonaType!
+  createSpot(spot: CreateShareableInput!): SpotType!
+  participate(personaId: String!, spotId: String!): SpotType!
+  addManager(personaId: String!, spotId: String!): SpotType!
+  updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
+  removeSpot(condition: SpotInput!): Float!
 }
 
 input PageInput {
@@ -92,10 +94,10 @@ type PersonaType {
 
 type Query {
   user: UserType
-  spot(condition: SpotInput!): SpotType
-  spots: [SpotType!]
   persona(uuid: String!): PersonaType
   personas: [PersonaType!]
+  spot(condition: SpotInput!): SpotType
+  spots: [SpotType!]
 }
 
 input RemovePersonaInput {
@@ -118,6 +120,7 @@ type SpotType {
   recommendList: [String!]
   owner: String!
   participants: [String!]
+  managers: [String!]
 }
 
 input UpdatePersonaInput {
