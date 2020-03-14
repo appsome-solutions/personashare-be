@@ -1,4 +1,4 @@
-import { IsString, IsUrl, IsOptional } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
@@ -15,12 +15,5 @@ export class SpotInput {
   })
   @IsString()
   @IsOptional()
-  name?: string;
-
-  @Field({
-    nullable: true,
-  })
-  @IsUrl()
-  @IsOptional()
-  url?: string;
+  owner?: string;
 }

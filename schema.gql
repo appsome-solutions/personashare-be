@@ -32,24 +32,11 @@ input CreateShareableInput {
   page: PageInput!
 }
 
-input CreateSpotInput {
-  name: String!
-  description: String!
-  logo: String
-  image: String
-  url: String = ""
-  details: JSONObject
-}
-
 input CreateUserInput {
   uuid: String!
   name: String!
   email: String
   photo: String
-}
-
-type Example {
-  qrCodeDataUri: String
 }
 
 """
@@ -58,19 +45,19 @@ The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](
 scalar JSONObject
 
 type Mutation {
-  createSpot(spot: CreateSpotInput!): SpotType!
-  updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
-  removeSpot(condition: SpotInput!): Float!
-  connectPersona(input: ConnectPersonaInput!): PersonaType!
   loginUser(idToken: String!): UserLoginType!
   logout: Boolean!
   createUser(user: CreateUserInput!): UserType!
   updateUser(uuid: String!, user: UpdateUserInput!): UserType!
   removeUser(condition: UserInput!): Float!
+  createSpot(spot: CreateShareableInput!): SpotType!
+  updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
+  removeSpot(condition: SpotInput!): Float!
   createPersona(persona: CreateShareableInput!): PersonaType!
   removePersona(payload: RemovePersonaInput!): Float!
   setDefaultPersona(uuid: String!): PersonaType!
   updatePersona(uuid: String!, persona: UpdatePersonaInput!): PersonaType!
+  connectPersona(input: ConnectPersonaInput!): PersonaType!
   recommendBy(
     recommendedPersonaUuid: String!
     personaUuid: String!
@@ -104,10 +91,9 @@ type PersonaType {
 }
 
 type Query {
-  getExample(id: String!): Example!
+  user: UserType
   spot(condition: SpotInput!): SpotType
   spots: [SpotType!]
-  user: UserType
   persona(uuid: String!): PersonaType
   personas: [PersonaType!]
 }
@@ -119,19 +105,18 @@ input RemovePersonaInput {
 
 input SpotInput {
   uuid: String
-  name: String
-  url: String
+  owner: String
 }
 
 type SpotType {
   uuid: String!
-  name: String!
-  description: String!
-  logo: String
-  image: String
-  url: String
-  details: JSONObject
+  card: CardType!
+  page: PageType!
   personaUUIDs: [String!]
+  qrCodeLink: String!
+  networkList: [String!]
+  recommendList: [String!]
+  owner: String!
   participants: [String!]
 }
 

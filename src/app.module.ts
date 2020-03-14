@@ -5,7 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GQLContext } from './app.interfaces';
 import { ConfigModule, ConfigService } from './config';
-import { ExampleModule } from './example';
 import { QrCodeModule } from './qrcode';
 import { NgrokModule } from './ngrok';
 import { SpotModule } from './spot';
@@ -40,7 +39,6 @@ import { RecommendationsModule } from './recommendations';
       inject: [ConfigService],
     }),
     ConfigModule,
-    ExampleModule,
     QrCodeModule,
     NgrokModule,
     SpotModule,
@@ -53,6 +51,6 @@ import { RecommendationsModule } from './recommendations';
     RecommendationsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ExampleModule],
+  providers: [AppService],
 })
 export class AppModule {}

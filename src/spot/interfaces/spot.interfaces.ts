@@ -1,16 +1,9 @@
 import { Document } from 'mongoose';
+import { PersonaEntity } from '../../shared/interfaces';
 
-interface SpotInterface {
-  readonly uuid: string;
-  name: string;
-  personaUUIDs?: string[];
+interface SpotInterface extends PersonaEntity {
   participants: string[];
-  description: string;
-  logo?: string;
-  image?: string;
-  url?: string;
-  details?: object;
-  qrCodeLink: string;
+  owner: string;
 }
 
 interface SpotDocument extends SpotInterface, Document {}
