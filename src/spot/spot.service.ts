@@ -9,6 +9,8 @@ import { ConfigService } from '../config';
 import { QrCodeService } from '../qrcode';
 import { UserService } from '../user';
 import { PersonaService } from '../persona';
+import { RecommendationsService } from '../recommendations';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class SpotService {
@@ -21,6 +23,7 @@ export class SpotService {
     private readonly qrCodeService: QrCodeService,
     private readonly userService: UserService,
     private readonly personaService: PersonaService,
+    private readonly recommendationsService: RecommendationsService,
   ) {
     this.mongoService = new MongoService(this.spotModel);
   }
@@ -118,6 +121,58 @@ export class SpotService {
     }
 
     return spot;
+  }
+
+  async recommendSpot(
+    personaUuid: string,
+    recommendedSpotUuid: string,
+    uuid: string,
+  ): Promise<SpotType> {
+    const user = await this.userService.getUser({ uuid });
+
+    if (user.personaUUIDs.includes(personaUuid)) {
+      const userPersona = await this.personaService.getPersona({
+        uuid: personaUuid,
+      });
+
+      if (!userPersona) {
+        throw new Error('No persona found for given personaUuid');
+      }
+
+      userPersona.spotRecommendList = userPersona.spotRecommendList.concat(
+        recommendedSpotUuid,
+      );
+
+      const recommendedSpot = await this.getSpot({
+        uuid: recommendedSpotUuid,
+      });
+
+      if (!recommendedSpot) {
+        throw new Error('No spot found for given recommendedSpotUuid');
+      }
+
+      recommendedSpot.networkList = recommendedSpot.networkList.concat(
+        personaUuid,
+      );
+
+      await this.recommendationsService.createRecommendation({
+        source: personaUuid,
+        sourceKind: 'persona',
+        destination: recommendedSpotUuid,
+        destinationKind: 'spot',
+        recommendedTill: dayjs()
+          .add(2, 'week')
+          .unix(),
+      });
+
+      await userPersona.save();
+
+      return await recommendedSpot.save();
+    } else {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected persona',
+      );
+    }
   }
 
   async updateSpot(spot: UpdateSpotInput, uuid: string): Promise<SpotDocument> {

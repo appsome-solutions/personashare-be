@@ -55,13 +55,14 @@ type Mutation {
   setDefaultPersona(uuid: String!): PersonaType!
   updatePersona(uuid: String!, persona: UpdatePersonaInput!): PersonaType!
   connectPersona(input: ConnectPersonaInput!): PersonaType!
-  recommendBy(
+  recommendPersona(
     recommendedPersonaUuid: String!
     personaUuid: String!
   ): PersonaType!
   createSpot(spot: CreateShareableInput!): SpotType!
   participate(personaId: String!, spotId: String!): SpotType!
   addManager(personaId: String!, spotId: String!): SpotType!
+  recommendSpot(recommendedSpotUuid: String!, personaUuid: String!): SpotType!
   updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
   removeSpot(condition: SpotInput!): Float!
 }

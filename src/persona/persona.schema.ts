@@ -7,5 +7,7 @@ export const PersonaSchema = new Schema({
   personaUUIDs: [String],
   networkList: [String],
   recommendList: [String],
+  spotNetworkList: [String],
+  spotRecommendList: [String],
   qrCodeLink: String,
 });

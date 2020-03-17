@@ -83,7 +83,7 @@ export class PersonaResolver {
 
   @Mutation(() => PersonaType)
   @UseGuards(GqlSessionGuard)
-  async recommendBy(
+  async recommendPersona(
     @Args('personaUuid') personaUuid: string,
     @Args('recommendedPersonaUuid') recommendedPersonaUuid: string,
     @Context() context: GQLContext,
