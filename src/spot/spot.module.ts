@@ -8,6 +8,7 @@ import { UserModule } from '../user';
 import { QrCodeModule } from '../qrcode';
 import { ConfigModule } from '../config';
 import { PersonaModule } from '../persona';
+import { RecommendationsModule } from '../recommendations';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PersonaModule } from '../persona';
     ConfigModule,
     UserModule,
     PersonaModule,
+    RecommendationsModule,
   ],
   providers: [SpotService, SpotResolver],
   exports: [SpotService],

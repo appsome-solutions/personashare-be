@@ -59,6 +59,8 @@ export class PersonaService {
       personaUUIDs: [],
       networkList: [],
       recommendList: [],
+      spotNetworkList: [],
+      spotRecommendList: [],
       qrCodeLink,
     };
 

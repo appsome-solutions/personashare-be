@@ -10,6 +10,8 @@ export interface PersonaEntity {
   qrCodeLink: string;
   networkList: string[];
   recommendList: string[];
+  spotNetworkList: string[];
+  spotRecommendList: string[];
 }
 
 export interface PersonaEntityDocument extends PersonaEntity, Document {}

@@ -43,6 +43,8 @@ export class SpotResolver {
       personaUUIDs: [],
       networkList: [],
       recommendList: [],
+      spotNetworkList: [],
+      spotRecommendList: [],
       managers: [],
       qrCodeLink: '',
     };
@@ -72,6 +74,22 @@ export class SpotResolver {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
     return await this.spotService.addManager(uid, spotId, personaId);
+  }
+
+  @Mutation(() => SpotType)
+  @UseGuards(GqlSessionGuard)
+  async recommendSpot(
+    @Args('personaUuid') personaUuid: string,
+    @Args('recommendedSpotUuid') recommendedSpotUuid: string,
+    @Context() context: GQLContext,
+  ): Promise<SpotType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.spotService.recommendSpot(
+      personaUuid,
+      recommendedSpotUuid,
+      uid,
+    );
   }
 
   @Mutation(() => SpotType)
