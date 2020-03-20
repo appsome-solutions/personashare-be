@@ -25,9 +25,12 @@ export class PersonaResolver {
     return await this.personaService.getPersona(input);
   }
 
-  @Query(() => [PersonaType], { nullable: true })
-  async personas(): Promise<PersonaType[] | null> {
-    return await this.personaService.getPersonas();
+  @Query(() => [PersonaType])
+  @UseGuards(GqlSessionGuard)
+  async userPersonas(@Context() context: GQLContext): Promise<PersonaType[]> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.personaService.getUserPersonas(uid);
   }
 
   @Mutation(() => PersonaType)
