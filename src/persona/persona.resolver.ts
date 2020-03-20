@@ -7,7 +7,7 @@ import { PersonaService } from './persona.service';
 import { PersonaType } from './dto/persona.dto';
 import { PersonaInput } from './input';
 import { GQLContext } from '../app.interfaces';
-import { AddPersonaInput, RemovePersonaInput } from '../user/inputs';
+import { AddPersonaInput } from '../user/inputs';
 import { FirebaseService } from '../firebase';
 
 @Resolver('Persona')
@@ -49,14 +49,6 @@ export class PersonaResolver {
     return await this.personaService.createPersona(payload);
   }
 
-  @Mutation(() => Number)
-  @UseGuards(GqlSessionGuard)
-  async removePersona(
-    @Args('payload') payload: RemovePersonaInput,
-  ): Promise<number> {
-    return await this.personaService.removePersona(payload);
-  }
-
   @Mutation(() => PersonaType)
   @UseGuards(GqlSessionGuard)
   async setDefaultPersona(
@@ -64,6 +56,7 @@ export class PersonaResolver {
     @Context() context: GQLContext,
   ): Promise<PersonaType> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
+
     return await this.personaService.setDefaultPersona(uuid, uid);
   }
 

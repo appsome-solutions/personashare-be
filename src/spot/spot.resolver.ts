@@ -101,14 +101,6 @@ export class SpotResolver {
     @Args('spot') spot: UpdateSpotInput,
     @Args('uuid') uuid: string,
   ): Promise<SpotType> {
-    // TODO: add changes according to the req.
     return await this.spotService.updateSpot(spot, uuid);
-  }
-
-  @Mutation(() => Number)
-  @UseGuards(GqlSessionGuard)
-  async removeSpot(@Args('condition') input: SpotInput): Promise<number> {
-    // TODO: add changes according to the req.
-    return await this.spotService.removeSpot(input);
   }
 }
