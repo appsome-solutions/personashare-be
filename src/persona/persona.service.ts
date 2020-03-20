@@ -133,8 +133,16 @@ export class PersonaService {
     );
   }
 
-  async getPersonas(): Promise<PersonaType[]> {
-    return await this.mongoService.findAll<PersonaType>();
+  async getUserPersonas(uuid: string): Promise<PersonaType[]> {
+    const { personaUUIDs } = await this.userService.getUser({ uuid });
+
+    return personaUUIDs.length > 0
+      ? this.personaModel.find({
+          uuid: {
+            $in: personaUUIDs,
+          },
+        })
+      : [];
   }
 
   async connectPersona(payload: ConnectPersonaInput): Promise<PersonaDocument> {

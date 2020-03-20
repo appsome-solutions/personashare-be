@@ -23,8 +23,11 @@ export class SpotResolver {
   }
 
   @Query(() => [SpotType], { nullable: true })
-  async spots(): Promise<SpotType[] | null> {
-    return await this.spotService.getSpots();
+  @UseGuards(GqlSessionGuard)
+  async userSpots(@Context() context: GQLContext): Promise<SpotType[]> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.spotService.getUserSpots(uid);
   }
 
   @Mutation(() => SpotType)

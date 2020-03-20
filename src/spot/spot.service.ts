@@ -187,8 +187,16 @@ export class SpotService {
     );
   }
 
-  async getSpots(): Promise<SpotType[]> {
-    return await this.mongoService.findAll<SpotType>();
+  async getUserSpots(uuid: string): Promise<SpotDocument[]> {
+    const { spots } = await this.userService.getUser({ uuid });
+
+    return spots.length > 0
+      ? this.spotModel.find({
+          uuid: {
+            $in: spots,
+          },
+        })
+      : [];
   }
 
   async removeSpot(condition: SpotInput): Promise<number> {
