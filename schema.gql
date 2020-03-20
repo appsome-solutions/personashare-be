@@ -39,11 +39,6 @@ input CreateUserInput {
   photo: String
 }
 
-"""
-The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSONObject
-
 type Mutation {
   loginUser(idToken: String!): UserLoginType!
   logout: Boolean!
@@ -51,7 +46,6 @@ type Mutation {
   updateUser(uuid: String!, user: UpdateUserInput!): UserType!
   removeUser(condition: UserInput!): Float!
   createPersona(persona: CreateShareableInput!): PersonaType!
-  removePersona(payload: RemovePersonaInput!): Float!
   setDefaultPersona(uuid: String!): PersonaType!
   updatePersona(uuid: String!, persona: UpdatePersonaInput!): PersonaType!
   connectPersona(input: ConnectPersonaInput!): PersonaType!
@@ -64,7 +58,6 @@ type Mutation {
   addManager(personaId: String!, spotId: String!): SpotType!
   recommendSpot(recommendedSpotUuid: String!, personaUuid: String!): SpotType!
   updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
-  removeSpot(condition: SpotInput!): Float!
 }
 
 input PageInput {
@@ -130,12 +123,8 @@ input UpdatePersonaInput {
 }
 
 input UpdateSpotInput {
-  name: String
-  description: String
-  logo: String
-  image: String
-  url: String
-  details: JSONObject
+  card: CardInput
+  page: PageInput
 }
 
 input UpdateUserInput {

@@ -1,27 +1,28 @@
 import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { v4 } from 'uuid';
+import dayjs from 'dayjs';
+
 import { MongoService } from '../mongo-service/mongo.service';
 import {
   ConnectPersonaInput,
   connectPersona,
   UpdatePersonaInput,
-  disconnectPersona,
 } from '../shared';
+import { AddPersonaInput } from '../user/inputs';
+import { UserDocument } from '../user/interfaces/user.interfaces';
+import { ConfigService } from '../config';
+import { QrCodeService } from '../qrcode';
+import { UserService } from '../user';
+import { RecommendationsService } from '../recommendations';
+
 import {
   PersonaDocument,
   PersonaInterface,
 } from './interfaces/persona.interfaces';
 import { PersonaInput } from './input';
 import { PersonaType } from './dto/persona.dto';
-import { AddPersonaInput, RemovePersonaInput } from '../user/inputs';
-import { v4 } from 'uuid';
-import { UserDocument } from '../user/interfaces/user.interfaces';
-import { ConfigService } from '../config';
-import { QrCodeService } from '../qrcode';
-import { UserService } from '../user';
-import dayjs from 'dayjs';
-import { RecommendationsService } from '../recommendations';
 
 @Injectable()
 export class PersonaService {
@@ -86,15 +87,6 @@ export class PersonaService {
     await user.save();
 
     return newPersona;
-  }
-
-  async removePersona(condition: RemovePersonaInput): Promise<number> {
-    // TODO: add checking that persona is default for the user
-    await disconnectPersona<UserDocument>(condition, this.userModel);
-
-    return await this.mongoService.remove<PersonaInput>({
-      uuid: condition.personaUUID,
-    });
   }
 
   async setDefaultPersona(

@@ -198,8 +198,4 @@ export class SpotService {
         })
       : [];
   }
-
-  async removeSpot(condition: SpotInput): Promise<number> {
-    return await this.mongoService.remove<SpotInput>(condition);
-  }
 }
