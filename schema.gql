@@ -96,7 +96,7 @@ type PersonaType {
 type Query {
   user: UserType
   persona(uuid: String!): PersonaType
-  userPersonas: [PersonaType!]!
+  userPersonas: [PersonaType!]
   spot(condition: SpotInput!): SpotType
   userSpots: [SpotType!]
 }
