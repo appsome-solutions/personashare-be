@@ -62,6 +62,8 @@ export class PersonaService {
       recommendList: [],
       spotNetworkList: [],
       spotRecommendList: [],
+      contactBook: [],
+      visibilityList: [],
       qrCodeLink,
     };
 
@@ -149,51 +151,100 @@ export class PersonaService {
   ): Promise<PersonaType> {
     const user = await this.userService.getUser({ uuid });
 
-    if (
-      user.personaUUIDs.includes(personaUuid) &&
-      !user.personaUUIDs.includes(recommendedPersonaUuid)
-    ) {
-      const userPersona = await this.getPersona({
-        uuid: personaUuid,
-      });
-
-      if (!userPersona) {
-        throw new Error('No persona found for given personaUuid');
-      }
-
-      userPersona.recommendList = userPersona.recommendList.concat(
-        recommendedPersonaUuid,
-      );
-
-      const recommendedPersona = await this.getPersona({
-        uuid: recommendedPersonaUuid,
-      });
-
-      if (!recommendedPersona) {
-        throw new Error('No persona found for given recommendedPersonaUuid');
-      }
-
-      recommendedPersona.networkList = recommendedPersona.networkList.concat(
-        personaUuid,
-      );
-
-      await this.recommendationsService.createRecommendation({
-        source: personaUuid,
-        sourceKind: 'persona',
-        destination: recommendedPersonaUuid,
-        destinationKind: 'persona',
-        recommendedTill: dayjs()
-          .add(2, 'week')
-          .unix(),
-      });
-
-      await userPersona.save();
-
-      return await recommendedPersona.save();
-    } else {
+    if (!user.personaUUIDs.includes(personaUuid)) {
       throw new MethodNotAllowedException(
         'User is not allowed to recommend with selected persona',
       );
     }
+
+    if (user.personaUUIDs.includes(recommendedPersonaUuid)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected persona',
+      );
+    }
+
+    const userPersona = await this.getPersona({
+      uuid: personaUuid,
+    });
+
+    if (!userPersona) {
+      throw new Error('No persona found for given personaUuid');
+    }
+
+    userPersona.recommendList = userPersona.recommendList.concat(
+      recommendedPersonaUuid,
+    );
+
+    const recommendedPersona = await this.getPersona({
+      uuid: recommendedPersonaUuid,
+    });
+
+    if (!recommendedPersona) {
+      throw new Error('No persona found for given recommendedPersonaUuid');
+    }
+
+    recommendedPersona.networkList = recommendedPersona.networkList.concat(
+      personaUuid,
+    );
+
+    await this.recommendationsService.createRecommendation({
+      source: personaUuid,
+      sourceKind: 'persona',
+      destination: recommendedPersonaUuid,
+      destinationKind: 'persona',
+      recommendedTill: dayjs()
+        .add(2, 'week')
+        .unix(),
+    });
+
+    await userPersona.save();
+
+    return await recommendedPersona.save();
+  }
+
+  async savePersona(
+    personaUuid: string,
+    savedPersonaUuid: string,
+    uuid: string,
+  ): Promise<PersonaType> {
+    const user = await this.userService.getUser({ uuid });
+
+    if (!user.personaUUIDs.includes(personaUuid)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected persona',
+      );
+    }
+
+    if (user.personaUUIDs.includes(savedPersonaUuid)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected persona',
+      );
+    }
+
+    const userPersona = await this.getPersona({
+      uuid: personaUuid,
+    });
+
+    if (!userPersona) {
+      throw new Error('No persona found for given personaUuid');
+    }
+
+    userPersona.visibilityList = userPersona.visibilityList.concat(
+      savedPersonaUuid,
+    );
+
+    const savedPersona = await this.getPersona({
+      uuid: savedPersonaUuid,
+    });
+
+    if (!savedPersona) {
+      throw new Error('No persona found for given savedPersonaUuid');
+    }
+
+    savedPersona.contactBook = savedPersona.contactBook.concat(personaUuid);
+
+    await userPersona.save();
+
+    return await savedPersona.save();
   }
 }

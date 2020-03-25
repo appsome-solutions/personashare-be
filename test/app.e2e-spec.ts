@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 
-describe('AppController (e2e)', () => {
+describe('PersonaShare (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -15,10 +15,20 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  const users = Array.from({ length: 100 }, (_v, k) => k);
+  console.error(users);
+
+  return users.forEach(id => {
+    it(`createUser${id}`, () => {
+      return request
+        .agent(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          operationName: null,
+          variables: {},
+          query: `mutation {\n  createUser(user: {name: "test", uuid: "10${id}", email: "test@gmail.com"}) {\n    uuid\n  }\n}\n`,
+        })
+        .expect(200);
+    });
   });
 });

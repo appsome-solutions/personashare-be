@@ -48,6 +48,8 @@ export class SpotResolver {
       recommendList: [],
       spotNetworkList: [],
       spotRecommendList: [],
+      visibilityList: [],
+      contactBook: [],
       managers: [],
       qrCodeLink: '',
     };

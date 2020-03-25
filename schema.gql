@@ -53,6 +53,7 @@ type Mutation {
     recommendedPersonaUuid: String!
     personaUuid: String!
   ): PersonaType!
+  savePersona(savedPersonaUuid: String!, personaUuid: String!): PersonaType!
   createSpot(spot: CreateShareableInput!): SpotType!
   participate(personaId: String!, spotId: String!): SpotType!
   addManager(personaId: String!, spotId: String!): SpotType!
@@ -84,6 +85,8 @@ type PersonaType {
   qrCodeLink: String!
   networkList: [String!]
   recommendList: [String!]
+  contactBook: [String!]
+  visibilityList: [String!]
 }
 
 type Query {
@@ -112,6 +115,8 @@ type SpotType {
   qrCodeLink: String!
   networkList: [String!]
   recommendList: [String!]
+  contactBook: [String!]
+  visibilityList: [String!]
   owner: String!
   participants: [String!]
   managers: [String!]

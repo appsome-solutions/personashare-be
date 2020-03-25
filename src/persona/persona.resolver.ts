@@ -92,4 +92,20 @@ export class PersonaResolver {
       uid,
     );
   }
+
+  @Mutation(() => PersonaType)
+  @UseGuards(GqlSessionGuard)
+  async savePersona(
+    @Args('personaUuid') personaUuid: string,
+    @Args('savedPersonaUuid') savedPersonaUuid: string,
+    @Context() context: GQLContext,
+  ): Promise<PersonaType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.personaService.recommendPersona(
+      personaUuid,
+      savedPersonaUuid,
+      uid,
+    );
+  }
 }
