@@ -23,4 +23,10 @@ export class PersonaType {
 
   @Field(() => [String], { nullable: true })
   recommendList: string[];
+
+  @Field(() => [String], { nullable: true })
+  contactBook: string[];
+
+  @Field(() => [String], { nullable: true })
+  visibilityList: string[];
 }

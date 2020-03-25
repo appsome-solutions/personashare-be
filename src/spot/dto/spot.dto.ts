@@ -24,6 +24,12 @@ export class SpotType {
   @Field(() => [String], { nullable: true })
   recommendList: string[];
 
+  @Field(() => [String], { nullable: true })
+  contactBook: string[];
+
+  @Field(() => [String], { nullable: true })
+  visibilityList: string[];
+
   @Field()
   owner: string;
 

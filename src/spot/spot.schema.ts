@@ -11,4 +11,6 @@ export const SpotSchema = new Schema({
   participants: [String],
   owner: String,
   managers: [String],
+  contactBook: [String],
+  visibilityList: [String],
 });
