@@ -99,6 +99,18 @@ export class SpotResolver {
 
   @Mutation(() => SpotType)
   @UseGuards(GqlSessionGuard)
+  async saveSpot(
+    @Args('spotUuid') spotUuid: string,
+    @Args('savedSpotUuid') savedSpotUuid: string,
+    @Context() context: GQLContext,
+  ): Promise<SpotType> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.spotService.saveSpot(spotUuid, savedSpotUuid, uid);
+  }
+
+  @Mutation(() => SpotType)
+  @UseGuards(GqlSessionGuard)
   async updateSpot(
     @Args('spot') spot: UpdateSpotInput,
     @Args('uuid') uuid: string,
