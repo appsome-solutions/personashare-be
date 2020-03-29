@@ -58,6 +58,7 @@ type Mutation {
   participate(personaId: String!, spotId: String!): SpotType!
   addManager(personaId: String!, spotId: String!): SpotType!
   recommendSpot(recommendedSpotUuid: String!, personaUuid: String!): SpotType!
+  saveSpot(savedSpotUuid: String!, spotUuid: String!): SpotType!
   updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
 }
 

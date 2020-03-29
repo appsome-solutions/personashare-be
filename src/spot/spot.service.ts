@@ -175,6 +175,50 @@ export class SpotService {
     }
   }
 
+  async saveSpot(
+    spotUuid: string,
+    savedSpotUuid: string,
+    uuid: string,
+  ): Promise<SpotType> {
+    const user = await this.userService.getUser({ uuid });
+
+    if (!user.spots.includes(spotUuid)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected spot',
+      );
+    }
+
+    if (user.spots.includes(savedSpotUuid)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected spot',
+      );
+    }
+
+    const userSpot = await this.getSpot({
+      uuid: spotUuid,
+    });
+
+    if (!userSpot) {
+      throw new Error('No spot found for given spotUuid');
+    }
+
+    userSpot.visibilityList = userSpot.visibilityList.concat(savedSpotUuid);
+
+    const savedSpot = await this.getSpot({
+      uuid: savedSpotUuid,
+    });
+
+    if (!savedSpot) {
+      throw new Error('No spot found for given savedSpotUuid');
+    }
+
+    savedSpot.contactBook = savedSpot.contactBook.concat(savedSpotUuid);
+
+    await userSpot.save();
+
+    return await savedSpot.save();
+  }
+
   async updateSpot(spot: UpdateSpotInput, uuid: string): Promise<SpotDocument> {
     return await this.mongoService.update<UpdateSpotInput, SpotDocument>(spot, {
       uuid,

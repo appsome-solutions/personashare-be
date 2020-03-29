@@ -102,7 +102,7 @@ export class PersonaResolver {
   ): Promise<PersonaType> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
-    return await this.personaService.recommendPersona(
+    return await this.personaService.savePersona(
       personaUuid,
       savedPersonaUuid,
       uid,
