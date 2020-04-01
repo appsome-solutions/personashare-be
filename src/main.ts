@@ -6,21 +6,41 @@ import cookieParser from 'cookie-parser';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { ConfigService } from './config';
-import { AuthService, CSRF_TOKEN_NAME } from './auth';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function bootstrap(): Promise<any> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
-  const authService = app.get(AuthService);
+  const allowedOrigins = configService.isDevEnv
+    ? [
+        'http://localhost:3001',
+        'http://localhost:3000',
+        'https://young-ocean-77920.herokuapp.com',
+      ]
+    : ['https://young-ocean-77920.herokuapp.com'];
 
   // This should be set if we are behind proxy, for example nginx reverse proxy
   app.set('trust proxy', true);
-
   app.use(helmet());
   app.use(cookieParser());
-  app.use(authService.attachCsrfToken(['/login'], CSRF_TOKEN_NAME));
-  app.enableCors();
+  app.enableCors({
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: true,
+    credentials: true,
+    origin: function(origin, callback) {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (!allowedOrigins.includes(origin)) {
+        const msg =
+          'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+
+      return callback(null, true);
+    },
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
