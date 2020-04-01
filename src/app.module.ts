@@ -26,6 +26,10 @@ import { RecommendationsModule } from './recommendations';
         },
       },
       context: ({ req, res }: GQLContext) => ({ req, res }),
+      cors: {
+        credentials: true,
+        origin: true,
+      },
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

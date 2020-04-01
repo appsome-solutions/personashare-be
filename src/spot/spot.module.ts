@@ -9,6 +9,7 @@ import { QrCodeModule } from '../qrcode';
 import { ConfigModule } from '../config';
 import { PersonaModule } from '../persona';
 import { RecommendationsModule } from '../recommendations';
+import { AuthModule } from '../auth';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { RecommendationsModule } from '../recommendations';
     UserModule,
     PersonaModule,
     RecommendationsModule,
+    AuthModule,
   ],
   providers: [SpotService, SpotResolver],
   exports: [SpotService],

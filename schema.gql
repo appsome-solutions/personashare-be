@@ -32,17 +32,9 @@ input CreateShareableInput {
   page: PageInput!
 }
 
-input CreateUserInput {
-  uuid: String!
-  name: String!
-  email: String
-  photo: String
-}
-
 type Mutation {
   loginUser(idToken: String!): UserLoginType!
   logout: Boolean!
-  createUser(user: CreateUserInput!): UserType!
   updateUser(uuid: String!, user: UpdateUserInput!): UserType!
   removeUser(condition: UserInput!): Float!
   createPersona(persona: CreateShareableInput!): PersonaType!

@@ -9,6 +9,7 @@ import { UserModule, UserSchema } from '../user';
 import { QrCodeModule } from '../qrcode';
 import { ConfigModule } from '../config';
 import { RecommendationsModule } from '../recommendations';
+import { AuthModule } from '../auth';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RecommendationsModule } from '../recommendations';
     QrCodeModule,
     ConfigModule,
     UserModule,
+    AuthModule,
     RecommendationsModule,
   ],
   providers: [PersonaService, PersonaResolver],

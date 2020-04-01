@@ -1,7 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { RequestHandler } from '@nestjs/common/interfaces';
 import { FirebaseService } from '../firebase';
 import { ConfigService } from '../config';
+import { GQLContext } from '../app.interfaces';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class AuthService {
@@ -25,22 +26,27 @@ export class AuthService {
     }
   }
 
-  /**
-   * Attaches a CSRF token to the request.
-   * @param {string[]} url The URL to check.
-   * @param {string} cookie The CSRF token name.
-   * @return {function} The middleware function to run.
-   */
-  attachCsrfToken(url: string[], cookie: string): RequestHandler {
-    return (req, res, next) => {
-      if (url.includes(req.url)) {
-        res.cookie(cookie, this.makeCsrfToken());
-      }
-      next && next();
-    };
-  }
+  setCookieInGQLContext(
+    context: GQLContext,
+    token: string,
+    idToken: string,
+  ): void {
+    context.res.cookie('psToken', token, {
+      domain: 'localhost',
+      httpOnly: true,
+      sameSite: false,
+      expires: dayjs()
+        .add(1, 'year')
+        .toDate(),
+    });
 
-  makeCsrfToken(): string {
-    return (Math.random() * 100000000000000000).toString();
+    context.res.cookie('psIdToken', idToken, {
+      domain: 'localhost',
+      httpOnly: true,
+      sameSite: false,
+      expires: dayjs()
+        .add(1, 'year')
+        .toDate(),
+    });
   }
 }

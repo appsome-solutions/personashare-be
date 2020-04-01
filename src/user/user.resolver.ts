@@ -2,7 +2,7 @@ import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserType, UserLoginType } from './dto';
-import { CreateUserInput, UpdateUserInput, UserInput } from './inputs';
+import { UpdateUserInput, UserInput } from './inputs';
 import { GqlSessionGuard } from '../guards';
 import { GQLContext } from '../app.interfaces';
 import { FirebaseService } from '../firebase';
@@ -15,6 +15,7 @@ export class UserResolver {
   ) {}
 
   @Query(() => UserType, { nullable: true })
+  @UseGuards(GqlSessionGuard)
   async user(@Context() context: GQLContext): Promise<UserType> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
@@ -24,26 +25,19 @@ export class UserResolver {
   }
 
   @Mutation(() => UserLoginType)
-  async loginUser(@Args('idToken') idToken: string): Promise<UserLoginType> {
-    return await this.userService.loginUser(idToken);
+  async loginUser(
+    @Args('idToken') idToken: string,
+    @Context() context: GQLContext,
+  ): Promise<UserLoginType> {
+    return await this.userService.loginUser(idToken, context);
   }
 
   @Mutation(() => Boolean)
+  @UseGuards(GqlSessionGuard)
   async logout(@Context() context: GQLContext): Promise<boolean> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
     return await this.userService.logoutUser(uid);
-  }
-
-  @Mutation(() => UserType)
-  @UseGuards(GqlSessionGuard)
-  async createUser(@Args('user') user: CreateUserInput): Promise<UserType> {
-    return await this.userService.createUser({
-      ...user,
-      defaultPersona: '',
-      personaUUIDs: [],
-      spots: [],
-    });
   }
 
   @Mutation(() => UserType)
