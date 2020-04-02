@@ -32,17 +32,13 @@ export class AuthService {
     idToken: string,
   ): void {
     context.res.cookie('psToken', token, {
-      domain: 'localhost',
       httpOnly: true,
-      sameSite: false,
       expires: dayjs()
         .add(1, 'year')
         .toDate(),
     });
 
     context.res.cookie('psIdToken', idToken, {
-      domain: 'localhost',
-      httpOnly: true,
       sameSite: false,
       expires: dayjs()
         .add(1, 'year')

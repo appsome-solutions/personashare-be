@@ -48,18 +48,14 @@ export class GqlSessionGuard extends Guard implements CanActivate {
           );
 
           response.cookie('psToken', accessToken, {
-            domain: 'localhost',
             httpOnly: true,
-            sameSite: false,
             expires: dayjs()
               .add(1, 'year')
               .toDate(),
           });
 
           response.cookie('psIdToken', lastIdToken, {
-            domain: 'localhost',
             httpOnly: true,
-            sameSite: false,
             expires: dayjs()
               .add(1, 'year')
               .toDate(),
