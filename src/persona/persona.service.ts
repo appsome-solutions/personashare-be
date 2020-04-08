@@ -64,6 +64,7 @@ export class PersonaService {
       spotRecommendList: [],
       contactBook: [],
       visibilityList: [],
+      isActive: true,
       qrCodeLink,
     };
 
@@ -95,7 +96,7 @@ export class PersonaService {
     personaUuid: string,
     userId: string,
   ): Promise<PersonaType> {
-    const persona = this.getPersona({ uuid: personaUuid });
+    const persona = this.getPersona({ uuid: personaUuid, isActive: true });
     const user = await this.userService.getUser({ uuid: userId });
 
     if (user.personaUUIDs && user.personaUUIDs.includes(personaUuid)) {
@@ -112,13 +113,20 @@ export class PersonaService {
   async updatePersona(
     persona: UpdatePersonaInput,
     uuid: string,
+    userId: string,
   ): Promise<PersonaDocument> {
-    return await this.mongoService.update<UpdatePersonaInput, PersonaDocument>(
-      persona,
-      {
+    const user = await this.userService.getUser({ uuid: userId });
+
+    if (user && user.personaUUIDs.includes(uuid)) {
+      return await this.mongoService.update<
+        UpdatePersonaInput,
+        PersonaDocument
+      >(persona, {
         uuid,
-      },
-    );
+      });
+    } else {
+      throw new MethodNotAllowedException('Cannot update persona');
+    }
   }
 
   async getPersona(condition: PersonaInput): Promise<PersonaDocument> {
@@ -135,6 +143,7 @@ export class PersonaService {
           uuid: {
             $in: personaUUIDs,
           },
+          isActive: true,
         })
       : [];
   }
@@ -165,6 +174,7 @@ export class PersonaService {
 
     const userPersona = await this.getPersona({
       uuid: personaUuid,
+      isActive: true,
     });
 
     if (!userPersona) {
@@ -177,6 +187,7 @@ export class PersonaService {
 
     const recommendedPersona = await this.getPersona({
       uuid: recommendedPersonaUuid,
+      isActive: true,
     });
 
     if (!recommendedPersona) {
@@ -223,6 +234,7 @@ export class PersonaService {
 
     const userPersona = await this.getPersona({
       uuid: personaUuid,
+      isActive: true,
     });
 
     if (!userPersona) {
@@ -235,6 +247,7 @@ export class PersonaService {
 
     const savedPersona = await this.getPersona({
       uuid: savedPersonaUuid,
+      isActive: true,
     });
 
     if (!savedPersona) {

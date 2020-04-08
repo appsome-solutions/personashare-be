@@ -46,6 +46,7 @@ type Mutation {
     personaUuid: String!
   ): PersonaType!
   savePersona(savedPersonaUuid: String!, personaUuid: String!): PersonaType!
+  removePersona(personaUuid: String!): Boolean!
   createSpot(spot: CreateShareableInput!): SpotType!
   participate(personaId: String!, spotId: String!): SpotType!
   addManager(personaId: String!, spotId: String!): SpotType!
@@ -68,6 +69,7 @@ type PageType {
 
 input PersonaInput {
   uuid: String!
+  isActive: Boolean
 }
 
 type PersonaType {
@@ -118,6 +120,7 @@ type SpotType {
 input UpdatePersonaInput {
   card: CardInput
   page: PageInput
+  isActive: Boolean
 }
 
 input UpdateSpotInput {

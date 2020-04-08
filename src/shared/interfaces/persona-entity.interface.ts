@@ -14,6 +14,7 @@ export interface PersonaEntity {
   spotRecommendList: string[];
   contactBook: string[];
   visibilityList: string[];
+  isActive: boolean;
 }
 
 export interface PersonaEntityDocument extends PersonaEntity, Document {}

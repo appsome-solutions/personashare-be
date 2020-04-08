@@ -52,6 +52,7 @@ export class SpotResolver {
       contactBook: [],
       managers: [],
       qrCodeLink: '',
+      isActive: true,
     };
 
     return await this.spotService.createSpot(spotDoc);

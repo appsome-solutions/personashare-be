@@ -12,4 +12,5 @@ export const PersonaSchema = new Schema({
   qrCodeLink: String,
   contactBook: [String],
   visibilityList: [String],
+  isActive: Boolean,
 });
