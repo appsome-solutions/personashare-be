@@ -16,4 +16,10 @@ export class UpdatePersonaInput {
   })
   @IsOptional()
   page?: PageInput;
+
+  @Field({
+    nullable: true,
+  })
+  @IsOptional()
+  isActive?: boolean;
 }

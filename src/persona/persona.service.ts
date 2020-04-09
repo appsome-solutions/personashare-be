@@ -64,6 +64,7 @@ export class PersonaService {
       spotRecommendList: [],
       contactBook: [],
       visibilityList: [],
+      isActive: true,
       qrCodeLink,
     };
 
@@ -112,19 +113,27 @@ export class PersonaService {
   async updatePersona(
     persona: UpdatePersonaInput,
     uuid: string,
+    userId: string,
   ): Promise<PersonaDocument> {
-    return await this.mongoService.update<UpdatePersonaInput, PersonaDocument>(
-      persona,
-      {
+    const user = await this.userService.getUser({ uuid: userId });
+
+    if (user && user.personaUUIDs.includes(uuid)) {
+      return await this.mongoService.update<
+        UpdatePersonaInput,
+        PersonaDocument
+      >(persona, {
         uuid,
-      },
-    );
+      });
+    } else {
+      throw new MethodNotAllowedException('Cannot update persona');
+    }
   }
 
   async getPersona(condition: PersonaInput): Promise<PersonaDocument> {
-    return await this.mongoService.findByMatch<PersonaInput, PersonaDocument>(
-      condition,
-    );
+    return await this.mongoService.findByMatch<PersonaInput, PersonaDocument>({
+      isActive: true,
+      ...condition,
+    });
   }
 
   async getUserPersonas(uuid: string): Promise<PersonaType[]> {
@@ -135,6 +144,7 @@ export class PersonaService {
           uuid: {
             $in: personaUUIDs,
           },
+          isActive: true,
         })
       : [];
   }

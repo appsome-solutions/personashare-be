@@ -46,12 +46,14 @@ type Mutation {
     personaUuid: String!
   ): PersonaType!
   savePersona(savedPersonaUuid: String!, personaUuid: String!): PersonaType!
+  removePersona(personaUuid: String!): Boolean!
   createSpot(spot: CreateShareableInput!): SpotType!
   participate(personaId: String!, spotId: String!): SpotType!
   addManager(personaId: String!, spotId: String!): SpotType!
   recommendSpot(recommendedSpotUuid: String!, personaUuid: String!): SpotType!
   saveSpot(savedSpotUuid: String!, spotUuid: String!): SpotType!
   updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
+  removeSpot(spotUuid: String!): Boolean!
 }
 
 input PageInput {
@@ -68,6 +70,7 @@ type PageType {
 
 input PersonaInput {
   uuid: String!
+  isActive: Boolean
 }
 
 type PersonaType {
@@ -98,6 +101,7 @@ input RemovePersonaInput {
 input SpotInput {
   uuid: String
   owner: String
+  isActive: Boolean
 }
 
 type SpotType {
@@ -118,11 +122,13 @@ type SpotType {
 input UpdatePersonaInput {
   card: CardInput
   page: PageInput
+  isActive: Boolean
 }
 
 input UpdateSpotInput {
   card: CardInput
   page: PageInput
+  isActive: Boolean
 }
 
 input UpdateUserInput {

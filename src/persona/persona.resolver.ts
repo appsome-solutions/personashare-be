@@ -21,6 +21,7 @@ export class PersonaResolver {
   async persona(@Args('uuid') uuid: string): Promise<PersonaType | null> {
     const input: PersonaInput = {
       uuid,
+      isActive: true,
     };
     return await this.personaService.getPersona(input);
   }
@@ -65,8 +66,11 @@ export class PersonaResolver {
   async updatePersona(
     @Args('persona') persona: UpdatePersonaInput,
     @Args('uuid') uuid: string,
+    @Context() context: GQLContext,
   ): Promise<PersonaType> {
-    return await this.personaService.updatePersona(persona, uuid);
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.personaService.updatePersona(persona, uuid, uid);
   }
 
   @Mutation(() => PersonaType)
@@ -107,5 +111,25 @@ export class PersonaResolver {
       savedPersonaUuid,
       uid,
     );
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(GqlSessionGuard)
+  async removePersona(
+    @Args('personaUuid') personaUuid: string,
+    @Context() context: GQLContext,
+  ): Promise<boolean> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+    const personaInput: UpdatePersonaInput = {
+      isActive: false,
+    };
+
+    const updatedPersona = await this.personaService.updatePersona(
+      personaInput,
+      personaUuid,
+      uid,
+    );
+
+    return !updatedPersona.isActive;
   }
 }
