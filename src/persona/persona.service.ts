@@ -96,7 +96,7 @@ export class PersonaService {
     personaUuid: string,
     userId: string,
   ): Promise<PersonaType> {
-    const persona = this.getPersona({ uuid: personaUuid, isActive: true });
+    const persona = this.getPersona({ uuid: personaUuid });
     const user = await this.userService.getUser({ uuid: userId });
 
     if (user.personaUUIDs && user.personaUUIDs.includes(personaUuid)) {
@@ -130,9 +130,10 @@ export class PersonaService {
   }
 
   async getPersona(condition: PersonaInput): Promise<PersonaDocument> {
-    return await this.mongoService.findByMatch<PersonaInput, PersonaDocument>(
-      condition,
-    );
+    return await this.mongoService.findByMatch<PersonaInput, PersonaDocument>({
+      isActive: true,
+      ...condition,
+    });
   }
 
   async getUserPersonas(uuid: string): Promise<PersonaType[]> {
@@ -174,7 +175,6 @@ export class PersonaService {
 
     const userPersona = await this.getPersona({
       uuid: personaUuid,
-      isActive: true,
     });
 
     if (!userPersona) {
@@ -187,7 +187,6 @@ export class PersonaService {
 
     const recommendedPersona = await this.getPersona({
       uuid: recommendedPersonaUuid,
-      isActive: true,
     });
 
     if (!recommendedPersona) {
@@ -234,7 +233,6 @@ export class PersonaService {
 
     const userPersona = await this.getPersona({
       uuid: personaUuid,
-      isActive: true,
     });
 
     if (!userPersona) {
@@ -247,7 +245,6 @@ export class PersonaService {
 
     const savedPersona = await this.getPersona({
       uuid: savedPersonaUuid,
-      isActive: true,
     });
 
     if (!savedPersona) {

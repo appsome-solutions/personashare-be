@@ -115,7 +115,30 @@ export class SpotResolver {
   async updateSpot(
     @Args('spot') spot: UpdateSpotInput,
     @Args('uuid') uuid: string,
+    @Context() context: GQLContext,
   ): Promise<SpotType> {
-    return await this.spotService.updateSpot(spot, uuid);
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.spotService.updateSpot(spot, uuid, uid);
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(GqlSessionGuard)
+  async removeSpot(
+    @Args('spotUuid') spotUuid: string,
+    @Context() context: GQLContext,
+  ): Promise<boolean> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+    const spotInput: UpdateSpotInput = {
+      isActive: false,
+    };
+
+    const updatedSpot = await this.spotService.updateSpot(
+      spotInput,
+      spotUuid,
+      uid,
+    );
+
+    return !updatedSpot.isActive;
   }
 }

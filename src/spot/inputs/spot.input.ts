@@ -16,4 +16,10 @@ export class SpotInput {
   @IsString()
   @IsOptional()
   owner?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @IsOptional()
+  isActive?: boolean;
 }

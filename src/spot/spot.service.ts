@@ -78,9 +78,17 @@ export class SpotService {
       uuid: personaId,
     });
 
+    if (!persona) {
+      throw new Error('No persona found for given id');
+    }
+
     const spot = await this.getSpot({
       uuid: spotId,
     });
+
+    if (!spot) {
+      throw new Error('No spot found for given id');
+    }
 
     if (!spot.participants.includes(persona.uuid)) {
       spot.participants = spot.participants.concat(spotId);
@@ -110,9 +118,17 @@ export class SpotService {
       uuid: personaId,
     });
 
+    if (!persona) {
+      throw new Error('No persona found for given id');
+    }
+
     const spot = await this.getSpot({
       uuid: spotId,
     });
+
+    if (!spot) {
+      throw new Error('No spot found for given id');
+    }
 
     if (!spot.managers.includes(persona.uuid)) {
       spot.managers = spot.managers.concat(personaId);
@@ -219,16 +235,30 @@ export class SpotService {
     return await savedSpot.save();
   }
 
-  async updateSpot(spot: UpdateSpotInput, uuid: string): Promise<SpotDocument> {
-    return await this.mongoService.update<UpdateSpotInput, SpotDocument>(spot, {
-      uuid,
-    });
+  async updateSpot(
+    spot: UpdateSpotInput,
+    uuid: string,
+    userId: string,
+  ): Promise<SpotDocument> {
+    const user = await this.userService.getUser({ uuid: userId });
+
+    if (user && user.spots.includes(uuid)) {
+      return await this.mongoService.update<UpdateSpotInput, SpotDocument>(
+        spot,
+        {
+          uuid,
+        },
+      );
+    } else {
+      throw new MethodNotAllowedException('Cannot update spot');
+    }
   }
 
   async getSpot(condition: SpotInput): Promise<SpotDocument> {
-    return await this.mongoService.findByMatch<SpotInput, SpotDocument>(
-      condition,
-    );
+    return await this.mongoService.findByMatch<SpotInput, SpotDocument>({
+      isActive: true,
+      ...condition,
+    });
   }
 
   async getUserSpots(uuid: string): Promise<SpotDocument[]> {
@@ -239,6 +269,7 @@ export class SpotService {
           uuid: {
             $in: spots,
           },
+          isActive: true,
         })
       : [];
   }

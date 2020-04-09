@@ -53,6 +53,7 @@ type Mutation {
   recommendSpot(recommendedSpotUuid: String!, personaUuid: String!): SpotType!
   saveSpot(savedSpotUuid: String!, spotUuid: String!): SpotType!
   updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
+  removeSpot(spotUuid: String!): Boolean!
 }
 
 input PageInput {
@@ -100,6 +101,7 @@ input RemovePersonaInput {
 input SpotInput {
   uuid: String
   owner: String
+  isActive: Boolean
 }
 
 type SpotType {
@@ -126,6 +128,7 @@ input UpdatePersonaInput {
 input UpdateSpotInput {
   card: CardInput
   page: PageInput
+  isActive: Boolean
 }
 
 input UpdateUserInput {
