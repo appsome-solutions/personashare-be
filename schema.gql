@@ -89,7 +89,7 @@ type Query {
   user: UserType
   persona(uuid: String!): PersonaType
   userPersonas: [PersonaType!]
-  spot(condition: SpotInput!): SpotType
+  spot(uuid: String!): SpotType
   userSpots: [SpotType!]
 }
 

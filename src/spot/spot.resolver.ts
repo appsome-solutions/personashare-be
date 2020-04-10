@@ -18,7 +18,11 @@ export class SpotResolver {
   ) {}
 
   @Query(() => SpotType, { nullable: true })
-  async spot(@Args('condition') input: SpotInput): Promise<SpotType | null> {
+  async spot(@Args('uuid') uuid: string): Promise<SpotType | null> {
+    const input: SpotInput = {
+      uuid,
+      isActive: true,
+    };
     return await this.spotService.getSpot(input);
   }
 
