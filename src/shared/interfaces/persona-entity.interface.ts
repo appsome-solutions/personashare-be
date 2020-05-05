@@ -13,6 +13,7 @@ export interface PersonaEntity {
   spotNetworkList: string[];
   spotRecommendList: string[];
   contactBook: string[];
+  spotBook: string[];
   visibilityList: string[];
   isActive: boolean;
 }

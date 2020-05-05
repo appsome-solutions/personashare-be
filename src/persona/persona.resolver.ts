@@ -1,4 +1,12 @@
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Context,
+  Mutation,
+  Parent,
+  Query,
+  ResolveProperty,
+  Resolver,
+} from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { GqlSessionGuard } from '../guards';
 import { ConnectPersonaInput, UpdatePersonaInput } from '../shared';
@@ -9,21 +17,50 @@ import { PersonaInput } from './input';
 import { GQLContext } from '../app.interfaces';
 import { AddPersonaInput } from '../user/inputs';
 import { FirebaseService } from '../firebase';
+import { AgregatedPersona } from './dto/agreagated.persona.dto';
 
-@Resolver('Persona')
+@Resolver((_of: void) => AgregatedPersona)
 export class PersonaResolver {
   constructor(
     private readonly personaService: PersonaService,
     private readonly firebaseService: FirebaseService,
   ) {}
 
-  @Query(() => PersonaType, { nullable: true })
-  async persona(@Args('uuid') uuid: string): Promise<PersonaType | null> {
+  @Query(() => AgregatedPersona, { nullable: true })
+  async persona(@Args('uuid') uuid: string): Promise<AgregatedPersona | null> {
     const input: PersonaInput = {
       uuid,
       isActive: true,
     };
+
     return await this.personaService.getPersona(input);
+  }
+
+  @ResolveProperty(() => [PersonaType])
+  async contactBook(@Parent() persona: PersonaType): Promise<PersonaType[]> {
+    const result = await this.personaService.getPersonasByIds(
+      persona.contactBook,
+    );
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [PersonaType])
+  async visibilityList(@Parent() persona: PersonaType): Promise<PersonaType[]> {
+    const result = await this.personaService.getPersonasByIds(
+      persona.visibilityList,
+    );
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [PersonaType])
+  async recommendList(@Parent() persona: PersonaType): Promise<PersonaType[]> {
+    const result = await this.personaService.getPersonasByIds(
+      persona.recommendList,
+    );
+
+    return result ? result : [];
   }
 
   @Query(() => [PersonaType], { nullable: true })

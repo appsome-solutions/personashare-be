@@ -54,6 +54,7 @@ export class SpotResolver {
       spotRecommendList: [],
       visibilityList: [],
       contactBook: [],
+      spotBook: [],
       managers: [],
       qrCodeLink: '',
       isActive: true,

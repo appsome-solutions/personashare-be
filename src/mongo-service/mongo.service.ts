@@ -48,4 +48,8 @@ export class MongoService<M extends Model<any>> {
   async findAll<R>(): Promise<R[]> {
     return await this.model.find().exec();
   }
+
+  getModel() {
+    return this.model;
+  }
 }

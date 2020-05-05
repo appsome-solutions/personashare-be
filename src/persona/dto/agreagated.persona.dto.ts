@@ -2,7 +2,7 @@ import { Field, ObjectType } from 'type-graphql';
 import { CardType, PageType } from '../../shared';
 
 @ObjectType()
-export class PersonaType {
+export class AgregatedPersona {
   @Field()
   uuid: string;
 
@@ -21,14 +21,14 @@ export class PersonaType {
   @Field(() => [String], { nullable: true })
   networkList: string[];
 
-  @Field(() => [String], { nullable: true })
-  recommendList: string[];
+  @Field(() => [AgregatedPersona], { nullable: true })
+  recommendList: AgregatedPersona[];
 
-  @Field(() => [String], { nullable: true })
-  contactBook: string[];
+  @Field(() => [AgregatedPersona], { nullable: true })
+  contactBook: AgregatedPersona[];
 
-  @Field(() => [String], { nullable: true })
-  visibilityList: string[];
+  @Field(() => [AgregatedPersona], { nullable: true })
+  visibilityList: AgregatedPersona[];
 
   @Field(() => [String], { nullable: true })
   spotBook: string[];
