@@ -8,6 +8,19 @@ input AddPersonaInput {
   persona: CreateShareableInput!
 }
 
+type AgregatedPersona {
+  uuid: String!
+  card: CardType!
+  page: PageType!
+  personaUUIDs: [String!]
+  qrCodeLink: String!
+  networkList: [String!]
+  recommendList: [AgregatedPersona!]
+  contactBook: [AgregatedPersona!]
+  visibilityList: [AgregatedPersona!]
+  spotBook: [String!]
+}
+
 input CardInput {
   name: String!
   description: String!
@@ -83,11 +96,12 @@ type PersonaType {
   recommendList: [String!]
   contactBook: [String!]
   visibilityList: [String!]
+  spotBook: [String!]
 }
 
 type Query {
   user: UserType
-  persona(uuid: String!): PersonaType
+  persona(uuid: String!): AgregatedPersona
   userPersonas: [PersonaType!]
   spot(uuid: String!): SpotType
   userSpots: [SpotType!]

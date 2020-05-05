@@ -11,6 +11,7 @@ export const PersonaSchema = new Schema({
   spotRecommendList: [String],
   qrCodeLink: String,
   contactBook: [String],
+  spotBook: [String],
   visibilityList: [String],
   isActive: Boolean,
 });

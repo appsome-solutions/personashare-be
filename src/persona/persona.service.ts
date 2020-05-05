@@ -18,11 +18,11 @@ import { UserService } from '../user';
 import { RecommendationsService } from '../recommendations';
 
 import {
+  PartialPersonaDocument,
   PersonaDocument,
   PersonaInterface,
 } from './interfaces/persona.interfaces';
 import { PersonaInput } from './input';
-import { PersonaType } from './dto/persona.dto';
 
 @Injectable()
 export class PersonaService {
@@ -63,6 +63,7 @@ export class PersonaService {
       spotNetworkList: [],
       spotRecommendList: [],
       contactBook: [],
+      spotBook: [],
       visibilityList: [],
       isActive: true,
       qrCodeLink,
@@ -95,7 +96,7 @@ export class PersonaService {
   async setDefaultPersona(
     personaUuid: string,
     userId: string,
-  ): Promise<PersonaType> {
+  ): Promise<PersonaDocument> {
     const persona = this.getPersona({ uuid: personaUuid });
     const user = await this.userService.getUser({ uuid: userId });
 
@@ -129,14 +130,28 @@ export class PersonaService {
     }
   }
 
-  async getPersona(condition: PersonaInput): Promise<PersonaDocument> {
-    return await this.mongoService.findByMatch<PersonaInput, PersonaDocument>({
+  async getPersona(condition: PersonaInput): Promise<PartialPersonaDocument> {
+    return await this.mongoService.findByMatch<
+      PersonaInput,
+      PartialPersonaDocument
+    >({
       isActive: true,
       ...condition,
     });
   }
 
-  async getUserPersonas(uuid: string): Promise<PersonaType[]> {
+  async getPersonasByIds(contactBook: string[]): Promise<PersonaDocument[]> {
+    const model = this.mongoService.getModel();
+    return await model
+      .find({
+        uuid: {
+          $in: contactBook,
+        },
+      })
+      .exec();
+  }
+
+  async getUserPersonas(uuid: string): Promise<PersonaDocument[]> {
     const { personaUUIDs } = await this.userService.getUser({ uuid });
 
     return personaUUIDs.length > 0
@@ -158,7 +173,7 @@ export class PersonaService {
     personaUuid: string,
     recommendedPersonaUuid: string,
     uuid: string,
-  ): Promise<PersonaType> {
+  ): Promise<PersonaDocument> {
     const user = await this.userService.getUser({ uuid });
 
     if (!user.personaUUIDs.includes(personaUuid)) {
@@ -216,7 +231,7 @@ export class PersonaService {
     personaUuid: string,
     savedPersonaUuid: string,
     uuid: string,
-  ): Promise<PersonaType> {
+  ): Promise<PersonaDocument> {
     const user = await this.userService.getUser({ uuid });
 
     if (!user.personaUUIDs.includes(personaUuid)) {
