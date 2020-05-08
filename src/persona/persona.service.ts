@@ -140,12 +140,12 @@ export class PersonaService {
     });
   }
 
-  async getPersonasByIds(contactBook: string[]): Promise<PersonaDocument[]> {
+  async getPersonasByIds(personasIds: string[]): Promise<PersonaDocument[]> {
     const model = this.mongoService.getModel();
     return await model
       .find({
         uuid: {
-          $in: contactBook,
+          $in: personasIds,
         },
       })
       .exec();

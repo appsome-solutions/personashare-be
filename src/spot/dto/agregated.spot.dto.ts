@@ -1,9 +1,9 @@
 import { Field, ObjectType } from 'type-graphql';
-import { CardType, PageType } from '../../shared';
-import { AgregatedSpot } from '../../spot/dto/agregated.spot.dto';
+import { CardType, PageType } from '../../shared/dto';
+import { AgregatedPersona } from '../../persona/dto/agreagated.persona.dto';
 
 @ObjectType()
-export class AgregatedPersona {
+export class AgregatedSpot {
   @Field(() => String, { nullable: true })
   uuid: string;
 
@@ -31,6 +31,12 @@ export class AgregatedPersona {
   @Field(() => [AgregatedPersona], { nullable: true })
   visibilityList: AgregatedPersona[];
 
-  @Field(() => [AgregatedSpot], { nullable: true })
-  spotBook: AgregatedSpot[];
+  @Field(() => AgregatedPersona, { nullable: true })
+  owner: AgregatedPersona;
+
+  @Field(() => [AgregatedPersona], { nullable: true })
+  participants: AgregatedPersona[];
+
+  @Field(() => [AgregatedPersona], { nullable: true })
+  managers: AgregatedPersona[];
 }

@@ -11,7 +11,7 @@ type PartialPersonaInterface = {
   page: Page;
   personaUUIDs: string[];
   qrCodeLink: string;
-  networkList: string[];
+  networkList: any[];
   recommendList: any[];
   spotNetworkList: string[];
   spotRecommendList: string[];

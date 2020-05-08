@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FirebaseModule } from '../firebase';
 import { PersonaService } from './persona.service';
@@ -10,6 +10,7 @@ import { QrCodeModule } from '../qrcode';
 import { ConfigModule } from '../config';
 import { RecommendationsModule } from '../recommendations';
 import { AuthModule } from '../auth';
+import { SpotModule } from '../spot';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from '../auth';
     UserModule,
     AuthModule,
     RecommendationsModule,
+    forwardRef(() => SpotModule),
   ],
   providers: [PersonaService, PersonaResolver],
   exports: [PersonaService],
