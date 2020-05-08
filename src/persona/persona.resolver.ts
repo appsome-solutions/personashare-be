@@ -7,7 +7,7 @@ import {
   ResolveProperty,
   Resolver,
 } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
+import { forwardRef, Inject, UseGuards } from '@nestjs/common';
 import { GqlSessionGuard } from '../guards';
 import { ConnectPersonaInput, UpdatePersonaInput } from '../shared';
 import { CreateShareableInput } from '../shared/input/create-shareable.input';
@@ -18,12 +18,16 @@ import { GQLContext } from '../app.interfaces';
 import { AddPersonaInput } from '../user/inputs';
 import { FirebaseService } from '../firebase';
 import { AgregatedPersona } from './dto/agreagated.persona.dto';
+import { SpotService } from '../spot';
+import { SpotType } from '../spot/dto/spot.dto';
 
 @Resolver((_of: void) => AgregatedPersona)
 export class PersonaResolver {
   constructor(
     private readonly personaService: PersonaService,
     private readonly firebaseService: FirebaseService,
+    @Inject(forwardRef(() => SpotService))
+    private readonly spotService: SpotService,
   ) {}
 
   @Query(() => AgregatedPersona, { nullable: true })
@@ -41,6 +45,13 @@ export class PersonaResolver {
     const result = await this.personaService.getPersonasByIds(
       persona.contactBook,
     );
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [SpotType])
+  async spotBook(@Parent() persona: PersonaType): Promise<SpotType[]> {
+    const result = await this.spotService.getSpotsByIds(persona.spotBook);
 
     return result ? result : [];
   }

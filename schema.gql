@@ -9,16 +9,31 @@ input AddPersonaInput {
 }
 
 type AgregatedPersona {
-  uuid: String!
-  card: CardType!
-  page: PageType!
+  uuid: String
+  card: CardType
+  page: PageType
   personaUUIDs: [String!]
-  qrCodeLink: String!
-  networkList: [String!]
+  qrCodeLink: String
+  networkList: [AgregatedPersona!]
   recommendList: [AgregatedPersona!]
   contactBook: [AgregatedPersona!]
   visibilityList: [AgregatedPersona!]
-  spotBook: [String!]
+  spotBook: [AgregatedSpot!]
+}
+
+type AgregatedSpot {
+  uuid: String
+  card: CardType
+  page: PageType
+  personaUUIDs: [String!]
+  qrCodeLink: String
+  networkList: [AgregatedPersona!]
+  recommendList: [AgregatedPersona!]
+  contactBook: [AgregatedPersona!]
+  visibilityList: [AgregatedPersona!]
+  owner: AgregatedPersona
+  participants: [AgregatedPersona!]
+  managers: [AgregatedPersona!]
 }
 
 input CardInput {
@@ -43,6 +58,7 @@ input ConnectPersonaInput {
 input CreateShareableInput {
   card: CardInput!
   page: PageInput!
+  personaId: String!
 }
 
 type Mutation {

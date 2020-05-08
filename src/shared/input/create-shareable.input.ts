@@ -8,4 +8,7 @@ export class CreateShareableInput {
 
   @Field(() => PageInput)
   page: PageInput;
+
+  @Field()
+  personaId: string;
 }

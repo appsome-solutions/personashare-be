@@ -1,5 +1,13 @@
-import { Resolver, Mutation, Args, Query, Context } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
+import {
+  Resolver,
+  Mutation,
+  Args,
+  Query,
+  Context,
+  ResolveProperty,
+  Parent,
+} from '@nestjs/graphql';
+import { forwardRef, Inject, UseGuards } from '@nestjs/common';
 import { v4 } from 'uuid';
 import { SpotService } from './spot.service';
 import { SpotType } from './dto/spot.dto';
@@ -9,13 +17,27 @@ import { GqlSessionGuard } from '../guards';
 import { CreateShareableInput } from '../shared/input/create-shareable.input';
 import { GQLContext } from '../app.interfaces';
 import { FirebaseService } from '../firebase';
+import { AgregatedSpot } from './dto/agregated.spot.dto';
+import { PersonaService, PersonaType } from '../persona';
 
+@Resolver((_of: void) => AgregatedSpot)
 @Resolver('Spot')
 export class SpotResolver {
   constructor(
     private readonly spotService: SpotService,
     private readonly firebaseService: FirebaseService,
+    @Inject(forwardRef(() => PersonaService))
+    private readonly personaService: PersonaService,
   ) {}
+
+  @ResolveProperty(() => [PersonaType])
+  async owner(@Parent() spot: SpotType): Promise<PersonaType[]> {
+    const result = ((await this.personaService.getPersona({
+      uuid: spot.owner,
+    })) as unknown) as PersonaType[];
+
+    return result ? result : [];
+  }
 
   @Query(() => SpotType, { nullable: true })
   async spot(@Args('uuid') uuid: string): Promise<SpotType | null> {
@@ -38,13 +60,13 @@ export class SpotResolver {
   @UseGuards(GqlSessionGuard)
   async createSpot(
     @Args('spot') spot: CreateShareableInput,
-    @Context() context: GQLContext,
   ): Promise<SpotType> {
-    const { uid } = await this.firebaseService.getClaimFromToken(context);
+    const { card, page, personaId } = spot;
 
     const spotDoc: SpotInterface = {
-      ...spot,
-      owner: uid,
+      card,
+      page,
+      owner: personaId,
       uuid: v4(),
       participants: [],
       personaUUIDs: [],

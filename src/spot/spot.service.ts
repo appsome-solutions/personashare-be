@@ -261,6 +261,17 @@ export class SpotService {
     });
   }
 
+  async getSpotsByIds(spotIds: string[]): Promise<SpotDocument[]> {
+    const model = this.mongoService.getModel();
+    return await model
+      .find({
+        uuid: {
+          $in: spotIds,
+        },
+      })
+      .exec();
+  }
+
   async getUserSpots(uuid: string): Promise<SpotDocument[]> {
     const { spots } = await this.userService.getUser({ uuid });
 
