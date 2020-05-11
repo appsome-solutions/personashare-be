@@ -3,7 +3,7 @@ import { UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserType, UserLoginType } from './dto';
 import { UpdateUserInput, UserInput } from './inputs';
-import { GqlSessionGuard } from '../guards';
+import { GqlUserGuard } from '../guards';
 import { GQLContext } from '../app.interfaces';
 import { FirebaseService } from '../firebase';
 
@@ -15,7 +15,7 @@ export class UserResolver {
   ) {}
 
   @Query(() => UserType, { nullable: true })
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async user(@Context() context: GQLContext): Promise<UserType> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
@@ -25,15 +25,12 @@ export class UserResolver {
   }
 
   @Mutation(() => UserLoginType)
-  async loginUser(
-    @Args('idToken') idToken: string,
-    @Context() context: GQLContext,
-  ): Promise<UserLoginType> {
-    return await this.userService.loginUser(idToken, context);
+  async loginUser(@Args('idToken') idToken: string): Promise<UserLoginType> {
+    return await this.userService.loginUser(idToken);
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async logout(@Context() context: GQLContext): Promise<boolean> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
@@ -41,7 +38,7 @@ export class UserResolver {
   }
 
   @Mutation(() => UserType)
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async updateUser(
     @Args('user') user: UpdateUserInput,
     @Args('uuid') uuid: string,
@@ -50,7 +47,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Number)
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async removeUser(@Args('condition') condition: UserInput): Promise<number> {
     return await this.userService.removeUser(condition);
   }

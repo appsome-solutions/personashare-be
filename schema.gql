@@ -5,7 +5,7 @@
 
 input AddPersonaInput {
   uuid: String!
-  persona: CreateShareableInput!
+  persona: CreatePersonaInput!
 }
 
 type AgregatedPersona {
@@ -55,6 +55,11 @@ input ConnectPersonaInput {
   personaUUID: String!
 }
 
+input CreatePersonaInput {
+  card: CardInput!
+  page: PageInput!
+}
+
 input CreateShareableInput {
   card: CardInput!
   page: PageInput!
@@ -66,7 +71,7 @@ type Mutation {
   logout: Boolean!
   updateUser(uuid: String!, user: UpdateUserInput!): UserType!
   removeUser(condition: UserInput!): Float!
-  createPersona(persona: CreateShareableInput!): PersonaType!
+  createPersona(persona: CreatePersonaInput!): PersonaType!
   setDefaultPersona(uuid: String!): PersonaType!
   updatePersona(uuid: String!, persona: UpdatePersonaInput!): PersonaType!
   connectPersona(input: ConnectPersonaInput!): PersonaType!
@@ -174,7 +179,6 @@ input UserInput {
 }
 
 type UserLoginType {
-  accessToken: String!
   user: UserType!
 }
 
