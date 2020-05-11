@@ -27,10 +27,9 @@ export class FirebaseService {
   }
 
   async getClaimFromToken(context: GQLContext): Promise<auth.DecodedIdToken> {
-    const token = context.req.headers.authorization
-      .replace('Bearer', '')
-      .trim();
-    return await this.getDecodedClaim(token);
+    const token = context.req.cookies['psToken'];
+
+    return await this.checkSession(token);
   }
 
   async removeUser(uid: string): Promise<void> {

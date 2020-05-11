@@ -7,7 +7,9 @@ import { UpdateUserInput, UserInput } from './inputs';
 import { UserLoginType } from './dto';
 import { MongoService } from '../mongo-service/mongo.service';
 import { FirebaseService } from '../firebase';
+import { AuthService } from '../auth';
 import { MailchimpService } from '../mailchimp';
+import { GQLContext } from '../app.interfaces';
 
 @Injectable()
 export class UserService {
@@ -16,6 +18,7 @@ export class UserService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<UserDocument>,
     private readonly firebaseService: FirebaseService,
+    private readonly authService: AuthService,
     private readonly mailchimpService: MailchimpService,
   ) {
     this.mongoService = new MongoService(this.userModel);
@@ -27,7 +30,10 @@ export class UserService {
     return await this.mongoService.create<UserInterface, UserDocument>(user);
   }
 
-  async loginUser(idToken: string): Promise<UserLoginType> {
+  async loginUser(
+    idToken: string,
+    context: GQLContext,
+  ): Promise<UserLoginType> {
     const userData = await this.firebaseService.getDecodedClaim(idToken);
     const { uid, email, name, picture } = userData;
 
@@ -46,7 +52,12 @@ export class UserService {
       });
     }
 
+    const accessToken = await this.authService.createSessionCookie(idToken);
+
+    this.authService.setCookieInGQLContext(context, accessToken, idToken);
+
     return {
+      accessToken,
       user,
     };
   }

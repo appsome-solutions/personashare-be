@@ -1,2 +1,2 @@
-export * from './gql-user-guard.service';
+export * from './gql-session.guard';
 export * from './session.guard';

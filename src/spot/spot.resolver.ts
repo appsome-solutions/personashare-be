@@ -13,7 +13,7 @@ import { SpotService } from './spot.service';
 import { SpotType } from './dto/spot.dto';
 import { SpotInput, UpdateSpotInput } from './inputs';
 import { SpotInterface } from './interfaces/spot.interfaces';
-import { GqlUserGuard } from '../guards';
+import { GqlSessionGuard } from '../guards';
 import { CreateShareableInput } from '../shared/input/create-shareable.input';
 import { GQLContext } from '../app.interfaces';
 import { FirebaseService } from '../firebase';
@@ -49,7 +49,7 @@ export class SpotResolver {
   }
 
   @Query(() => [SpotType], { nullable: true })
-  @UseGuards(GqlUserGuard)
+  @UseGuards(GqlSessionGuard)
   async userSpots(@Context() context: GQLContext): Promise<SpotType[]> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
@@ -57,7 +57,7 @@ export class SpotResolver {
   }
 
   @Mutation(() => SpotType)
-  @UseGuards(GqlUserGuard)
+  @UseGuards(GqlSessionGuard)
   async createSpot(
     @Args('spot') spot: CreateShareableInput,
   ): Promise<SpotType> {
@@ -86,7 +86,7 @@ export class SpotResolver {
   }
 
   @Mutation(() => SpotType)
-  @UseGuards(GqlUserGuard)
+  @UseGuards(GqlSessionGuard)
   async participate(
     @Args('spotId') spotId: string,
     @Args('personaId') personaId: string,
@@ -98,7 +98,7 @@ export class SpotResolver {
   }
 
   @Mutation(() => SpotType)
-  @UseGuards(GqlUserGuard)
+  @UseGuards(GqlSessionGuard)
   async addManager(
     @Args('spotId') spotId: string,
     @Args('personaId') personaId: string,
@@ -110,7 +110,7 @@ export class SpotResolver {
   }
 
   @Mutation(() => SpotType)
-  @UseGuards(GqlUserGuard)
+  @UseGuards(GqlSessionGuard)
   async recommendSpot(
     @Args('personaUuid') personaUuid: string,
     @Args('recommendedSpotUuid') recommendedSpotUuid: string,
@@ -126,7 +126,7 @@ export class SpotResolver {
   }
 
   @Mutation(() => SpotType)
-  @UseGuards(GqlUserGuard)
+  @UseGuards(GqlSessionGuard)
   async saveSpot(
     @Args('spotUuid') spotUuid: string,
     @Args('savedSpotUuid') savedSpotUuid: string,
@@ -138,7 +138,7 @@ export class SpotResolver {
   }
 
   @Mutation(() => SpotType)
-  @UseGuards(GqlUserGuard)
+  @UseGuards(GqlSessionGuard)
   async updateSpot(
     @Args('spot') spot: UpdateSpotInput,
     @Args('uuid') uuid: string,
@@ -150,7 +150,7 @@ export class SpotResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(GqlUserGuard)
+  @UseGuards(GqlSessionGuard)
   async removeSpot(
     @Args('spotUuid') spotUuid: string,
     @Context() context: GQLContext,
