@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
-import { CreateShareableInput } from '../../shared/input/create-shareable.input';
+import { CreatePersonaInput } from '../../persona/input';
 
 @InputType()
 export class AddPersonaInput {
@@ -9,5 +9,5 @@ export class AddPersonaInput {
   uuid: string;
 
   @Field()
-  persona: CreateShareableInput;
+  persona: CreatePersonaInput;
 }

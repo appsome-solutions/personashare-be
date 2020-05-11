@@ -8,12 +8,11 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { forwardRef, Inject, UseGuards } from '@nestjs/common';
-import { GqlSessionGuard } from '../guards';
+import { GqlUserGuard } from '../guards';
 import { ConnectPersonaInput, UpdatePersonaInput } from '../shared';
-import { CreateShareableInput } from '../shared/input/create-shareable.input';
 import { PersonaService } from './persona.service';
 import { PersonaType } from './dto/persona.dto';
-import { PersonaInput } from './input';
+import { CreatePersonaInput, PersonaInput } from './input';
 import { GQLContext } from '../app.interfaces';
 import { AddPersonaInput } from '../user/inputs';
 import { FirebaseService } from '../firebase';
@@ -75,7 +74,7 @@ export class PersonaResolver {
   }
 
   @Query(() => [PersonaType], { nullable: true })
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async userPersonas(@Context() context: GQLContext): Promise<PersonaType[]> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
@@ -83,9 +82,9 @@ export class PersonaResolver {
   }
 
   @Mutation(() => PersonaType)
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async createPersona(
-    @Args('persona') persona: CreateShareableInput,
+    @Args('persona') persona: CreatePersonaInput,
     @Context() context: GQLContext,
   ): Promise<PersonaType> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
@@ -99,7 +98,7 @@ export class PersonaResolver {
   }
 
   @Mutation(() => PersonaType)
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async setDefaultPersona(
     @Args('uuid') uuid: string,
     @Context() context: GQLContext,
@@ -110,7 +109,7 @@ export class PersonaResolver {
   }
 
   @Mutation(() => PersonaType)
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async updatePersona(
     @Args('persona') persona: UpdatePersonaInput,
     @Args('uuid') uuid: string,
@@ -122,7 +121,7 @@ export class PersonaResolver {
   }
 
   @Mutation(() => PersonaType)
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async connectPersona(
     @Args('input') input: ConnectPersonaInput,
   ): Promise<PersonaType> {
@@ -130,7 +129,7 @@ export class PersonaResolver {
   }
 
   @Mutation(() => PersonaType)
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async recommendPersona(
     @Args('personaUuid') personaUuid: string,
     @Args('recommendedPersonaUuid') recommendedPersonaUuid: string,
@@ -146,7 +145,7 @@ export class PersonaResolver {
   }
 
   @Mutation(() => PersonaType)
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async savePersona(
     @Args('personaUuid') personaUuid: string,
     @Args('savedPersonaUuid') savedPersonaUuid: string,
@@ -162,7 +161,7 @@ export class PersonaResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(GqlSessionGuard)
+  @UseGuards(GqlUserGuard)
   async removePersona(
     @Args('personaUuid') personaUuid: string,
     @Context() context: GQLContext,
