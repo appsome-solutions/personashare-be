@@ -13,8 +13,8 @@ type PartialPersonaInterface = {
   qrCodeLink: string;
   networkList: any[];
   recommendList: any[];
-  spotNetworkList: string[];
-  spotRecommendList: string[];
+  spotNetworkList: any[];
+  spotRecommendList: any[];
   spotBook: any[];
   visibilityList: any[];
   isActive: boolean;

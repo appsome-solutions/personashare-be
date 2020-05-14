@@ -19,6 +19,8 @@ type AgregatedPersona {
   contactBook: [AgregatedPersona!]
   visibilityList: [AgregatedPersona!]
   spotBook: [AgregatedSpot!]
+  spotNetworkList: [AgregatedSpot!]
+  spotRecommendList: [AgregatedSpot!]
 }
 
 type AgregatedSpot {
