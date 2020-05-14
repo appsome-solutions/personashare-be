@@ -124,7 +124,7 @@ type Query {
   user: UserType
   persona(uuid: String!): AgregatedPersona
   userPersonas: [PersonaType!]
-  spot(uuid: String!): SpotType
+  spot(uuid: String!): AgregatedSpot
   userSpots: [SpotType!]
 }
 

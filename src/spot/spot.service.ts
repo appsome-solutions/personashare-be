@@ -1,7 +1,11 @@
 import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { SpotDocument, SpotInterface } from './interfaces/spot.interfaces';
+import {
+  PartialSpotDocument,
+  SpotDocument,
+  SpotInterface,
+} from './interfaces/spot.interfaces';
 import { SpotInput, UpdateSpotInput } from './inputs';
 import { SpotType } from './dto/spot.dto';
 import { MongoService } from '../mongo-service/mongo.service';
@@ -254,8 +258,8 @@ export class SpotService {
     }
   }
 
-  async getSpot(condition: SpotInput): Promise<SpotDocument> {
-    return await this.mongoService.findByMatch<SpotInput, SpotDocument>({
+  async getSpot(condition: SpotInput): Promise<PartialSpotDocument> {
+    return await this.mongoService.findByMatch<SpotInput, PartialSpotDocument>({
       isActive: true,
       ...condition,
     });

@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { PersonaEntity } from '../../shared/interfaces';
+import { Card, Page, PersonaEntity } from '../../shared/interfaces';
 
 interface SpotInterface extends PersonaEntity {
   participants: string[];
@@ -9,4 +9,30 @@ interface SpotInterface extends PersonaEntity {
 
 interface SpotDocument extends SpotInterface, Document {}
 
-export { SpotInterface, SpotDocument };
+type PartialSpotInterface = {
+  readonly uuid: string;
+  card: Card;
+  page: Page;
+  personaUUIDs: string[];
+  qrCodeLink: string;
+  networkList: any[];
+  recommendList: any[];
+  spotNetworkList: string[];
+  spotRecommendList: string[];
+  spotBook: any[];
+  visibilityList: any[];
+  isActive: boolean;
+  contactBook: any[];
+  participants: any[];
+  managers: any[];
+  owner: any;
+};
+
+interface PartialSpotDocument extends PartialSpotInterface, Document {}
+
+export {
+  SpotInterface,
+  SpotDocument,
+  PartialSpotInterface,
+  PartialSpotDocument,
+};

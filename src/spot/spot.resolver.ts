@@ -39,8 +39,8 @@ export class SpotResolver {
     return result ? result : [];
   }
 
-  @Query(() => SpotType, { nullable: true })
-  async spot(@Args('uuid') uuid: string): Promise<SpotType | null> {
+  @Query(() => AgregatedSpot, { nullable: true })
+  async spot(@Args('uuid') uuid: string): Promise<AgregatedSpot | null> {
     const input: SpotInput = {
       uuid,
       isActive: true,
