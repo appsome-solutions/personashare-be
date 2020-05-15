@@ -21,6 +21,7 @@ type PartialSpotInterface = {
   spotRecommendList: string[];
   spotBook: any[];
   visibilityList: any[];
+  spotVisibilityList: any[];
   isActive: boolean;
   contactBook: any[];
   participants: any[];

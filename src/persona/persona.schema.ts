@@ -13,5 +13,6 @@ export const PersonaSchema = new Schema({
   contactBook: [String],
   spotBook: [String],
   visibilityList: [String],
+  spotVisibilityList: [String],
   isActive: Boolean,
 });

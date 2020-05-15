@@ -18,6 +18,7 @@ type AgregatedPersona {
   recommendList: [AgregatedPersona!]
   contactBook: [AgregatedPersona!]
   visibilityList: [AgregatedPersona!]
+  spotVisibilityList: [AgregatedSpot!]
   spotBook: [AgregatedSpot!]
   spotNetworkList: [AgregatedSpot!]
   spotRecommendList: [AgregatedSpot!]
@@ -82,6 +83,10 @@ type Mutation {
     personaUuid: String!
   ): PersonaType!
   savePersona(savedPersonaUuid: String!, personaUuid: String!): PersonaType!
+  saveSpotForPersona(
+    savedSpotUuid: String!
+    personaUuid: String!
+  ): AgregatedPersona!
   removePersona(personaUuid: String!): Boolean!
   createSpot(spot: CreateShareableInput!): SpotType!
   participate(personaId: String!, spotId: String!): SpotType!
@@ -119,6 +124,7 @@ type PersonaType {
   recommendList: [String!]
   contactBook: [String!]
   visibilityList: [String!]
+  spotVisibilityList: [String!]
   spotBook: [String!]
 }
 

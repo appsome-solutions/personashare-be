@@ -75,6 +75,7 @@ export class SpotResolver {
       spotNetworkList: [],
       spotRecommendList: [],
       visibilityList: [],
+      spotVisibilityList: [],
       contactBook: [],
       spotBook: [],
       managers: [],

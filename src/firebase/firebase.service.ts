@@ -27,6 +27,12 @@ export class FirebaseService {
   }
 
   async getClaimFromToken(context: GQLContext): Promise<auth.DecodedIdToken> {
+    const authHeader = context.req.headers.authorization;
+
+    if (!authHeader) {
+      throw new Error('Error while fetching claim from token');
+    }
+
     const token = context.req.headers.authorization
       .replace('Bearer', '')
       .trim();

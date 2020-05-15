@@ -160,6 +160,22 @@ export class PersonaResolver {
     );
   }
 
+  @Mutation(() => AgregatedPersona)
+  @UseGuards(GqlUserGuard)
+  async saveSpotForPersona(
+    @Args('personaUuid') personaUuid: string,
+    @Args('savedSpotUuid') savedSpotUuid: string,
+    @Context() context: GQLContext,
+  ): Promise<AgregatedPersona> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.personaService.saveSpotForPersona(
+      personaUuid,
+      savedSpotUuid,
+      uid,
+    );
+  }
+
   @Mutation(() => Boolean)
   @UseGuards(GqlUserGuard)
   async removePersona(

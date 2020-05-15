@@ -65,6 +65,7 @@ export class PersonaService {
       contactBook: [],
       spotBook: [],
       visibilityList: [],
+      spotVisibilityList: [],
       isActive: true,
       qrCodeLink,
     };
@@ -225,6 +226,52 @@ export class PersonaService {
     await userPersona.save();
 
     return await recommendedPersona.save();
+  }
+
+  async saveSpotForPersona(
+    personaUuid: string,
+    savedSpotUuid: string,
+    uuid: string,
+  ): Promise<PartialPersonaDocument> {
+    const user = await this.userService.getUser({ uuid });
+
+    if (!user.personaUUIDs.includes(personaUuid)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected persona',
+      );
+    }
+
+    if (user.spots.includes(savedSpotUuid)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected spot',
+      );
+    }
+
+    const userPersona = await this.getPersona({
+      uuid: personaUuid,
+    });
+
+    if (!userPersona) {
+      throw new Error('No persona found for given personaUuid');
+    }
+
+    userPersona.spotVisibilityList = userPersona.spotVisibilityList.concat(
+      savedSpotUuid,
+    );
+
+    const savedPersona = await this.getPersona({
+      uuid: savedSpotUuid,
+    });
+
+    if (!savedPersona) {
+      throw new Error('No persona found for given savedPersonaUuid');
+    }
+
+    savedPersona.contactBook = savedPersona.contactBook.concat(personaUuid);
+
+    await userPersona.save();
+
+    return await savedPersona.save();
   }
 
   async savePersona(

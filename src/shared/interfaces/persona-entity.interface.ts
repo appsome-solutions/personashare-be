@@ -15,6 +15,7 @@ export interface PersonaEntity {
   contactBook: string[];
   spotBook: string[];
   visibilityList: string[];
+  spotVisibilityList: string[];
   isActive: boolean;
 }
 

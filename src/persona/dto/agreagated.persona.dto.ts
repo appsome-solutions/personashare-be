@@ -32,6 +32,9 @@ export class AgregatedPersona {
   visibilityList: AgregatedPersona[];
 
   @Field(() => [AgregatedSpot], { nullable: true })
+  spotVisibilityList: AgregatedSpot[];
+
+  @Field(() => [AgregatedSpot], { nullable: true })
   spotBook: AgregatedSpot[];
 
   @Field(() => [AgregatedSpot], { nullable: true })

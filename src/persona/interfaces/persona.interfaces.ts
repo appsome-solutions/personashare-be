@@ -17,6 +17,7 @@ type PartialPersonaInterface = {
   spotRecommendList: any[];
   spotBook: any[];
   visibilityList: any[];
+  spotVisibilityList: any[];
   isActive: boolean;
   contactBook: any[];
 };

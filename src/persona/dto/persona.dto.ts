@@ -31,5 +31,8 @@ export class PersonaType {
   visibilityList: string[];
 
   @Field(() => [String], { nullable: true })
+  spotVisibilityList: string[];
+
+  @Field(() => [String], { nullable: true })
   spotBook: string[];
 }
