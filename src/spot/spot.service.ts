@@ -12,7 +12,7 @@ import { MongoService } from '../mongo-service/mongo.service';
 import { ConfigService } from '../config';
 import { QrCodeService } from '../qrcode';
 import { UserService } from '../user';
-import { PersonaService } from '../persona';
+import { PartialPersonaDocument, PersonaService } from '../persona';
 import { RecommendationsService } from '../recommendations';
 import dayjs from 'dayjs';
 
@@ -197,20 +197,20 @@ export class SpotService {
 
   async saveSpot(
     spotUuid: string,
-    savedSpotUuid: string,
+    savedPersonaUuid: string,
     uuid: string,
-  ): Promise<SpotType> {
+  ): Promise<PartialPersonaDocument> {
     const user = await this.userService.getUser({ uuid });
 
     if (!user.spots.includes(spotUuid)) {
       throw new MethodNotAllowedException(
-        'User is not allowed to recommend with selected spot',
+        'User is not allowed to save spot with selected spot',
       );
     }
 
-    if (user.spots.includes(savedSpotUuid)) {
+    if (user.personaUUIDs.includes(savedPersonaUuid)) {
       throw new MethodNotAllowedException(
-        'User is not allowed to recommend with selected spot',
+        'User is not allowed to save spot with selected persona',
       );
     }
 
@@ -222,21 +222,23 @@ export class SpotService {
       throw new Error('No spot found for given spotUuid');
     }
 
-    userSpot.visibilityList = userSpot.visibilityList.concat(savedSpotUuid);
+    userSpot.visibilityList = userSpot.visibilityList.concat(savedPersonaUuid);
 
-    const savedSpot = await this.getSpot({
-      uuid: savedSpotUuid,
+    const savedPersona = await this.personaService.getPersona({
+      uuid: savedPersonaUuid,
     });
 
-    if (!savedSpot) {
-      throw new Error('No spot found for given savedSpotUuid');
+    if (!savedPersona) {
+      throw new Error('No persona found for given savedPersonaUuid');
     }
 
-    savedSpot.contactBook = savedSpot.contactBook.concat(savedSpotUuid);
+    savedPersona.contactBook = savedPersona.contactBook.concat(
+      savedPersonaUuid,
+    );
 
     await userSpot.save();
 
-    return await savedSpot.save();
+    return await savedPersona.save();
   }
 
   async updateSpot(

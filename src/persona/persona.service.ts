@@ -246,13 +246,13 @@ export class PersonaService {
 
     if (!user.personaUUIDs.includes(personaUuid)) {
       throw new MethodNotAllowedException(
-        'User is not allowed to recommend with selected persona',
+        'User is not allowed to save spot with selected persona',
       );
     }
 
     if (user.spots.includes(savedSpotUuid)) {
       throw new MethodNotAllowedException(
-        'User is not allowed to recommend with selected spot',
+        'User is not allowed to save spot with selected spot',
       );
     }
 
@@ -292,13 +292,13 @@ export class PersonaService {
 
     if (!user.personaUUIDs.includes(personaUuid)) {
       throw new MethodNotAllowedException(
-        'User is not allowed to recommend with selected persona',
+        'User is not allowed to save persona with selected persona',
       );
     }
 
     if (user.personaUUIDs.includes(savedPersonaUuid)) {
       throw new MethodNotAllowedException(
-        'User is not allowed to recommend with selected persona',
+        'User is not allowed to save persona with selected persona',
       );
     }
 

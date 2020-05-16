@@ -19,6 +19,7 @@ import { GQLContext } from '../app.interfaces';
 import { FirebaseService } from '../firebase';
 import { AgregatedSpot } from './dto/agregated.spot.dto';
 import { PersonaService, PersonaType } from '../persona';
+import { AgregatedPersona } from '../persona/dto/agreagated.persona.dto';
 
 @Resolver((_of: void) => AgregatedSpot)
 @Resolver('Spot')
@@ -126,16 +127,16 @@ export class SpotResolver {
     );
   }
 
-  @Mutation(() => SpotType)
+  @Mutation(() => AgregatedPersona)
   @UseGuards(GqlUserGuard)
   async saveSpot(
     @Args('spotUuid') spotUuid: string,
-    @Args('savedSpotUuid') savedSpotUuid: string,
+    @Args('savedPersonaUuid') savedPersonaUuid: string,
     @Context() context: GQLContext,
-  ): Promise<SpotType> {
+  ): Promise<AgregatedPersona> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
-    return await this.spotService.saveSpot(spotUuid, savedSpotUuid, uid);
+    return await this.spotService.saveSpot(spotUuid, savedPersonaUuid, uid);
   }
 
   @Mutation(() => SpotType)
