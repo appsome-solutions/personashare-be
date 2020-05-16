@@ -1,4 +1,9 @@
-import { Injectable, MethodNotAllowedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  MethodNotAllowedException,
+} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 } from 'uuid';
@@ -23,6 +28,8 @@ import {
   PersonaInterface,
 } from './interfaces/persona.interfaces';
 import { PersonaInput } from './input';
+import { SpotService } from '../spot';
+import { PartialSpotDocument } from '../spot/interfaces/spot.interfaces';
 
 @Injectable()
 export class PersonaService {
@@ -37,6 +44,8 @@ export class PersonaService {
     private readonly qrCodeService: QrCodeService,
     private readonly userService: UserService,
     private readonly recommendationsService: RecommendationsService,
+    @Inject(forwardRef(() => SpotService))
+    private readonly spotService: SpotService,
   ) {
     this.mongoService = new MongoService(this.personaModel);
   }
@@ -232,7 +241,7 @@ export class PersonaService {
     personaUuid: string,
     savedSpotUuid: string,
     uuid: string,
-  ): Promise<PartialPersonaDocument> {
+  ): Promise<PartialSpotDocument> {
     const user = await this.userService.getUser({ uuid });
 
     if (!user.personaUUIDs.includes(personaUuid)) {
@@ -259,19 +268,19 @@ export class PersonaService {
       savedSpotUuid,
     );
 
-    const savedPersona = await this.getPersona({
+    const savedSpot = await this.spotService.getSpot({
       uuid: savedSpotUuid,
     });
 
-    if (!savedPersona) {
-      throw new Error('No persona found for given savedPersonaUuid');
+    if (!savedSpot) {
+      throw new Error('No spot found for given savedSpotUuid');
     }
 
-    savedPersona.contactBook = savedPersona.contactBook.concat(personaUuid);
+    savedSpot.contactBook = savedSpot.contactBook.concat(personaUuid);
 
     await userPersona.save();
 
-    return await savedPersona.save();
+    return await savedSpot.save();
   }
 
   async savePersona(
