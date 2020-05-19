@@ -197,10 +197,6 @@ export class PersonaService {
       throw new Error('No persona found for given personaUuid');
     }
 
-    userPersona.recommendList = userPersona.recommendList.concat(
-      recommendedPersonaUuid,
-    );
-
     const recommendedPersona = await this.getPersona({
       uuid: recommendedPersonaUuid,
     });
@@ -208,6 +204,22 @@ export class PersonaService {
     if (!recommendedPersona) {
       throw new Error('No persona found for given recommendedPersonaUuid');
     }
+
+    if (userPersona.recommendList.includes(recommendedPersonaUuid)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend this persona - already recommended.',
+      );
+    }
+
+    if (recommendedPersona.networkList.includes(personaUuid)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected persona - already recommended.',
+      );
+    }
+
+    userPersona.recommendList = userPersona.recommendList.concat(
+      recommendedPersonaUuid,
+    );
 
     recommendedPersona.networkList = recommendedPersona.networkList.concat(
       personaUuid,
@@ -262,6 +274,14 @@ export class PersonaService {
 
     if (!savedPersona) {
       throw new Error('No persona found for given savedPersonaUuid');
+    }
+
+    if (savedPersona.visibilityList.includes(user.defaultPersona)) {
+      throw new MethodNotAllowedException('Persona already saved!');
+    }
+
+    if (defaultPersona.contactBook.includes(savedPersonaUuid)) {
+      throw new MethodNotAllowedException('Persona already saved!');
     }
 
     savedPersona.visibilityList = savedPersona.visibilityList.concat(

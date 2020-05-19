@@ -159,10 +159,6 @@ export class SpotService {
         throw new Error('No persona found for given personaUuid');
       }
 
-      userPersona.spotRecommendList = userPersona.spotRecommendList.concat(
-        recommendedSpotUuid,
-      );
-
       const recommendedSpot = await this.getSpot({
         uuid: recommendedSpotUuid,
       });
@@ -170,6 +166,22 @@ export class SpotService {
       if (!recommendedSpot) {
         throw new Error('No spot found for given recommendedSpotUuid');
       }
+
+      if (userPersona.spotRecommendList.includes(recommendedSpotUuid)) {
+        throw new MethodNotAllowedException(
+          'User is not allowed to recommend selected spot - already recommended.',
+        );
+      }
+
+      if (recommendedSpot.networkList.includes(personaUuid)) {
+        throw new MethodNotAllowedException(
+          'User is not allowed to recommend with selected persona - already recommended.',
+        );
+      }
+
+      userPersona.spotRecommendList = userPersona.spotRecommendList.concat(
+        recommendedSpotUuid,
+      );
 
       recommendedSpot.networkList = recommendedSpot.networkList.concat(
         personaUuid,
@@ -229,6 +241,14 @@ export class SpotService {
       throw new MethodNotAllowedException(
         'No default persona for given user. Please, create one.',
       );
+    }
+
+    if (savedSpot.visibilityList.includes(user.defaultPersona)) {
+      throw new MethodNotAllowedException('Spot already saved!');
+    }
+
+    if (defaultPersona.spotBook.includes(savedSpotUuid)) {
+      throw new MethodNotAllowedException('Spot already saved!');
     }
 
     savedSpot.visibilityList = savedSpot.visibilityList.concat(
