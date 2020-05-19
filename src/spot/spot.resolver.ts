@@ -130,13 +130,12 @@ export class SpotResolver {
   @Mutation(() => AgregatedPersona)
   @UseGuards(GqlUserGuard)
   async saveSpot(
-    @Args('spotUuid') spotUuid: string,
-    @Args('savedPersonaUuid') savedPersonaUuid: string,
+    @Args('savedSpotUuid') savedSpotUuid: string,
     @Context() context: GQLContext,
   ): Promise<AgregatedPersona> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
-    return await this.spotService.saveSpot(spotUuid, savedPersonaUuid, uid);
+    return await this.spotService.saveSpot(savedSpotUuid, uid);
   }
 
   @Mutation(() => SpotType)

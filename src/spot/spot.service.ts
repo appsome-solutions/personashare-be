@@ -196,49 +196,50 @@ export class SpotService {
   }
 
   async saveSpot(
-    spotUuid: string,
-    savedPersonaUuid: string,
+    savedSpotUuid: string,
     uuid: string,
   ): Promise<PartialPersonaDocument> {
     const user = await this.userService.getUser({ uuid });
 
-    if (!user.spots.includes(spotUuid)) {
+    if (user.spots.includes(savedSpotUuid)) {
       throw new MethodNotAllowedException(
         'User is not allowed to save spot with selected spot',
       );
     }
 
-    if (user.personaUUIDs.includes(savedPersonaUuid)) {
+    const savedSpot = await this.getSpot({
+      uuid: savedSpotUuid,
+    });
+
+    if (!savedSpot) {
+      throw new Error('No spot found for given savedSpotUuid');
+    }
+
+    if (!user.defaultPersona) {
       throw new MethodNotAllowedException(
-        'User is not allowed to save spot with selected persona',
+        'No default persona for given user. Please, create one.',
       );
     }
 
-    const userSpot = await this.getSpot({
-      uuid: spotUuid,
+    const defaultPersona = await this.personaService.getPersona({
+      uuid: user.defaultPersona,
     });
 
-    if (!userSpot) {
-      throw new Error('No spot found for given spotUuid');
+    if (!defaultPersona) {
+      throw new MethodNotAllowedException(
+        'No default persona for given user. Please, create one.',
+      );
     }
 
-    userSpot.visibilityList = userSpot.visibilityList.concat(savedPersonaUuid);
-
-    const savedPersona = await this.personaService.getPersona({
-      uuid: savedPersonaUuid,
-    });
-
-    if (!savedPersona) {
-      throw new Error('No persona found for given savedPersonaUuid');
-    }
-
-    savedPersona.contactBook = savedPersona.contactBook.concat(
-      savedPersonaUuid,
+    savedSpot.visibilityList = savedSpot.visibilityList.concat(
+      user.defaultPersona,
     );
 
-    await userSpot.save();
+    defaultPersona.spotBook = defaultPersona.spotBook.concat(savedSpotUuid);
 
-    return await savedPersona.save();
+    await savedSpot.save();
+
+    return await defaultPersona.save();
   }
 
   async updateSpot(
