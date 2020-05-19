@@ -18,7 +18,7 @@ import { AddPersonaInput } from '../user/inputs';
 import { FirebaseService } from '../firebase';
 import { AgregatedPersona } from './dto/agreagated.persona.dto';
 import { SpotService } from '../spot';
-import { SpotType } from '../spot/dto/spot.dto';
+import { AgregatedSpot } from '../spot/dto/agregated.spot.dto';
 
 @Resolver((_of: void) => AgregatedPersona)
 export class PersonaResolver {
@@ -39,8 +39,10 @@ export class PersonaResolver {
     return await this.personaService.getPersona(input);
   }
 
-  @ResolveProperty(() => [PersonaType])
-  async contactBook(@Parent() persona: PersonaType): Promise<PersonaType[]> {
+  @ResolveProperty(() => [AgregatedPersona])
+  async contactBook(
+    @Parent() persona: PersonaType,
+  ): Promise<AgregatedPersona[]> {
     const result = await this.personaService.getPersonasByIds(
       persona.contactBook,
     );
@@ -48,15 +50,17 @@ export class PersonaResolver {
     return result ? result : [];
   }
 
-  @ResolveProperty(() => [SpotType])
-  async spotBook(@Parent() persona: PersonaType): Promise<SpotType[]> {
+  @ResolveProperty(() => [AgregatedSpot])
+  async spotBook(@Parent() persona: PersonaType): Promise<AgregatedSpot[]> {
     const result = await this.spotService.getSpotsByIds(persona.spotBook);
 
     return result ? result : [];
   }
 
-  @ResolveProperty(() => [PersonaType])
-  async visibilityList(@Parent() persona: PersonaType): Promise<PersonaType[]> {
+  @ResolveProperty(() => [AgregatedPersona])
+  async visibilityList(
+    @Parent() persona: PersonaType,
+  ): Promise<AgregatedPersona[]> {
     const result = await this.personaService.getPersonasByIds(
       persona.visibilityList,
     );
@@ -64,8 +68,43 @@ export class PersonaResolver {
     return result ? result : [];
   }
 
-  @ResolveProperty(() => [PersonaType])
-  async recommendList(@Parent() persona: PersonaType): Promise<PersonaType[]> {
+  @ResolveProperty(() => [AgregatedSpot])
+  async spotVisibilityList(
+    @Parent() persona: PersonaType,
+  ): Promise<AgregatedSpot[]> {
+    const result = await this.spotService.getSpotsByIds(
+      persona.spotVisibilityList,
+    );
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [AgregatedPersona])
+  async networkList(
+    @Parent() persona: PersonaType,
+  ): Promise<AgregatedPersona[]> {
+    const result = await this.personaService.getPersonasByIds(
+      persona.networkList,
+    );
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [AgregatedSpot])
+  async spotNetworkList(
+    @Parent() persona: PersonaType,
+  ): Promise<AgregatedSpot[]> {
+    const result = await this.spotService.getSpotsByIds(
+      persona.spotNetworkList,
+    );
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [AgregatedPersona])
+  async recommendList(
+    @Parent() persona: PersonaType,
+  ): Promise<AgregatedPersona[]> {
     const result = await this.personaService.getPersonasByIds(
       persona.recommendList,
     );
@@ -73,9 +112,22 @@ export class PersonaResolver {
     return result ? result : [];
   }
 
-  @Query(() => [PersonaType], { nullable: true })
+  @ResolveProperty(() => [AgregatedSpot])
+  async spotRecommendList(
+    @Parent() persona: PersonaType,
+  ): Promise<AgregatedSpot[]> {
+    const result = await this.spotService.getSpotsByIds(
+      persona.spotRecommendList,
+    );
+
+    return result ? result : [];
+  }
+
+  @Query(() => [AgregatedPersona], { nullable: true })
   @UseGuards(GqlUserGuard)
-  async userPersonas(@Context() context: GQLContext): Promise<PersonaType[]> {
+  async userPersonas(
+    @Context() context: GQLContext,
+  ): Promise<AgregatedPersona[]> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
     return await this.personaService.getUserPersonas(uid);

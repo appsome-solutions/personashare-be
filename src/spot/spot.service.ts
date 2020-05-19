@@ -288,7 +288,7 @@ export class SpotService {
     });
   }
 
-  async getSpotsByIds(spotIds: string[]): Promise<SpotDocument[]> {
+  async getSpotsByIds(spotIds: string[]): Promise<PartialSpotDocument[]> {
     const model = this.mongoService.getModel();
     return await model
       .find({

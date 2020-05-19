@@ -18,7 +18,7 @@ import { CreateShareableInput } from '../shared/input/create-shareable.input';
 import { GQLContext } from '../app.interfaces';
 import { FirebaseService } from '../firebase';
 import { AgregatedSpot } from './dto/agregated.spot.dto';
-import { PersonaService, PersonaType } from '../persona';
+import { PersonaService } from '../persona';
 import { AgregatedPersona } from '../persona/dto/agreagated.persona.dto';
 
 @Resolver((_of: void) => AgregatedSpot)
@@ -31,11 +31,69 @@ export class SpotResolver {
     private readonly personaService: PersonaService,
   ) {}
 
-  @ResolveProperty(() => [PersonaType])
-  async owner(@Parent() spot: SpotType): Promise<PersonaType[]> {
+  @ResolveProperty(() => AgregatedPersona)
+  async owner(@Parent() spot: SpotType): Promise<AgregatedPersona> {
     const result = ((await this.personaService.getPersona({
       uuid: spot.owner,
-    })) as unknown) as PersonaType[];
+    })) as unknown) as AgregatedPersona;
+
+    if (result) {
+      return result;
+    } else {
+      throw new Error("Owner doesn't exists");
+    }
+  }
+
+  @ResolveProperty(() => [AgregatedPersona])
+  async networkList(@Parent() spot: SpotType): Promise<AgregatedPersona[]> {
+    const result = ((await this.personaService.getPersonasByIds(
+      spot.networkList,
+    )) as unknown) as AgregatedPersona[];
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [AgregatedPersona])
+  async recommendList(@Parent() spot: SpotType): Promise<AgregatedPersona[]> {
+    const result = ((await this.personaService.getPersonasByIds(
+      spot.recommendList,
+    )) as unknown) as AgregatedPersona[];
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [AgregatedPersona])
+  async contactBook(@Parent() spot: SpotType): Promise<AgregatedPersona[]> {
+    const result = ((await this.personaService.getPersonasByIds(
+      spot.contactBook,
+    )) as unknown) as AgregatedPersona[];
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [AgregatedPersona])
+  async visibilityList(@Parent() spot: SpotType): Promise<AgregatedPersona[]> {
+    const result = ((await this.personaService.getPersonasByIds(
+      spot.visibilityList,
+    )) as unknown) as AgregatedPersona[];
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [AgregatedPersona])
+  async participants(@Parent() spot: SpotType): Promise<AgregatedPersona[]> {
+    const result = ((await this.personaService.getPersonasByIds(
+      spot.participants,
+    )) as unknown) as AgregatedPersona[];
+
+    return result ? result : [];
+  }
+
+  @ResolveProperty(() => [AgregatedPersona])
+  async managers(@Parent() spot: SpotType): Promise<AgregatedPersona[]> {
+    const result = ((await this.personaService.getPersonasByIds(
+      spot.managers,
+    )) as unknown) as AgregatedPersona[];
 
     return result ? result : [];
   }

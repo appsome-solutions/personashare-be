@@ -22,7 +22,13 @@ export class PersonaType {
   networkList: string[];
 
   @Field(() => [String], { nullable: true })
+  spotNetworkList: string[];
+
+  @Field(() => [String], { nullable: true })
   recommendList: string[];
+
+  @Field(() => [String], { nullable: true })
+  spotRecommendList: string[];
 
   @Field(() => [String], { nullable: true })
   contactBook: string[];

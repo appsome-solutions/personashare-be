@@ -141,7 +141,9 @@ export class PersonaService {
     });
   }
 
-  async getPersonasByIds(personasIds: string[]): Promise<PersonaDocument[]> {
+  async getPersonasByIds(
+    personasIds: string[],
+  ): Promise<PartialPersonaDocument[]> {
     const model = this.mongoService.getModel();
     return await model
       .find({
@@ -152,7 +154,7 @@ export class PersonaService {
       .exec();
   }
 
-  async getUserPersonas(uuid: string): Promise<PersonaDocument[]> {
+  async getUserPersonas(uuid: string): Promise<PartialPersonaDocument[]> {
     const { personaUUIDs } = await this.userService.getUser({ uuid });
 
     return personaUUIDs.length > 0

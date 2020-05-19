@@ -25,8 +25,14 @@ export class AgregatedPersona {
   @Field(() => [AgregatedPersona], { nullable: true })
   recommendList: AgregatedPersona[];
 
+  @Field(() => [AgregatedSpot], { nullable: true })
+  spotRecommendList: AgregatedSpot[];
+
   @Field(() => [AgregatedPersona], { nullable: true })
   contactBook: AgregatedPersona[];
+
+  @Field(() => [AgregatedSpot], { nullable: true })
+  spotBook: AgregatedSpot[];
 
   @Field(() => [AgregatedPersona], { nullable: true })
   visibilityList: AgregatedPersona[];
@@ -35,11 +41,5 @@ export class AgregatedPersona {
   spotVisibilityList: AgregatedSpot[];
 
   @Field(() => [AgregatedSpot], { nullable: true })
-  spotBook: AgregatedSpot[];
-
-  @Field(() => [AgregatedSpot], { nullable: true })
   spotNetworkList: AgregatedSpot[];
-
-  @Field(() => [AgregatedSpot], { nullable: true })
-  spotRecommendList: AgregatedSpot[];
 }

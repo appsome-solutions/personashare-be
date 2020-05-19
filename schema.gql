@@ -16,12 +16,12 @@ type AgregatedPersona {
   qrCodeLink: String
   networkList: [AgregatedPersona!]
   recommendList: [AgregatedPersona!]
+  spotRecommendList: [AgregatedSpot!]
   contactBook: [AgregatedPersona!]
+  spotBook: [AgregatedSpot!]
   visibilityList: [AgregatedPersona!]
   spotVisibilityList: [AgregatedSpot!]
-  spotBook: [AgregatedSpot!]
   spotNetworkList: [AgregatedSpot!]
-  spotRecommendList: [AgregatedSpot!]
 }
 
 type AgregatedSpot {
@@ -31,9 +31,13 @@ type AgregatedSpot {
   personaUUIDs: [String!]
   qrCodeLink: String
   networkList: [AgregatedPersona!]
+  spotNetworkList: [AgregatedSpot!]
   recommendList: [AgregatedPersona!]
+  spotRecommendList: [AgregatedSpot!]
   contactBook: [AgregatedPersona!]
+  spotBook: [AgregatedSpot!]
   visibilityList: [AgregatedPersona!]
+  spotVisibilityList: [AgregatedSpot!]
   owner: AgregatedPersona
   participants: [AgregatedPersona!]
   managers: [AgregatedPersona!]
@@ -117,7 +121,9 @@ type PersonaType {
   personaUUIDs: [String!]
   qrCodeLink: String!
   networkList: [String!]
+  spotNetworkList: [String!]
   recommendList: [String!]
+  spotRecommendList: [String!]
   contactBook: [String!]
   visibilityList: [String!]
   spotVisibilityList: [String!]
@@ -127,7 +133,7 @@ type PersonaType {
 type Query {
   user: UserType
   persona(uuid: String!): AgregatedPersona
-  userPersonas: [PersonaType!]
+  userPersonas: [AgregatedPersona!]
   spot(uuid: String!): AgregatedSpot
   userSpots: [SpotType!]
 }
