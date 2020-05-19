@@ -82,11 +82,7 @@ type Mutation {
     recommendedPersonaUuid: String!
     personaUuid: String!
   ): PersonaType!
-  savePersona(savedPersonaUuid: String!, personaUuid: String!): PersonaType!
-  saveSpotForPersona(
-    savedSpotUuid: String!
-    personaUuid: String!
-  ): AgregatedSpot!
+  savePersona(savedPersonaUuid: String!): PersonaType!
   removePersona(personaUuid: String!): Boolean!
   createSpot(spot: CreateShareableInput!): SpotType!
   participate(personaId: String!, spotId: String!): SpotType!

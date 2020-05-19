@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  MethodNotAllowedException,
-} from '@nestjs/common';
+import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 } from 'uuid';
@@ -28,8 +23,6 @@ import {
   PersonaInterface,
 } from './interfaces/persona.interfaces';
 import { PersonaInput } from './input';
-import { SpotService } from '../spot';
-import { PartialSpotDocument } from '../spot/interfaces/spot.interfaces';
 
 @Injectable()
 export class PersonaService {
@@ -44,8 +37,6 @@ export class PersonaService {
     private readonly qrCodeService: QrCodeService,
     private readonly userService: UserService,
     private readonly recommendationsService: RecommendationsService,
-    @Inject(forwardRef(() => SpotService))
-    private readonly spotService: SpotService,
   ) {
     this.mongoService = new MongoService(this.personaModel);
   }
@@ -237,64 +228,11 @@ export class PersonaService {
     return await recommendedPersona.save();
   }
 
-  async saveSpotForPersona(
-    personaUuid: string,
-    savedSpotUuid: string,
-    uuid: string,
-  ): Promise<PartialSpotDocument> {
-    const user = await this.userService.getUser({ uuid });
-
-    if (!user.personaUUIDs.includes(personaUuid)) {
-      throw new MethodNotAllowedException(
-        'User is not allowed to save spot with selected persona',
-      );
-    }
-
-    if (user.spots.includes(savedSpotUuid)) {
-      throw new MethodNotAllowedException(
-        'User is not allowed to save spot with selected spot',
-      );
-    }
-
-    const userPersona = await this.getPersona({
-      uuid: personaUuid,
-    });
-
-    if (!userPersona) {
-      throw new Error('No persona found for given personaUuid');
-    }
-
-    userPersona.spotVisibilityList = userPersona.spotVisibilityList.concat(
-      savedSpotUuid,
-    );
-
-    const savedSpot = await this.spotService.getSpot({
-      uuid: savedSpotUuid,
-    });
-
-    if (!savedSpot) {
-      throw new Error('No spot found for given savedSpotUuid');
-    }
-
-    savedSpot.contactBook = savedSpot.contactBook.concat(personaUuid);
-
-    await userPersona.save();
-
-    return await savedSpot.save();
-  }
-
   async savePersona(
-    personaUuid: string,
     savedPersonaUuid: string,
     uuid: string,
   ): Promise<PersonaDocument> {
     const user = await this.userService.getUser({ uuid });
-
-    if (!user.personaUUIDs.includes(personaUuid)) {
-      throw new MethodNotAllowedException(
-        'User is not allowed to save persona with selected persona',
-      );
-    }
 
     if (user.personaUUIDs.includes(savedPersonaUuid)) {
       throw new MethodNotAllowedException(
@@ -302,17 +240,21 @@ export class PersonaService {
       );
     }
 
-    const userPersona = await this.getPersona({
-      uuid: personaUuid,
-    });
-
-    if (!userPersona) {
-      throw new Error('No persona found for given personaUuid');
+    if (!user.defaultPersona) {
+      throw new MethodNotAllowedException(
+        'No default persona for given user. Please, create one.',
+      );
     }
 
-    userPersona.visibilityList = userPersona.visibilityList.concat(
-      savedPersonaUuid,
-    );
+    const defaultPersona = await this.getPersona({
+      uuid: user.defaultPersona,
+    });
+
+    if (!defaultPersona) {
+      throw new MethodNotAllowedException(
+        'No default persona for given user. Please, create one.',
+      );
+    }
 
     const savedPersona = await this.getPersona({
       uuid: savedPersonaUuid,
@@ -322,9 +264,15 @@ export class PersonaService {
       throw new Error('No persona found for given savedPersonaUuid');
     }
 
-    savedPersona.contactBook = savedPersona.contactBook.concat(personaUuid);
+    savedPersona.visibilityList = savedPersona.visibilityList.concat(
+      user.defaultPersona,
+    );
 
-    await userPersona.save();
+    defaultPersona.contactBook = defaultPersona.contactBook.concat(
+      savedPersonaUuid,
+    );
+
+    await defaultPersona.save();
 
     return await savedPersona.save();
   }
