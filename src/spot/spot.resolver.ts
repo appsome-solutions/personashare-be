@@ -172,17 +172,12 @@ export class SpotResolver {
   @Mutation(() => SpotType)
   @UseGuards(GqlUserGuard)
   async recommendSpot(
-    @Args('personaUuid') personaUuid: string,
     @Args('recommendedSpotUuid') recommendedSpotUuid: string,
     @Context() context: GQLContext,
   ): Promise<SpotType> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
-    return await this.spotService.recommendSpot(
-      personaUuid,
-      recommendedSpotUuid,
-      uid,
-    );
+    return await this.spotService.recommendSpot(recommendedSpotUuid, uid);
   }
 
   @Mutation(() => AgregatedPersona)

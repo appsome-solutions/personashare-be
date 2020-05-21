@@ -144,67 +144,66 @@ export class SpotService {
   }
 
   async recommendSpot(
-    personaUuid: string,
     recommendedSpotUuid: string,
     uuid: string,
   ): Promise<SpotType> {
     const user = await this.userService.getUser({ uuid });
 
-    if (user.personaUUIDs.includes(personaUuid)) {
-      const userPersona = await this.personaService.getPersona({
-        uuid: personaUuid,
-      });
-
-      if (!userPersona) {
-        throw new Error('No persona found for given personaUuid');
-      }
-
-      const recommendedSpot = await this.getSpot({
-        uuid: recommendedSpotUuid,
-      });
-
-      if (!recommendedSpot) {
-        throw new Error('No spot found for given recommendedSpotUuid');
-      }
-
-      if (userPersona.spotRecommendList.includes(recommendedSpotUuid)) {
-        throw new MethodNotAllowedException(
-          'User is not allowed to recommend selected spot - already recommended.',
-        );
-      }
-
-      if (recommendedSpot.networkList.includes(personaUuid)) {
-        throw new MethodNotAllowedException(
-          'User is not allowed to recommend with selected persona - already recommended.',
-        );
-      }
-
-      userPersona.spotRecommendList = userPersona.spotRecommendList.concat(
-        recommendedSpotUuid,
-      );
-
-      recommendedSpot.networkList = recommendedSpot.networkList.concat(
-        personaUuid,
-      );
-
-      await this.recommendationsService.createRecommendation({
-        source: personaUuid,
-        sourceKind: 'persona',
-        destination: recommendedSpotUuid,
-        destinationKind: 'spot',
-        recommendedTill: dayjs()
-          .add(2, 'week')
-          .unix(),
-      });
-
-      await userPersona.save();
-
-      return await recommendedSpot.save();
-    } else {
+    if (!user.defaultPersona) {
       throw new MethodNotAllowedException(
-        'User is not allowed to recommend with selected persona',
+        'No default persona for given user. Please, create one.',
       );
     }
+
+    const userPersona = await this.personaService.getPersona({
+      uuid: user.defaultPersona,
+    });
+
+    if (!userPersona) {
+      throw new Error('No default persona found for given user');
+    }
+
+    const recommendedSpot = await this.getSpot({
+      uuid: recommendedSpotUuid,
+    });
+
+    if (!recommendedSpot) {
+      throw new Error('No spot found for given recommendedSpotUuid');
+    }
+
+    if (userPersona.spotRecommendList.includes(recommendedSpotUuid)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend selected spot - already recommended.',
+      );
+    }
+
+    if (recommendedSpot.networkList.includes(user.defaultPersona)) {
+      throw new MethodNotAllowedException(
+        'User is not allowed to recommend with selected persona - already recommended.',
+      );
+    }
+
+    userPersona.spotRecommendList = userPersona.spotRecommendList.concat(
+      recommendedSpotUuid,
+    );
+
+    recommendedSpot.networkList = recommendedSpot.networkList.concat(
+      user.defaultPersona,
+    );
+
+    await this.recommendationsService.createRecommendation({
+      source: user.defaultPersona,
+      sourceKind: 'persona',
+      destination: recommendedSpotUuid,
+      destinationKind: 'spot',
+      recommendedTill: dayjs()
+        .add(2, 'week')
+        .unix(),
+    });
+
+    await userPersona.save();
+
+    return await recommendedSpot.save();
   }
 
   async saveSpot(

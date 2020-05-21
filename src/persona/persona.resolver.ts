@@ -183,14 +183,12 @@ export class PersonaResolver {
   @Mutation(() => PersonaType)
   @UseGuards(GqlUserGuard)
   async recommendPersona(
-    @Args('personaUuid') personaUuid: string,
     @Args('recommendedPersonaUuid') recommendedPersonaUuid: string,
     @Context() context: GQLContext,
   ): Promise<PersonaType> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
     return await this.personaService.recommendPersona(
-      personaUuid,
       recommendedPersonaUuid,
       uid,
     );

@@ -82,16 +82,13 @@ type Mutation {
   setDefaultPersona(uuid: String!): PersonaType!
   updatePersona(uuid: String!, persona: UpdatePersonaInput!): PersonaType!
   connectPersona(input: ConnectPersonaInput!): PersonaType!
-  recommendPersona(
-    recommendedPersonaUuid: String!
-    personaUuid: String!
-  ): PersonaType!
+  recommendPersona(recommendedPersonaUuid: String!): PersonaType!
   savePersona(savedPersonaUuid: String!): PersonaType!
   removePersona(personaUuid: String!): Boolean!
   createSpot(spot: CreateShareableInput!): SpotType!
   participate(personaId: String!, spotId: String!): SpotType!
   addManager(personaId: String!, spotId: String!): SpotType!
-  recommendSpot(recommendedSpotUuid: String!, personaUuid: String!): SpotType!
+  recommendSpot(recommendedSpotUuid: String!): SpotType!
   saveSpot(savedSpotUuid: String!): AgregatedPersona!
   updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!
   removeSpot(spotUuid: String!): Boolean!

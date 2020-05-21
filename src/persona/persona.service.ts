@@ -173,30 +173,29 @@ export class PersonaService {
   }
 
   async recommendPersona(
-    personaUuid: string,
     recommendedPersonaUuid: string,
     uuid: string,
   ): Promise<PersonaDocument> {
     const user = await this.userService.getUser({ uuid });
 
-    if (!user.personaUUIDs.includes(personaUuid)) {
+    if (!user.defaultPersona) {
       throw new MethodNotAllowedException(
-        'User is not allowed to recommend with selected persona',
+        'No default persona for given user. Please, create one.',
       );
     }
 
     if (user.personaUUIDs.includes(recommendedPersonaUuid)) {
       throw new MethodNotAllowedException(
-        'User is not allowed to recommend with selected persona',
+        'No default persona found for given user',
       );
     }
 
     const userPersona = await this.getPersona({
-      uuid: personaUuid,
+      uuid: user.defaultPersona,
     });
 
     if (!userPersona) {
-      throw new Error('No persona found for given personaUuid');
+      throw new Error('No default persona found for given user');
     }
 
     const recommendedPersona = await this.getPersona({
@@ -213,7 +212,7 @@ export class PersonaService {
       );
     }
 
-    if (recommendedPersona.networkList.includes(personaUuid)) {
+    if (recommendedPersona.networkList.includes(user.defaultPersona)) {
       throw new MethodNotAllowedException(
         'User is not allowed to recommend with selected persona - already recommended.',
       );
@@ -224,11 +223,11 @@ export class PersonaService {
     );
 
     recommendedPersona.networkList = recommendedPersona.networkList.concat(
-      personaUuid,
+      user.defaultPersona,
     );
 
     await this.recommendationsService.createRecommendation({
-      source: personaUuid,
+      source: user.defaultPersona,
       sourceKind: 'persona',
       destination: recommendedPersonaUuid,
       destinationKind: 'persona',
