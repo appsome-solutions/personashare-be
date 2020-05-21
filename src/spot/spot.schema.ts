@@ -14,4 +14,5 @@ export const SpotSchema = new Schema({
   contactBook: [String],
   visibilityList: [String],
   isActive: Boolean,
+  invitedManagerEmails: [String],
 });

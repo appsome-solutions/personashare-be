@@ -38,4 +38,7 @@ export class SpotType {
 
   @Field(() => [String], { nullable: true })
   managers: string[];
+
+  @Field(() => [String], { nullable: true })
+  invitedManagerEmails: string[];
 }

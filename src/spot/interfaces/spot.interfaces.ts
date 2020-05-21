@@ -5,6 +5,7 @@ interface SpotInterface extends PersonaEntity {
   participants: string[];
   managers: string[];
   owner: string;
+  invitedManagerEmails: string[];
 }
 
 interface SpotDocument extends SpotInterface, Document {}
@@ -27,6 +28,7 @@ type PartialSpotInterface = {
   participants: any[];
   managers: any[];
   owner: any;
+  invitedManagerEmails: string[];
 };
 
 interface PartialSpotDocument extends PartialSpotInterface, Document {}

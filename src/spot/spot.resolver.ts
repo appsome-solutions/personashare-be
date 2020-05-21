@@ -138,6 +138,7 @@ export class SpotResolver {
       contactBook: [],
       spotBook: [],
       managers: [],
+      invitedManagerEmails: [],
       qrCodeLink: '',
       isActive: true,
     };

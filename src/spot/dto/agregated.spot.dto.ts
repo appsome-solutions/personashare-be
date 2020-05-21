@@ -51,4 +51,7 @@ export class AgregatedSpot {
 
   @Field(() => [AgregatedPersona], { nullable: true })
   managers: AgregatedPersona[];
+
+  @Field(() => [String], { nullable: true })
+  invitedManagerEmails: string[];
 }
