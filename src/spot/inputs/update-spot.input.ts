@@ -16,9 +16,6 @@ export class UpdateSpotInput {
   @IsOptional()
   page?: PageInput;
 
-  @Field({
-    nullable: true,
-  })
-  @IsOptional()
-  isActive?: boolean;
+  @Field(() => [String], { nullable: true })
+  invitedManagerEmails?: string[];
 }

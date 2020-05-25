@@ -23,6 +23,7 @@ import {
   PersonaInterface,
 } from './interfaces/persona.interfaces';
 import { PersonaInput } from './input';
+import { RemoveEntityInput } from '../shared/input/remove-entity.input';
 
 @Injectable()
 export class PersonaService {
@@ -113,7 +114,7 @@ export class PersonaService {
   }
 
   async updatePersona(
-    persona: UpdatePersonaInput,
+    persona: UpdatePersonaInput | RemoveEntityInput,
     uuid: string,
     userId: string,
   ): Promise<PersonaDocument> {
@@ -121,7 +122,7 @@ export class PersonaService {
 
     if (user && user.personaUUIDs.includes(uuid)) {
       return await this.mongoService.update<
-        UpdatePersonaInput,
+        UpdatePersonaInput | RemoveEntityInput,
         PersonaDocument
       >(persona, {
         uuid,

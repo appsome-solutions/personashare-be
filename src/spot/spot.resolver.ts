@@ -119,13 +119,15 @@ export class SpotResolver {
   @UseGuards(GqlUserGuard)
   async createSpot(
     @Args('spot') spot: CreateShareableInput,
+    @Context() context: GQLContext,
   ): Promise<SpotType> {
-    const { card, page, personaId } = spot;
+    const { card, page } = spot;
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
 
     const spotDoc: SpotInterface = {
       card,
       page,
-      owner: personaId,
+      owner: '',
       uuid: v4(),
       participants: [],
       personaUUIDs: [],
@@ -143,7 +145,7 @@ export class SpotResolver {
       isActive: true,
     };
 
-    return await this.spotService.createSpot(spotDoc);
+    return await this.spotService.createSpot(uid, spotDoc);
   }
 
   @Mutation(() => SpotType)
@@ -211,12 +213,11 @@ export class SpotResolver {
     @Context() context: GQLContext,
   ): Promise<boolean> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
-    const spotInput: UpdateSpotInput = {
-      isActive: false,
-    };
 
     const updatedSpot = await this.spotService.updateSpot(
-      spotInput,
+      {
+        isActive: false,
+      },
       spotUuid,
       uid,
     );

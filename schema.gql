@@ -71,7 +71,6 @@ input CreatePersonaInput {
 input CreateShareableInput {
   card: CardInput!
   page: PageInput!
-  personaId: String!
 }
 
 type Mutation {
@@ -166,13 +165,12 @@ type SpotType {
 input UpdatePersonaInput {
   card: CardInput
   page: PageInput
-  isActive: Boolean
 }
 
 input UpdateSpotInput {
   card: CardInput
   page: PageInput
-  isActive: Boolean
+  invitedManagerEmails: [String!]
 }
 
 input UpdateUserInput {
