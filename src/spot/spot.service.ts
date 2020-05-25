@@ -15,6 +15,7 @@ import { UserService } from '../user';
 import { PartialPersonaDocument, PersonaService } from '../persona';
 import { RecommendationsService } from '../recommendations';
 import dayjs from 'dayjs';
+import { RemoveEntityInput } from '../shared/input/remove-entity.input';
 
 @Injectable()
 export class SpotService {
@@ -32,12 +33,16 @@ export class SpotService {
     this.mongoService = new MongoService(this.spotModel);
   }
 
-  async createSpot(spot: SpotInterface): Promise<SpotDocument> {
+  async createSpot(uid: string, spot: SpotInterface): Promise<SpotDocument> {
     // TODO: will be change to the domain
     const { baseUrl, applicationPort } = this.configService;
-    const { uuid, owner } = spot;
+    const { uuid } = spot;
 
-    const user = await this.userService.getUser({ uuid: owner });
+    const user = await this.userService.getUser({ uuid: uid });
+
+    if (!user.defaultPersona) {
+      throw new Error('No default persona found for given user');
+    }
 
     const url = `${baseUrl}:${applicationPort}/persona/${uuid}`;
     const assetPath = `qrcodes/spot_${uuid}.svg`;
@@ -49,6 +54,7 @@ export class SpotService {
 
     const spotDoc: SpotInterface = {
       ...spot,
+      owner: user.defaultPersona,
       qrCodeLink,
     };
 
@@ -262,19 +268,19 @@ export class SpotService {
   }
 
   async updateSpot(
-    spot: UpdateSpotInput,
+    spot: UpdateSpotInput | RemoveEntityInput,
     uuid: string,
     userId: string,
   ): Promise<SpotDocument> {
     const user = await this.userService.getUser({ uuid: userId });
 
     if (user && user.spots.includes(uuid)) {
-      return await this.mongoService.update<UpdateSpotInput, SpotDocument>(
-        spot,
-        {
-          uuid,
-        },
-      );
+      return await this.mongoService.update<
+        UpdateSpotInput | RemoveEntityInput,
+        SpotDocument
+      >(spot, {
+        uuid,
+      });
     } else {
       throw new MethodNotAllowedException('Cannot update spot');
     }
