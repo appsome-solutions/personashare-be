@@ -212,12 +212,11 @@ export class PersonaResolver {
     @Context() context: GQLContext,
   ): Promise<boolean> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
-    const personaInput: UpdatePersonaInput = {
-      isActive: false,
-    };
 
     const updatedPersona = await this.personaService.updatePersona(
-      personaInput,
+      {
+        isActive: false,
+      },
       personaUuid,
       uid,
     );
