@@ -16,8 +16,12 @@ async function bootstrap(): Promise<any> {
         'http://localhost:3001',
         'http://localhost:3000',
         'https://young-ocean-77920.herokuapp.com',
+        'https://persona-share.netlify.app',
       ]
-    : ['https://young-ocean-77920.herokuapp.com'];
+    : [
+        'https://young-ocean-77920.herokuapp.com',
+        'https://persona-share.netlify.app',
+      ];
 
   // This should be set if we are behind proxy, for example nginx reverse proxy
   app.set('trust proxy', true);
