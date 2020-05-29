@@ -1,11 +1,18 @@
 import { Document } from 'mongoose';
 import { Card, Page, PersonaEntity } from '../../shared/interfaces';
 
+type EmailInvitationStatus = 'pending' | 'success' | 'rejected';
+
+type EmailInvitation = {
+  email: string;
+  status: EmailInvitationStatus;
+};
+
 interface SpotInterface extends PersonaEntity {
   participants: string[];
   managers: string[];
   owner: string;
-  invitedManagerEmails: string[];
+  invitedManagerEmails: EmailInvitation[];
 }
 
 interface SpotDocument extends SpotInterface, Document {}
@@ -28,7 +35,7 @@ type PartialSpotInterface = {
   participants: any[];
   managers: any[];
   owner: any;
-  invitedManagerEmails: string[];
+  invitedManagerEmails: any[];
 };
 
 interface PartialSpotDocument extends PartialSpotInterface, Document {}

@@ -1,5 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 import { CardType, PageType } from '../../shared/dto';
+import { EmailInvitation } from './email.invitation.dto';
 
 @ObjectType()
 export class SpotType {
@@ -39,6 +40,6 @@ export class SpotType {
   @Field(() => [String], { nullable: true })
   managers: string[];
 
-  @Field(() => [String], { nullable: true })
-  invitedManagerEmails: string[];
+  @Field(() => [EmailInvitation], { nullable: true })
+  invitedManagerEmails: EmailInvitation[];
 }

@@ -1,6 +1,7 @@
 import { Field, ObjectType } from 'type-graphql';
 import { CardType, PageType } from '../../shared/dto';
 import { AgregatedPersona } from '../../persona/dto/agreagated.persona.dto';
+import { EmailInvitation } from './email.invitation.dto';
 
 @ObjectType()
 export class AgregatedSpot {
@@ -52,6 +53,6 @@ export class AgregatedSpot {
   @Field(() => [AgregatedPersona], { nullable: true })
   managers: AgregatedPersona[];
 
-  @Field(() => [String], { nullable: true })
-  invitedManagerEmails: string[];
+  @Field(() => [EmailInvitation], { nullable: true })
+  invitedManagerEmails: EmailInvitation[];
 }

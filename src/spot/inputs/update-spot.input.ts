@@ -1,6 +1,7 @@
 import { IsOptional } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
 import { CardInput, PageInput } from '../../shared/input';
+import { EmailInvitationInput } from './email.invitation.input';
 
 @InputType()
 export class UpdateSpotInput {
@@ -16,6 +17,6 @@ export class UpdateSpotInput {
   @IsOptional()
   page?: PageInput;
 
-  @Field(() => [String], { nullable: true })
-  invitedManagerEmails?: string[];
+  @Field(() => [EmailInvitationInput], { nullable: true })
+  invitedManagerEmails?: EmailInvitationInput[];
 }

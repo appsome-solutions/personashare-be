@@ -41,7 +41,7 @@ type AgregatedSpot {
   owner: AgregatedPersona
   participants: [AgregatedPersona!]
   managers: [AgregatedPersona!]
-  invitedManagerEmails: [String!]
+  invitedManagerEmails: [EmailInvitation!]
 }
 
 input CardInput {
@@ -71,6 +71,16 @@ input CreatePersonaInput {
 input CreateShareableInput {
   card: CardInput!
   page: PageInput!
+}
+
+type EmailInvitation {
+  email: String!
+  status: String!
+}
+
+input EmailInvitationInput {
+  email: String!
+  status: String!
 }
 
 type Mutation {
@@ -159,7 +169,7 @@ type SpotType {
   owner: String!
   participants: [String!]
   managers: [String!]
-  invitedManagerEmails: [String!]
+  invitedManagerEmails: [EmailInvitation!]
 }
 
 input UpdatePersonaInput {
@@ -170,7 +180,7 @@ input UpdatePersonaInput {
 input UpdateSpotInput {
   card: CardInput
   page: PageInput
-  invitedManagerEmails: [String!]
+  invitedManagerEmails: [EmailInvitationInput!]
 }
 
 input UpdateUserInput {
