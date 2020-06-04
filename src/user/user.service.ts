@@ -22,7 +22,11 @@ export class UserService {
   }
 
   async createUser(user: UserInterface): Promise<UserDocument> {
-    await this.mailchimpService.subscribe(user.email);
+    try {
+      await this.mailchimpService.subscribe(user.email);
+    } catch (_e) {
+      console.log(_e);
+    }
 
     return await this.mongoService.create<UserInterface, UserDocument>(user);
   }
