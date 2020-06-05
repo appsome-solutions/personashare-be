@@ -38,7 +38,7 @@ export class QrCodeService {
   }
 
   async createQRCodeWithLogo(content: string, size = 256): Promise<string> {
-    const logoImg = await loadImage(path.resolve(__dirname, 'qrLogo.svg'));
+    const logoImg = await loadImage(path.resolve(__dirname, 'qrLogoNew.svg'));
     const innerImgSquareSize = Math.floor(2 * size);
 
     const canvas = createCanvas(innerImgSquareSize, innerImgSquareSize);
