@@ -1,4 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
+import { UploadFileDto } from './upload-file.dto';
 
 @ObjectType()
 export class PageType {
@@ -10,4 +11,7 @@ export class PageType {
 
   @Field()
   content: string;
+
+  @Field(() => [UploadFileDto], { nullable: true })
+  fileList?: UploadFileDto[];
 }

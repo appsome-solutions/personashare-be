@@ -108,12 +108,14 @@ input PageInput {
   content: String!
   avatar: String
   background: String
+  fileList: [UploadFileInput!]
 }
 
 type PageType {
   avatar: String
   background: String
   content: String!
+  fileList: [UploadFileDto!]
 }
 
 input PersonaInput {
@@ -187,6 +189,24 @@ input UpdateUserInput {
   name: String
   email: String
   photo: String
+}
+
+type UploadFileDto {
+  uid: String!
+  size: Float!
+  name: String!
+  url: String!
+  thumbUrl: String!
+  status: String!
+}
+
+input UploadFileInput {
+  uid: String!
+  size: Float!
+  name: String!
+  url: String!
+  thumbUrl: String!
+  status: String!
 }
 
 input UserInput {
