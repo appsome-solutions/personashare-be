@@ -167,7 +167,15 @@ exports.scheduledFunction = functions.pubsub
     }
 
     try {
-      Promise.all([personasBulk.execute(), spotBulk.execute()]).then(() => {
+      if (personasBulk.length) {
+        await personasBulk.execute();
+      }
+
+      if (spotBulk.length) {
+        await spotBulk.execute();
+      }
+
+      if (personasBulk.length || spotBulk.length) {
         db.collection('recommendations').updateMany(
           {
             recommendedTill: {
@@ -180,7 +188,7 @@ exports.scheduledFunction = functions.pubsub
             },
           },
         );
-      });
+      }
     } catch (e) {}
 
     return null;
