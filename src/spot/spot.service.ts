@@ -72,24 +72,25 @@ export class SpotService {
   async participate(
     uuid: string,
     spotId: string,
-    personaId: string,
-  ): Promise<SpotDocument> {
+  ): Promise<PartialSpotDocument> {
     const user = await this.userService.getUser({
       uuid,
     });
 
-    if (!user.personaUUIDs.includes(personaId)) {
+    if (!user.defaultPersona) {
       throw new MethodNotAllowedException(
-        'Cannot participate with given persona',
+        'No default persona found. Please, create one.',
       );
     }
 
     const persona = await this.personaService.getPersona({
-      uuid: personaId,
+      uuid: user.defaultPersona,
     });
 
     if (!persona) {
-      throw new Error('No persona found for given id');
+      throw new MethodNotAllowedException(
+        'No default persona found. Please, create one.',
+      );
     }
 
     const spot = await this.getSpot({
@@ -97,13 +98,17 @@ export class SpotService {
     });
 
     if (!spot) {
-      throw new Error('No spot found for given id');
+      throw new MethodNotAllowedException('No spot found for given id');
     }
 
     if (!spot.participants.includes(persona.uuid)) {
       spot.participants = spot.participants.concat(spotId);
 
       await spot.save();
+    } else {
+      throw new MethodNotAllowedException(
+        'Persona already participates in given spot',
+      );
     }
 
     return spot;
