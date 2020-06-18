@@ -2,21 +2,7 @@ import * as dotenv from 'dotenv';
 import * as Joi from 'joi';
 import * as fs from 'fs';
 import { Injectable } from '@nestjs/common';
-
-type EnvConfigSchemaKeys =
-  | 'NODE_ENV'
-  | 'PORT'
-  | 'MONGO_DB_URI'
-  | 'BASE_URL'
-  | 'TIMEOUT'
-  | 'MAX_REDIRECTS'
-  | 'APPLICATION_PORT'
-  | 'FIREBASE_STORAGE_BUCKET'
-  | 'FIREBASE_CREDENTIAL_PATH'
-  | 'FIREBASE_EXPIRE_IN_SESSION'
-  | 'MAILCHIMP_AUDIENCE_ID'
-  | 'MAILCHIMP_API_KEY'
-  | 'MAILCHIMP_USER_NAME';
+import { EnvConfigSchemaKeys } from './config.interfaces';
 
 const allowedKeys: EnvConfigSchemaKeys[] = [
   'NODE_ENV',
