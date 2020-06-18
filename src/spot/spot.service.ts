@@ -102,7 +102,7 @@ export class SpotService {
     }
 
     if (!spot.participants.includes(persona.uuid)) {
-      spot.participants = spot.participants.concat(spotId);
+      spot.participants = spot.participants.concat(persona.uuid);
 
       await spot.save();
     } else {
