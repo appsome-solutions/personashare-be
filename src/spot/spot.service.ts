@@ -44,7 +44,7 @@ export class SpotService {
       throw new Error('No default persona found for given user');
     }
 
-    const url = `${baseUrl}:${applicationPort}/persona/${uuid}`;
+    const url = `${baseUrl}:${applicationPort}/spot/${uuid}`;
     const assetPath = `qrcodes/spot_${uuid}.svg`;
 
     const qrCodeLink = await this.qrCodeService.uploadQrCodeWithLogo(
