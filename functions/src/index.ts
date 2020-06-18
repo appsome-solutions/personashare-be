@@ -74,11 +74,17 @@ exports.scheduledFunction = functions.pubsub
       }
     });
 
+    const personasRecToRemove = Object.keys(personaRecommendationToRemove);
+
     // handling persona recommendations
-    if (Object.keys(personaRecommendationToRemove).length) {
+    if (personasRecToRemove.length) {
+      console.log(
+        `Personas recommendations to remove: ${personasRecToRemove.length}`,
+      );
+
       const personasToPersonas = await db.collection('personas').find({
         uuid: {
-          $in: Object.keys(personaRecommendationToRemove),
+          $in: personasRecToRemove,
         },
       });
 
@@ -120,11 +126,15 @@ exports.scheduledFunction = functions.pubsub
       });
     }
 
+    const spotRecToRemove = Object.keys(spotRecommendationToRemove);
+
     // handling spot recommendations
-    if (Object.keys(spotRecommendationToRemove).length) {
+    if (spotRecToRemove.length) {
+      console.log(`Spots recommendations to remove: ${spotRecToRemove.length}`);
+
       const personasToSpots = await db.collection('personas').find({
         uuid: {
-          $in: Object.keys(spotRecommendationToRemove),
+          $in: spotRecToRemove,
         },
       });
 
