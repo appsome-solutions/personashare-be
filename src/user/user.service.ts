@@ -40,6 +40,7 @@ export class UserService {
     if (!user) {
       user = await this.createUser({
         uuid: uid,
+        kind: 'free',
         email,
         name,
         photo: picture,

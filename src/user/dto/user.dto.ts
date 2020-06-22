@@ -6,6 +6,9 @@ export class UserType {
   uuid: string;
 
   @Field()
+  kind: string;
+
+  @Field()
   name: string;
 
   @Field()
