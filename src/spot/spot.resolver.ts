@@ -23,11 +23,11 @@ import { AgregatedPersona } from '../persona/dto/agreagated.persona.dto';
 import * as dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
-dayjs.extend(utc);
-
 @Resolver((_of: void) => AgregatedSpot)
 @Resolver('Spot')
 export class SpotResolver {
+  dayjs = dayjs.extend(utc);
+
   constructor(
     private readonly spotService: SpotService,
     private readonly firebaseService: FirebaseService,
@@ -148,7 +148,7 @@ export class SpotResolver {
       invitedManagerEmails: [],
       qrCodeLink: '',
       isActive: true,
-      createdAt: dayjs.utc().unix(),
+      createdAt: this.dayjs.utc().unix(),
     };
 
     return await this.spotService.createSpot(uid, spotDoc);

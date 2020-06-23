@@ -5,8 +5,6 @@ import { v4 } from 'uuid';
 import * as dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
-dayjs.extend(utc);
-
 import { MongoService } from '../mongo-service/mongo.service';
 import {
   ConnectPersonaInput,
@@ -32,6 +30,7 @@ import { FeatureKindService } from '../feature-kind';
 @Injectable()
 export class PersonaService {
   mongoService: MongoService<Model<PersonaDocument>>;
+  dayjs = dayjs.extend(utc);
 
   constructor(
     @InjectModel('Persona')
@@ -74,7 +73,7 @@ export class PersonaService {
       visibilityList: [],
       spotVisibilityList: [],
       isActive: true,
-      createdAt: dayjs.utc().unix(),
+      createdAt: this.dayjs.utc().unix(),
       qrCodeLink,
     };
 

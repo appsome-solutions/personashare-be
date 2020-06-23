@@ -6,8 +6,6 @@ import * as dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { InjectModel } from '@nestjs/mongoose';
 
-dayjs.extend(utc);
-
 import {
   CreateRecommendation,
   RecommendationDocument,
@@ -18,6 +16,7 @@ import {
 @Injectable()
 export class RecommendationsService {
   mongoService: MongoService<Model<RecommendationDocument>>;
+  dayjs = dayjs.extend(utc);
 
   constructor(
     @InjectModel('Recommendations')
@@ -29,7 +28,7 @@ export class RecommendationsService {
   async createRecommendation(
     recommendation: CreateRecommendation,
   ): Promise<RecommendationDocument> {
-    const now = dayjs.utc().unix();
+    const now = this.dayjs.utc().unix();
 
     if (now > recommendation.recommendedTill) {
       throw new MethodNotAllowedException(
