@@ -2,11 +2,20 @@ import { Document } from 'mongoose';
 
 export type FeatureKind = 'free' | 'premium';
 
-export type FeatureName = 'participants' | 'managers' | 'networkListForSpot';
+export type SpotFeatureName = 'participants' | 'managers' | 'networkList';
+
+export type PersonaFeatureName =
+  | 'recommendList'
+  | 'spotRecommendList'
+  | 'networkList';
+
+export type FeatureName = SpotFeatureName & PersonaFeatureName;
 
 export type FeatureKindLimit = {
   kind: FeatureKind;
-} & Record<FeatureName, number | string>;
+  spot: Record<SpotFeatureName, number | string>;
+  persona: Record<PersonaFeatureName, number | string>;
+};
 
 export interface FeatureKindLimitDocument extends FeatureKindLimit, Document {}
 

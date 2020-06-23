@@ -2,7 +2,10 @@ import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 } from 'uuid';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 import { MongoService } from '../mongo-service/mongo.service';
 import {
@@ -24,6 +27,7 @@ import {
 } from './interfaces/persona.interfaces';
 import { PersonaInput } from './input';
 import { RemoveEntityInput } from '../shared/input/remove-entity.input';
+import { FeatureKindService } from '../feature-kind';
 
 @Injectable()
 export class PersonaService {
@@ -38,6 +42,7 @@ export class PersonaService {
     private readonly qrCodeService: QrCodeService,
     private readonly userService: UserService,
     private readonly recommendationsService: RecommendationsService,
+    private readonly featureKindService: FeatureKindService,
   ) {
     this.mongoService = new MongoService(this.personaModel);
   }
@@ -57,6 +62,7 @@ export class PersonaService {
 
     const personaDoc: PersonaInterface = {
       ...persona,
+      userId: uuid,
       uuid: personaUuid,
       personaUUIDs: [],
       networkList: [],
@@ -68,6 +74,7 @@ export class PersonaService {
       visibilityList: [],
       spotVisibilityList: [],
       isActive: true,
+      createdAt: dayjs.utc().unix(),
       qrCodeLink,
     };
 
@@ -199,12 +206,42 @@ export class PersonaService {
       throw new Error('No default persona found for given user');
     }
 
+    const featuresLimits = this.featureKindService.getPersonaFeaturesLimits(
+      user.kind || 'free',
+    );
+
+    if (userPersona.recommendList.length >= featuresLimits.recommendList) {
+      throw new MethodNotAllowedException(
+        'You reached recommendation limit for your persona',
+      );
+    }
+
     const recommendedPersona = await this.getPersona({
       uuid: recommendedPersonaUuid,
     });
 
     if (!recommendedPersona) {
       throw new Error('No persona found for given recommendedPersonaUuid');
+    }
+
+    const recommendedPersonaUser = await this.userService.getUser({
+      uuid: recommendedPersona.userId,
+    });
+
+    if (!recommendedPersonaUser) {
+      throw new Error('No user found for recommended persona');
+    }
+
+    const recommendedUserLimits = this.featureKindService.getPersonaFeaturesLimits(
+      recommendedPersonaUser.kind || 'free',
+    );
+
+    if (
+      recommendedPersona.networkList.length >= recommendedUserLimits.networkList
+    ) {
+      throw new MethodNotAllowedException(
+        'You cant recommend this persona - recommendation limits reached.',
+      );
     }
 
     if (userPersona.recommendList.includes(recommendedPersonaUuid)) {
@@ -232,7 +269,8 @@ export class PersonaService {
       sourceKind: 'persona',
       destination: recommendedPersonaUuid,
       destinationKind: 'persona',
-      recommendedTill: dayjs()
+      recommendedTill: dayjs
+        .utc()
         .add(2, 'week')
         .unix(),
     });

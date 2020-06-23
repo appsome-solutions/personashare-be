@@ -10,11 +10,13 @@ import { ConfigModule } from '../config';
 import { PersonaModule } from '../persona';
 import { RecommendationsModule } from '../recommendations';
 import { AuthModule } from '../auth';
+import { FeatureKindModule } from '../feature-kind';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Spot', schema: SpotSchema }]),
     FirebaseModule,
+    FeatureKindModule,
     QrCodeModule,
     ConfigModule,
     UserModule,

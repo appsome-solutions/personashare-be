@@ -20,6 +20,10 @@ import { FirebaseService } from '../firebase';
 import { AgregatedSpot } from './dto/agregated.spot.dto';
 import { PersonaService } from '../persona';
 import { AgregatedPersona } from '../persona/dto/agreagated.persona.dto';
+import * as dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 @Resolver((_of: void) => AgregatedSpot)
 @Resolver('Spot')
@@ -128,6 +132,7 @@ export class SpotResolver {
       card,
       page,
       owner: '',
+      userId: uid,
       uuid: v4(),
       participants: [],
       personaUUIDs: [],
@@ -143,6 +148,7 @@ export class SpotResolver {
       invitedManagerEmails: [],
       qrCodeLink: '',
       isActive: true,
+      createdAt: dayjs.utc().unix(),
     };
 
     return await this.spotService.createSpot(uid, spotDoc);

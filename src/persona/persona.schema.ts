@@ -2,6 +2,7 @@ import { Schema } from 'mongoose';
 
 export const PersonaSchema = new Schema({
   uuid: String,
+  userId: String,
   card: Object,
   page: Object,
   personaUUIDs: [String],
@@ -15,4 +16,5 @@ export const PersonaSchema = new Schema({
   visibilityList: [String],
   spotVisibilityList: [String],
   isActive: Boolean,
+  createdAt: Number,
 });

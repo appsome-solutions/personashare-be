@@ -2,9 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { MongoService } from '../mongo-service/mongo.service';
 import {
+  FeatureKind,
   FeatureKindLimit,
   FeatureKindLimitDocument,
   FeatureKindLimitRecord,
+  PersonaFeatureName,
+  SpotFeatureName,
 } from './feature-kind.interfaces';
 import { InjectModel } from '@nestjs/mongoose';
 import { featureLimitsFallback } from './feature-kind.constants';
@@ -49,5 +52,21 @@ export class FeatureKindService {
     } else {
       return this.featureKindLimits;
     }
+  }
+
+  getPersonaFeaturesLimits(
+    kind: FeatureKind,
+  ): Record<PersonaFeatureName, number | string> {
+    return this.featureKindLimits[kind].persona
+      ? this.featureKindLimits[kind].persona
+      : featureLimitsFallback[kind].persona;
+  }
+
+  getSpotFeaturesLimits(
+    kind: FeatureKind,
+  ): Record<SpotFeatureName, number | string> {
+    return this.featureKindLimits[kind].spot
+      ? this.featureKindLimits[kind].spot
+      : featureLimitsFallback[kind].spot;
   }
 }

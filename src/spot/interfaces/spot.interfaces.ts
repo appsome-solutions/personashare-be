@@ -19,6 +19,7 @@ interface SpotDocument extends SpotInterface, Document {}
 
 type PartialSpotInterface = {
   readonly uuid: string;
+  readonly userId: string;
   card: Card;
   page: Page;
   personaUUIDs: string[];
@@ -36,6 +37,7 @@ type PartialSpotInterface = {
   managers: any[];
   owner: any;
   invitedManagerEmails: any[];
+  createdAt: number;
 };
 
 interface PartialSpotDocument extends PartialSpotInterface, Document {}

@@ -4,6 +4,7 @@ import { Page } from './page.interface';
 
 export interface PersonaEntity {
   readonly uuid: string;
+  readonly userId: string;
   card: Card;
   page: Page;
   personaUUIDs: string[];
@@ -17,6 +18,7 @@ export interface PersonaEntity {
   visibilityList: string[];
   spotVisibilityList: string[];
   isActive: boolean;
+  createdAt: number;
 }
 
 export interface PersonaEntityDocument extends PersonaEntity, Document {}

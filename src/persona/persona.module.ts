@@ -11,6 +11,7 @@ import { ConfigModule } from '../config';
 import { RecommendationsModule } from '../recommendations';
 import { AuthModule } from '../auth';
 import { SpotModule } from '../spot';
+import { FeatureKindModule } from '../feature-kind';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SpotModule } from '../spot';
     UserModule,
     AuthModule,
     RecommendationsModule,
+    FeatureKindModule,
     forwardRef(() => SpotModule),
   ],
   providers: [PersonaService, PersonaResolver],

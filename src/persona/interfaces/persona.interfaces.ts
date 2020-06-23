@@ -7,6 +7,7 @@ interface PersonaDocument extends PersonaInterface, Document {}
 
 type PartialPersonaInterface = {
   readonly uuid: string;
+  readonly userId: string;
   card: Card;
   page: Page;
   personaUUIDs: string[];
@@ -20,6 +21,7 @@ type PartialPersonaInterface = {
   spotVisibilityList: any[];
   isActive: boolean;
   contactBook: any[];
+  createdAt: number;
 };
 
 interface PartialPersonaDocument extends PartialPersonaInterface, Document {}

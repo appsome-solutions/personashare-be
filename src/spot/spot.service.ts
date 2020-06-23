@@ -14,8 +14,12 @@ import { QrCodeService } from '../qrcode';
 import { UserService } from '../user';
 import { PartialPersonaDocument, PersonaService } from '../persona';
 import { RecommendationsService } from '../recommendations';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { RemoveEntityInput } from '../shared/input/remove-entity.input';
+import { FeatureKindService } from '../feature-kind';
+
+dayjs.extend(utc);
 
 @Injectable()
 export class SpotService {
@@ -29,6 +33,7 @@ export class SpotService {
     private readonly userService: UserService,
     private readonly personaService: PersonaService,
     private readonly recommendationsService: RecommendationsService,
+    private readonly featureKindService: FeatureKindService,
   ) {
     this.mongoService = new MongoService(this.spotModel);
   }
@@ -101,6 +106,22 @@ export class SpotService {
       throw new MethodNotAllowedException('No spot found for given id');
     }
 
+    const spotUser = await this.userService.getUser({
+      uuid: spot.userId,
+    });
+
+    if (!spotUser) {
+      throw new Error('No user found for given spot');
+    }
+
+    const featureLimits = this.featureKindService.getSpotFeaturesLimits(
+      spotUser.kind || 'free',
+    );
+
+    if (spot.participants.length >= featureLimits.participants) {
+      throw new MethodNotAllowedException('Limit for participation reached');
+    }
+
     if (!spot.participants.includes(persona.uuid)) {
       spot.participants = spot.participants.concat(persona.uuid);
 
@@ -145,6 +166,24 @@ export class SpotService {
       throw new Error('No spot found for given id');
     }
 
+    const userSpot = await this.userService.getUser({
+      uuid: spot.userId,
+    });
+
+    if (!userSpot) {
+      throw new Error('No user found for given spot');
+    }
+
+    const featureLimits = this.featureKindService.getSpotFeaturesLimits(
+      userSpot.kind || 'free',
+    );
+
+    if (spot.managers.length >= featureLimits.managers) {
+      throw new MethodNotAllowedException(
+        'Cannot add manager to the given spot - limit reached',
+      );
+    }
+
     if (!spot.managers.includes(persona.uuid)) {
       spot.managers = spot.managers.concat(personaId);
 
@@ -174,12 +213,44 @@ export class SpotService {
       throw new Error('No default persona found for given user');
     }
 
+    const featuresLimits = this.featureKindService.getPersonaFeaturesLimits(
+      user.kind || 'free',
+    );
+
+    if (
+      userPersona.spotRecommendList.length >= featuresLimits.spotRecommendList
+    ) {
+      throw new MethodNotAllowedException(
+        'You reached recommendation limit for your persona',
+      );
+    }
+
     const recommendedSpot = await this.getSpot({
       uuid: recommendedSpotUuid,
     });
 
     if (!recommendedSpot) {
       throw new Error('No spot found for given recommendedSpotUuid');
+    }
+
+    const recommendedSpotUser = await this.userService.getUser({
+      uuid: recommendedSpot.userId,
+    });
+
+    if (!recommendedSpotUser) {
+      throw new Error('No user found for recommended spot');
+    }
+
+    const recommendedUserLimits = this.featureKindService.getSpotFeaturesLimits(
+      recommendedSpotUser.kind || 'free',
+    );
+
+    if (
+      recommendedSpot.networkList.length >= recommendedUserLimits.networkList
+    ) {
+      throw new MethodNotAllowedException(
+        'You cant recommend this spot - recommendation limits reached.',
+      );
     }
 
     if (userPersona.spotRecommendList.includes(recommendedSpotUuid)) {
@@ -207,7 +278,8 @@ export class SpotService {
       sourceKind: 'persona',
       destination: recommendedSpotUuid,
       destinationKind: 'spot',
-      recommendedTill: dayjs()
+      recommendedTill: dayjs
+        .utc()
         .add(2, 'week')
         .unix(),
     });

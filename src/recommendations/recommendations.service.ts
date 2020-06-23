@@ -2,8 +2,11 @@ import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { MongoService } from '../mongo-service/mongo.service';
 import { Model } from 'mongoose';
 import { v4 } from 'uuid';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { InjectModel } from '@nestjs/mongoose';
+
+dayjs.extend(utc);
 
 import {
   CreateRecommendation,
@@ -26,7 +29,7 @@ export class RecommendationsService {
   async createRecommendation(
     recommendation: CreateRecommendation,
   ): Promise<RecommendationDocument> {
-    const now = dayjs().unix();
+    const now = dayjs.utc().unix();
 
     if (now > recommendation.recommendedTill) {
       throw new MethodNotAllowedException(

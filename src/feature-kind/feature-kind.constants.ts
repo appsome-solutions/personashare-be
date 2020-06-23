@@ -3,14 +3,28 @@ import { FeatureKindLimitRecord } from './feature-kind.interfaces';
 export const featureLimitsFallback: FeatureKindLimitRecord = {
   free: {
     kind: 'free',
-    managers: 3,
-    participants: 20,
-    networkListForSpot: 5,
+    spot: {
+      managers: 3,
+      participants: 20,
+      networkList: 5,
+    },
+    persona: {
+      recommendList: 3,
+      spotRecommendList: 3,
+      networkList: 5,
+    },
   },
   premium: {
     kind: 'premium',
-    managers: 6,
-    participants: 40,
-    networkListForSpot: 10,
+    spot: {
+      managers: 6,
+      participants: 40,
+      networkList: 10,
+    },
+    persona: {
+      recommendList: 6,
+      spotRecommendList: 6,
+      networkList: 10,
+    },
   },
 };

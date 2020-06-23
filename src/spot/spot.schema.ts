@@ -2,6 +2,7 @@ import { Schema } from 'mongoose';
 
 export const SpotSchema = new Schema({
   uuid: String,
+  userId: String,
   card: Object,
   page: Object,
   personaUUIDs: [String],
