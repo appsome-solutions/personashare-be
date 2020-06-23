@@ -4,10 +4,7 @@ export type FeatureKind = 'free' | 'premium';
 
 export type SpotFeatureName = 'participants' | 'managers' | 'networkList';
 
-export type PersonaFeatureName =
-  | 'recommendList'
-  | 'spotRecommendList'
-  | 'networkList';
+export type PersonaFeatureName = 'recommendList' | 'spotRecommendList';
 
 export type FeatureName = SpotFeatureName & PersonaFeatureName;
 

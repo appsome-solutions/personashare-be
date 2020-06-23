@@ -11,7 +11,6 @@ export const featureLimitsFallback: FeatureKindLimitRecord = {
     persona: {
       recommendList: 3,
       spotRecommendList: 3,
-      networkList: 5,
     },
   },
   premium: {
@@ -24,7 +23,6 @@ export const featureLimitsFallback: FeatureKindLimitRecord = {
     persona: {
       recommendList: 6,
       spotRecommendList: 6,
-      networkList: 10,
     },
   },
 };

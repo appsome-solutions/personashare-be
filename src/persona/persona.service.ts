@@ -231,18 +231,6 @@ export class PersonaService {
       throw new Error('No user found for recommended persona');
     }
 
-    const recommendedUserLimits = this.featureKindService.getPersonaFeaturesLimits(
-      recommendedPersonaUser.kind || 'free',
-    );
-
-    if (
-      recommendedPersona.networkList.length >= recommendedUserLimits.networkList
-    ) {
-      throw new MethodNotAllowedException(
-        'You cant recommend this persona - recommendation limits reached.',
-      );
-    }
-
     if (userPersona.recommendList.includes(recommendedPersonaUuid)) {
       throw new MethodNotAllowedException(
         'User is not allowed to recommend this persona - already recommended.',
