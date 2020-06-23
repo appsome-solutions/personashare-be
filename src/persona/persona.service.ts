@@ -258,7 +258,7 @@ export class PersonaService {
       destinationKind: 'persona',
       recommendedTill: this.dayjs
         .utc()
-        .add(2, 'week')
+        .add(15, 'minute')
         .unix(),
     });
 

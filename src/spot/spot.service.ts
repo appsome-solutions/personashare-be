@@ -279,7 +279,7 @@ export class SpotService {
       destinationKind: 'spot',
       recommendedTill: this.dayjs
         .utc()
-        .add(2, 'week')
+        .add(15, 'minute')
         .unix(),
     });
 
