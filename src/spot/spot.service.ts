@@ -19,11 +19,10 @@ import utc from 'dayjs/plugin/utc';
 import { RemoveEntityInput } from '../shared/input/remove-entity.input';
 import { FeatureKindService } from '../feature-kind';
 
-dayjs.extend(utc);
-
 @Injectable()
 export class SpotService {
   mongoService: MongoService<Model<SpotDocument>>;
+  dayjs = dayjs.extend(utc);
 
   constructor(
     @InjectModel('Spot')
@@ -278,7 +277,7 @@ export class SpotService {
       sourceKind: 'persona',
       destination: recommendedSpotUuid,
       destinationKind: 'spot',
-      recommendedTill: dayjs
+      recommendedTill: this.dayjs
         .utc()
         .add(2, 'week')
         .unix(),

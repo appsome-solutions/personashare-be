@@ -256,7 +256,7 @@ export class PersonaService {
       sourceKind: 'persona',
       destination: recommendedPersonaUuid,
       destinationKind: 'persona',
-      recommendedTill: dayjs
+      recommendedTill: this.dayjs
         .utc()
         .add(2, 'week')
         .unix(),
