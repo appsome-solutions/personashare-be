@@ -3,6 +3,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { ConfigService } from './config';
@@ -27,6 +28,8 @@ async function bootstrap(): Promise<any> {
   app.set('trust proxy', true);
   app.use(helmet());
   app.use(cookieParser());
+  app.use(bodyParser.json({ limit: '10mb' }));
+  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
   app.enableCors({
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: true,
