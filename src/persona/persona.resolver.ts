@@ -7,7 +7,12 @@ import {
   ResolveProperty,
   Resolver,
 } from '@nestjs/graphql';
-import { forwardRef, Inject, UseGuards } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  MethodNotAllowedException,
+  UseGuards,
+} from '@nestjs/common';
 import { GqlUserGuard } from '../guards';
 import { ConnectPersonaInput, UpdatePersonaInput } from '../shared';
 import { PersonaService } from './persona.service';
@@ -60,7 +65,14 @@ export class PersonaResolver {
   @ResolveProperty(() => [AgregatedPersona])
   async visibilityList(
     @Parent() persona: PersonaType,
+    @Context() context: GQLContext,
   ): Promise<AgregatedPersona[]> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    if (persona.userId !== uid) {
+      throw new MethodNotAllowedException('Access denied');
+    }
+
     const result = await this.personaService.getPersonasByIds(
       persona.visibilityList,
     );
@@ -82,7 +94,14 @@ export class PersonaResolver {
   @ResolveProperty(() => [AgregatedPersona])
   async networkList(
     @Parent() persona: PersonaType,
+    @Context() context: GQLContext,
   ): Promise<AgregatedPersona[]> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    if (persona.userId !== uid) {
+      throw new MethodNotAllowedException('Access denied');
+    }
+
     const result = await this.personaService.getPersonasByIds(
       persona.networkList,
     );

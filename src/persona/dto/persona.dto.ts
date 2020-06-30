@@ -18,6 +18,9 @@ export class PersonaType {
   @Field()
   qrCodeLink: string;
 
+  @Field()
+  userId: string;
+
   @Field(() => [String], { nullable: true })
   networkList: string[];
 

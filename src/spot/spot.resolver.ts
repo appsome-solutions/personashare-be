@@ -7,7 +7,12 @@ import {
   ResolveProperty,
   Parent,
 } from '@nestjs/graphql';
-import { forwardRef, Inject, UseGuards } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  MethodNotAllowedException,
+  UseGuards,
+} from '@nestjs/common';
 import { v4 } from 'uuid';
 import { SpotService } from './spot.service';
 import { SpotType } from './dto/spot.dto';
@@ -49,7 +54,16 @@ export class SpotResolver {
   }
 
   @ResolveProperty(() => [AgregatedPersona])
-  async networkList(@Parent() spot: SpotType): Promise<AgregatedPersona[]> {
+  async networkList(
+    @Parent() spot: SpotType,
+    @Context() context: GQLContext,
+  ): Promise<AgregatedPersona[]> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    if (spot.userId !== uid) {
+      throw new MethodNotAllowedException('Access denied');
+    }
+
     const result = ((await this.personaService.getPersonasByIds(
       spot.networkList,
     )) as unknown) as AgregatedPersona[];
@@ -76,7 +90,16 @@ export class SpotResolver {
   }
 
   @ResolveProperty(() => [AgregatedPersona])
-  async visibilityList(@Parent() spot: SpotType): Promise<AgregatedPersona[]> {
+  async visibilityList(
+    @Parent() spot: SpotType,
+    @Context() context: GQLContext,
+  ): Promise<AgregatedPersona[]> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    if (spot.userId !== uid) {
+      throw new MethodNotAllowedException('Access denied');
+    }
+
     const result = ((await this.personaService.getPersonasByIds(
       spot.visibilityList,
     )) as unknown) as AgregatedPersona[];

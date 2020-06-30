@@ -19,6 +19,9 @@ export class SpotType {
   @Field()
   qrCodeLink: string;
 
+  @Field()
+  userId: string;
+
   @Field(() => [String], { nullable: true })
   networkList: string[];
 

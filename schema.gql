@@ -129,6 +129,7 @@ type PersonaType {
   page: PageType!
   personaUUIDs: [String!]
   qrCodeLink: String!
+  userId: String!
   networkList: [String!]
   spotNetworkList: [String!]
   recommendList: [String!]
@@ -164,6 +165,7 @@ type SpotType {
   page: PageType!
   personaUUIDs: [String!]
   qrCodeLink: String!
+  userId: String!
   networkList: [String!]
   recommendList: [String!]
   contactBook: [String!]
