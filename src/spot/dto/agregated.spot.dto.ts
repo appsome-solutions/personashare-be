@@ -20,6 +20,12 @@ export class AgregatedSpot {
   @Field(() => String, { nullable: true })
   qrCodeLink: string;
 
+  @Field(() => Boolean, { nullable: true })
+  canPersonaParticipate?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  canBeRecommended?: boolean;
+
   @Field(() => [AgregatedPersona], { nullable: true })
   networkList: AgregatedPersona[];
 
