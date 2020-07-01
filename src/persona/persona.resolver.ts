@@ -7,12 +7,7 @@ import {
   ResolveProperty,
   Resolver,
 } from '@nestjs/graphql';
-import {
-  forwardRef,
-  Inject,
-  MethodNotAllowedException,
-  UseGuards,
-} from '@nestjs/common';
+import { forwardRef, Inject, UseGuards } from '@nestjs/common';
 import { GqlUserGuard } from '../guards';
 import { ConnectPersonaInput, UpdatePersonaInput } from '../shared';
 import { PersonaService } from './persona.service';
@@ -70,7 +65,7 @@ export class PersonaResolver {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
     if (persona.userId !== uid) {
-      throw new MethodNotAllowedException('Access denied');
+      return [];
     }
 
     const result = await this.personaService.getPersonasByIds(
@@ -99,7 +94,7 @@ export class PersonaResolver {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
     if (persona.userId !== uid) {
-      throw new MethodNotAllowedException('Access denied');
+      return [];
     }
 
     const result = await this.personaService.getPersonasByIds(

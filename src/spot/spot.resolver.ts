@@ -7,12 +7,7 @@ import {
   ResolveProperty,
   Parent,
 } from '@nestjs/graphql';
-import {
-  forwardRef,
-  Inject,
-  MethodNotAllowedException,
-  UseGuards,
-} from '@nestjs/common';
+import { forwardRef, Inject, UseGuards } from '@nestjs/common';
 import { v4 } from 'uuid';
 import { SpotService } from './spot.service';
 import { SpotType } from './dto/spot.dto';
@@ -61,7 +56,7 @@ export class SpotResolver {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
     if (spot.userId !== uid) {
-      throw new MethodNotAllowedException('Access denied');
+      return [];
     }
 
     const result = ((await this.personaService.getPersonasByIds(
@@ -97,7 +92,7 @@ export class SpotResolver {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
     if (spot.userId !== uid) {
-      throw new MethodNotAllowedException('Access denied');
+      return [];
     }
 
     const result = ((await this.personaService.getPersonasByIds(
