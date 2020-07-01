@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 
 import { UserDocument, UserInterface } from './interfaces/user.interfaces';
 import { UpdateUserInput, UserInput } from './inputs';
@@ -33,7 +33,15 @@ export class UserService {
 
   async loginUser(idToken: string): Promise<UserLoginType> {
     const userData = await this.firebaseService.getDecodedClaim(idToken);
-    const { uid, email, name, picture } = userData;
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    const { uid, email, name, picture, email_verified } = userData;
+
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    if (!email_verified) {
+      throw new ForbiddenException(
+        'You are not allowed to log in. Please, verify your email.',
+      );
+    }
 
     let user = await this.getUser({ uuid: uid });
 

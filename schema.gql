@@ -43,6 +43,7 @@ type AgregatedSpot {
   owner: AgregatedPersona
   participants: [AgregatedPersona!]
   managers: [AgregatedPersona!]
+  invitedManagerEmails: [EmailInvitation!]
 }
 
 input CardInput {
