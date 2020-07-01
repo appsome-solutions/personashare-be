@@ -396,8 +396,6 @@ export class SpotService {
       uuid: spot.owner,
     });
 
-    console.log(spotOwnerPersona);
-
     if (
       spotOwnerPersona.spotRecommendList.length >=
       userPersonaLimits.spotRecommendList
