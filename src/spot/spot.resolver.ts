@@ -53,9 +53,13 @@ export class SpotResolver {
     @Parent() spot: SpotType,
     @Context() context: GQLContext,
   ): Promise<AgregatedPersona[]> {
-    const { uid } = await this.firebaseService.getClaimFromToken(context);
+    try {
+      const { uid } = await this.firebaseService.getClaimFromToken(context);
 
-    if (spot.userId !== uid) {
+      if (spot.userId !== uid) {
+        return [];
+      }
+    } catch (e) {
       return [];
     }
 
@@ -89,9 +93,13 @@ export class SpotResolver {
     @Parent() spot: SpotType,
     @Context() context: GQLContext,
   ): Promise<AgregatedPersona[]> {
-    const { uid } = await this.firebaseService.getClaimFromToken(context);
+    try {
+      const { uid } = await this.firebaseService.getClaimFromToken(context);
 
-    if (spot.userId !== uid) {
+      if (spot.userId !== uid) {
+        return [];
+      }
+    } catch (e) {
       return [];
     }
 

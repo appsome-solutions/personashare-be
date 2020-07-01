@@ -62,9 +62,13 @@ export class PersonaResolver {
     @Parent() persona: PersonaType,
     @Context() context: GQLContext,
   ): Promise<AgregatedPersona[]> {
-    const { uid } = await this.firebaseService.getClaimFromToken(context);
+    try {
+      const { uid } = await this.firebaseService.getClaimFromToken(context);
 
-    if (persona.userId !== uid) {
+      if (persona.userId !== uid) {
+        return [];
+      }
+    } catch (e) {
       return [];
     }
 
@@ -91,9 +95,12 @@ export class PersonaResolver {
     @Parent() persona: PersonaType,
     @Context() context: GQLContext,
   ): Promise<AgregatedPersona[]> {
-    const { uid } = await this.firebaseService.getClaimFromToken(context);
-
-    if (persona.userId !== uid) {
+    try {
+      const { uid } = await this.firebaseService.getClaimFromToken(context);
+      if (persona.userId !== uid) {
+        return [];
+      }
+    } catch (_e) {
       return [];
     }
 
