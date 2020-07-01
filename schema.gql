@@ -30,6 +30,8 @@ type AgregatedSpot {
   page: PageType
   personaUUIDs: [String!]
   qrCodeLink: String
+  canPersonaParticipate: Boolean
+  canBeRecommended: Boolean
   networkList: [AgregatedPersona!]
   spotNetworkList: [AgregatedSpot!]
   recommendList: [AgregatedPersona!]
@@ -41,7 +43,6 @@ type AgregatedSpot {
   owner: AgregatedPersona
   participants: [AgregatedPersona!]
   managers: [AgregatedPersona!]
-  invitedManagerEmails: [EmailInvitation!]
 }
 
 input CardInput {

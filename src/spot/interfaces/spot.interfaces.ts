@@ -38,6 +38,8 @@ type PartialSpotInterface = {
   owner: any;
   invitedManagerEmails: any[];
   createdAt: number;
+  canPersonaParticipate: boolean;
+  canBeRecommended: boolean;
 };
 
 interface PartialSpotDocument extends PartialSpotInterface, Document {}

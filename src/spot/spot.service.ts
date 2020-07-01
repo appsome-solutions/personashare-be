@@ -19,6 +19,11 @@ import utc from 'dayjs/plugin/utc';
 import { RemoveEntityInput } from '../shared/input/remove-entity.input';
 import { FeatureKindService } from '../feature-kind';
 
+type LimitationsType = {
+  canPersonaParticipate: boolean;
+  canBeRecommended: boolean;
+};
+
 @Injectable()
 export class SpotService {
   mongoService: MongoService<Model<SpotDocument>>;
@@ -362,22 +367,84 @@ export class SpotService {
     }
   }
 
+  getSpotLimitations = async (
+    spot: PartialSpotDocument | SpotDocument,
+  ): Promise<LimitationsType> => {
+    const spotUser = await this.userService.getUser({
+      uuid: spot.userId,
+    });
+
+    if (!spotUser) {
+      throw new Error('No user found for given spot');
+    }
+
+    const userSpotLimits = this.featureKindService.getSpotFeaturesLimits(
+      spotUser.kind || 'free',
+    );
+    const limitations = {} as LimitationsType;
+
+    if (spot.participants.length >= userSpotLimits.participants) {
+      limitations.canPersonaParticipate = false;
+    }
+    limitations.canPersonaParticipate = true;
+
+    const userPersonaLimits = this.featureKindService.getPersonaFeaturesLimits(
+      spotUser.kind || 'free',
+    );
+
+    const spotOwnerPersona = await this.personaService.getPersona({
+      uuid: spot.owner,
+    });
+
+    console.log(spotOwnerPersona);
+
+    if (
+      spotOwnerPersona.spotRecommendList.length >=
+      userPersonaLimits.spotRecommendList
+    ) {
+      limitations.canBeRecommended = false;
+    }
+    limitations.canBeRecommended = true;
+
+    return Promise.resolve(limitations);
+  };
+
   async getSpot(condition: SpotInput): Promise<PartialSpotDocument> {
-    return await this.mongoService.findByMatch<SpotInput, PartialSpotDocument>({
+    const spot = await this.mongoService.findByMatch<
+      SpotInput,
+      PartialSpotDocument
+    >({
       isActive: true,
       ...condition,
     });
+
+    const limitations = await this.getSpotLimitations(spot);
+
+    spot.canBeRecommended = limitations.canBeRecommended;
+    spot.canPersonaParticipate = limitations.canPersonaParticipate;
+
+    return spot;
   }
 
   async getSpotsByIds(spotIds: string[]): Promise<PartialSpotDocument[]> {
     const model = this.mongoService.getModel();
-    return await model
+
+    const spots = (await model
       .find({
         uuid: {
           $in: spotIds,
         },
       })
-      .exec();
+      .exec()) as Array<PartialSpotDocument>;
+
+    spots.map(async spot => {
+      const limitations = await this.getSpotLimitations(spot);
+
+      spot.canBeRecommended = limitations.canBeRecommended;
+      spot.canPersonaParticipate = limitations.canPersonaParticipate;
+    });
+
+    return spots;
   }
 
   async getUserSpots(uuid: string): Promise<SpotDocument[]> {
