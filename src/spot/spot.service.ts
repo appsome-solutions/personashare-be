@@ -370,6 +370,13 @@ export class SpotService {
   getSpotLimitations = async (
     spot: PartialSpotDocument | SpotDocument,
   ): Promise<LimitationsType> => {
+    if (!spot || !spot.userId) {
+      return Promise.resolve({
+        canBeRecommended: false,
+        canPersonaParticipate: false,
+      });
+    }
+
     const spotUser = await this.userService.getUser({
       uuid: spot.userId,
     });
@@ -416,10 +423,12 @@ export class SpotService {
       ...condition,
     });
 
-    const limitations = await this.getSpotLimitations(spot);
+    if (spot) {
+      const limitations = await this.getSpotLimitations(spot);
 
-    spot.canBeRecommended = limitations.canBeRecommended;
-    spot.canPersonaParticipate = limitations.canPersonaParticipate;
+      spot.canBeRecommended = limitations.canBeRecommended;
+      spot.canPersonaParticipate = limitations.canPersonaParticipate;
+    }
 
     return spot;
   }
