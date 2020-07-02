@@ -48,11 +48,11 @@ export class PersonaService {
 
   async createPersona(input: AddPersonaInput): Promise<PersonaDocument> {
     // TODO: will be change to the domain
-    const { baseUrl, applicationPort } = this.configService;
+    const { baseUrl } = this.configService;
     const { persona, uuid } = input;
     const personaUuid = v4();
 
-    const url = `${baseUrl}:${applicationPort}/persona/${personaUuid}`;
+    const url = `${baseUrl}/persona/${personaUuid}`;
     const assetPath = `qrcodes/persona_${personaUuid}.svg`;
     const qrCodeLink = await this.qrCodeService.uploadQrCodeWithLogo(
       assetPath,

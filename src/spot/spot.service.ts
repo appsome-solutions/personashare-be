@@ -45,7 +45,7 @@ export class SpotService {
 
   async createSpot(uid: string, spot: SpotInterface): Promise<SpotDocument> {
     // TODO: will be change to the domain
-    const { baseUrl, applicationPort } = this.configService;
+    const { baseUrl } = this.configService;
     const { uuid } = spot;
 
     const user = await this.userService.getUser({ uuid: uid });
@@ -54,7 +54,7 @@ export class SpotService {
       throw new Error('No default persona found for given user');
     }
 
-    const url = `${baseUrl}:${applicationPort}/spot/${uuid}`;
+    const url = `${baseUrl}/spot/${uuid}`;
     const assetPath = `qrcodes/spot_${uuid}.svg`;
 
     const qrCodeLink = await this.qrCodeService.uploadQrCodeWithLogo(
