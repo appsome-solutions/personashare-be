@@ -187,7 +187,7 @@ export class SpotService {
       );
     }
 
-    const userOnTheList = (spot.invitedManagerEmails as EmailInvitation[]).find(
+    /*const userOnTheList = (spot.invitedManagerEmails as EmailInvitation[]).find(
       invitation => {
         return (
           invitation.email === user.email && invitation.status === 'pending'
@@ -199,7 +199,7 @@ export class SpotService {
       throw new MethodNotAllowedException(
         'Cannot add manager to the given spot.',
       );
-    }
+    }*/
 
     if (!spot.managers.includes(persona.uuid)) {
       spot.managers = spot.managers.concat(personaId);
