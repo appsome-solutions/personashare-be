@@ -99,7 +99,7 @@ type Mutation {
   removePersona(personaUuid: String!): Boolean!
   createSpot(spot: CreateShareableInput!): SpotType!
   participate(spotId: String!): AgregatedSpot!
-  addManager(personaId: String!, spotId: String!): SpotType!
+  addManager(email: String!, personaId: String!, spotId: String!): SpotType!
   recommendSpot(recommendedSpotUuid: String!): SpotType!
   saveSpot(savedSpotUuid: String!): AgregatedPersona!
   updateSpot(uuid: String!, spot: UpdateSpotInput!): SpotType!

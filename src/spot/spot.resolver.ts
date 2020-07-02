@@ -196,11 +196,12 @@ export class SpotResolver {
   async addManager(
     @Args('spotId') spotId: string,
     @Args('personaId') personaId: string,
+    @Args('email') email: string,
     @Context() context: GQLContext,
   ): Promise<SpotType> {
     const { uid } = await this.firebaseService.getClaimFromToken(context);
 
-    return await this.spotService.addManager(uid, spotId, personaId);
+    return await this.spotService.addManager(uid, spotId, personaId, email);
   }
 
   @Mutation(() => SpotType)

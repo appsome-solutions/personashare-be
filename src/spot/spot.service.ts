@@ -144,6 +144,7 @@ export class SpotService {
     uuid: string,
     spotId: string,
     personaId: string,
+    email: string,
   ): Promise<SpotDocument> {
     const user = await this.userService.getUser({
       uuid,
@@ -187,25 +188,23 @@ export class SpotService {
       );
     }
 
-    /*const userOnTheList = (spot.invitedManagerEmails as EmailInvitation[]).find(
+    const emailOnTheList = (spot.invitedManagerEmails as EmailInvitation[]).find(
       invitation => {
-        return (
-          invitation.email === user.email && invitation.status === 'pending'
-        );
+        return invitation.email === email && invitation.status === 'pending';
       },
     );
 
-    if (!userOnTheList) {
+    if (!emailOnTheList) {
       throw new MethodNotAllowedException(
         'Cannot add manager to the given spot.',
       );
-    }*/
+    }
 
-    if (!spot.managers.includes(persona.uuid)) {
+    if (!spot.managers.includes(personaId)) {
       spot.managers = spot.managers.concat(personaId);
       spot.invitedManagerEmails = (spot.invitedManagerEmails as EmailInvitation[]).map(
         invitation => {
-          if (invitation.email === user.email) {
+          if (invitation.email === email) {
             return {
               ...invitation,
               status: 'success',
