@@ -370,6 +370,13 @@ export class SpotService {
   getSpotLimitations = async (
     spot: PartialSpotDocument | SpotDocument,
   ): Promise<LimitationsType> => {
+    if (!spot || !spot.userId) {
+      return Promise.resolve({
+        canBeRecommended: false,
+        canPersonaParticipate: false,
+      });
+    }
+
     const spotUser = await this.userService.getUser({
       uuid: spot.userId,
     });
