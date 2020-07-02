@@ -3,7 +3,7 @@ import { Card, Page, PersonaEntity } from '../../shared/interfaces';
 
 type EmailInvitationStatus = 'pending' | 'success' | 'rejected';
 
-type EmailInvitation = {
+export type EmailInvitation = {
   email: string;
   status: EmailInvitationStatus;
 };

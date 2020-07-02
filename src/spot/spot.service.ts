@@ -2,6 +2,7 @@ import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import {
+  EmailInvitation,
   PartialSpotDocument,
   SpotDocument,
   SpotInterface,
@@ -148,10 +149,8 @@ export class SpotService {
       uuid,
     });
 
-    if (!user.spots.includes(spotId)) {
-      throw new MethodNotAllowedException(
-        'Cannot add manager to the given spot',
-      );
+    if (!user) {
+      throw new Error('No user found for given id');
     }
 
     const persona = await this.personaService.getPersona({
@@ -188,8 +187,33 @@ export class SpotService {
       );
     }
 
+    const userOnTheList = (spot.invitedManagerEmails as EmailInvitation[]).find(
+      invitation => {
+        return (
+          invitation.email === user.email && invitation.status === 'pending'
+        );
+      },
+    );
+
+    if (!userOnTheList) {
+      throw new MethodNotAllowedException(
+        'Cannot add manager to the given spot.',
+      );
+    }
+
     if (!spot.managers.includes(persona.uuid)) {
       spot.managers = spot.managers.concat(personaId);
+      spot.invitedManagerEmails = (spot.invitedManagerEmails as EmailInvitation[]).map(
+        invitation => {
+          if (invitation.email === user.email) {
+            return {
+              ...invitation,
+              status: 'success',
+            };
+          }
+          return invitation;
+        },
+      );
 
       await spot.save();
     }
