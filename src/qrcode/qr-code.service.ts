@@ -49,7 +49,8 @@ export class QrCodeService {
     const data = canvasCtx.canvas.toDataURL('image/svg+xml');
 
     const svg = await toString(content, { type: 'svg', width: size });
-    const imgToPut = `<image id="logo" xlink:href="${data}" height="14" width="14" x="16" y="16"/></svg>`;
+
+    const imgToPut = `<image id="logo" xlink:href="${data}" height="14px" width="14px" x="50%" y="50%" transform="translate(-7,-7)"/></svg>`;
 
     return svg
       .replace('</svg>', imgToPut)
