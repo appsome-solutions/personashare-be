@@ -56,6 +56,7 @@ FIREBASE_CREDENTIAL_PATH= // path to the secretKey.json
 FIREBASE_EXPIRE_IN_SESSION= // default is 300000 = 5 minutes
 MAILCHIMP_AUDIENCE_ID= // your audience id
 MAILCHIMP_API_KEY= // your API key
+BUGSNAG_API_KEY = // your Bugsnag api key
 ```
 
 These field should be declared because of env fields validation that comes with server bootstrapping.

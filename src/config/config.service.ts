@@ -18,6 +18,7 @@ const allowedKeys: EnvConfigSchemaKeys[] = [
   'MAILCHIMP_AUDIENCE_ID',
   'MAILCHIMP_API_KEY',
   'MAILCHIMP_USER_NAME',
+  'BUGSNAG_API_KEY',
 ];
 
 @Injectable()
@@ -70,6 +71,7 @@ export class ConfigService {
       MAILCHIMP_AUDIENCE_ID: Joi.string().required(),
       MAILCHIMP_API_KEY: Joi.string().required(),
       MAILCHIMP_USER_NAME: Joi.string().required(),
+      BUGSNAG_API_KEY: Joi.string().optional(),
     });
 
     const { error, value: validatedEnvConfig } = Joi.validate(
@@ -134,5 +136,9 @@ export class ConfigService {
 
   get MailchimpUserName(): string {
     return this.envConfig.MAILCHIMP_USER_NAME;
+  }
+
+  get bugsnagApiKey(): string {
+    return this.envConfig.BUGSNAG_API_KEY;
   }
 }

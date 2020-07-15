@@ -79,6 +79,42 @@ export class SpotService {
     return newSpot;
   }
 
+  async checkout(uuid: string, spotId: string): Promise<PartialSpotDocument> {
+    const user = await this.userService.getUser({
+      uuid,
+    });
+
+    if (!user.defaultPersona) {
+      throw new MethodNotAllowedException(
+        'No default persona found. Please, create one.',
+      );
+    }
+
+    const persona = await this.personaService.getPersona({
+      uuid: user.defaultPersona,
+    });
+
+    if (!persona) {
+      throw new MethodNotAllowedException(
+        'No default persona found. Please, create one.',
+      );
+    }
+
+    const spot = await this.getSpot({
+      uuid: spotId,
+    });
+
+    if (!spot) {
+      throw new MethodNotAllowedException('No spot found for given id');
+    }
+
+    spot.participants = spot.participants.filter(uuid => uuid !== persona.uuid);
+
+    await spot.save();
+
+    return spot;
+  }
+
   async participate(
     uuid: string,
     spotId: string,

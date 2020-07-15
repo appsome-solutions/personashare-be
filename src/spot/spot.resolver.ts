@@ -191,6 +191,17 @@ export class SpotResolver {
     return await this.spotService.participate(uid, spotId);
   }
 
+  @Mutation(() => AgregatedSpot)
+  @UseGuards(GqlUserGuard)
+  async checkOut(
+    @Args('spotId') spotId: string,
+    @Context() context: GQLContext,
+  ): Promise<AgregatedSpot> {
+    const { uid } = await this.firebaseService.getClaimFromToken(context);
+
+    return await this.spotService.checkout(uid, spotId);
+  }
+
   @Mutation(() => SpotType)
   @UseGuards(GqlUserGuard)
   async addManager(

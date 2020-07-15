@@ -21,6 +21,8 @@
     "doc": "compodoc -p tsconfig.json -s"
   },
   "dependencies": {
+    "@bugsnag/js": "^7.2.0",
+    "@bugsnag/plugin-express": "^7.2.0",
     "@nestjs/common": "^6.8.0",
     "@nestjs/core": "^6.8.0",
     "@nestjs/graphql": "^6.5.3",
