@@ -6,7 +6,6 @@ import { UserSchema } from './user.schema';
 import { FirebaseModule } from '../firebase';
 import { AuthModule } from '../auth';
 import { ConfigModule } from '../config';
-import { MailchimpModule } from '../mailchimp';
 
 @Module({
   imports: [
@@ -14,7 +13,6 @@ import { MailchimpModule } from '../mailchimp';
     FirebaseModule,
     AuthModule,
     ConfigModule,
-    MailchimpModule,
   ],
   providers: [UserService, UserResolver],
   exports: [UserService],

@@ -7,7 +7,6 @@ import { UpdateUserInput, UserInput } from './inputs';
 import { UserLoginType } from './dto';
 import { MongoService } from '../mongo-service/mongo.service';
 import { FirebaseService } from '../firebase';
-import { MailchimpService } from '../mailchimp';
 
 @Injectable()
 export class UserService {
@@ -16,18 +15,11 @@ export class UserService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<UserDocument>,
     private readonly firebaseService: FirebaseService,
-    private readonly mailchimpService: MailchimpService,
   ) {
     this.mongoService = new MongoService(this.userModel);
   }
 
   async createUser(user: UserInterface): Promise<UserDocument> {
-    try {
-      await this.mailchimpService.subscribe(user.email);
-    } catch (_e) {
-      console.log(_e);
-    }
-
     return await this.mongoService.create<UserInterface, UserDocument>(user);
   }
 
